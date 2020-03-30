@@ -15,7 +15,10 @@ class CreateReportCardsTable extends Migration
     {
         Schema::create('report_cards', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->string('name');
+            $table->unsignedBigInteger('folder_id');
+
+            $table->foreign('folder_id')->references('id')->on('folders');
         });
     }
 
