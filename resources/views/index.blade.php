@@ -15,6 +15,7 @@
     <h4 class="mb-3">Connexion</h4>
     <hr class="mb-4">
     <form action="" id="formLogIn">
+      @csrf
       <label for="userId">Adresse mail :</label>
       <input type="mail" name="userId" id="userId" class="form-control"required></p>
 
@@ -28,16 +29,17 @@
 
   <div class="col-md-8" id="signInDiv">
     <form action="" id="formSignIn">
+      @csrf
       <h4 class="mb-3">Inscription</h4>
       <hr class="mb-4">
 
       <div class="row">
         <div class="col-md-6 mb-3">
-          <label for="userLastname">Nom :</label>
+          <label for="userLastname">Nom :</label> <i class="fa fa-info-circle text-info"></i>
           <input type="text" name="userLastname" id="userLastname" class="form-control"required></p>
         </div>
         <div class="col-md-6 mb-3">
-          <label for="userFirstname">Prénom :</label>
+          <label for="userFirstname">Prénom :</label> <i class="fa fa-info-circle text-info"></i>
           <input type="text" name="userFirstname" id="userFirstname" class="form-control"required></p>
         </div>
       </div>
@@ -46,8 +48,8 @@
 
       <div class="row">
         <div class="col-md-6 mb-3">
-          <label for="userCardId">N° de carte d'identité :</label>
-          <input type="number" name="userCardId" id="userCardId" class="form-control"required></p>
+          <label for="userCardId">N° de carte d'identité :</label> <i class="fa fa-info-circle text-info"></i>
+          <input type="text" name="userCardId" id="userCardId" class="form-control"required></p>
 
           <label for="userBirthdate">Date de naissance</label>
           <input type="date" name="userBirthdate" id="userBirthdate" class="form-control"required></p>
@@ -75,11 +77,19 @@
 
       <div class="row">
         <div class="col-md-6 mb-3">
-          <label for="userPhoneNumber">Téléphone :</label>
+          <label for="userPhoneNumber">Téléphone :</label> <i class="fa fa-info-circle text-info"></i>
           <input type="number" name="userPhoneNumber" id="userPhoneNumber" class="form-control"required></p>
+        </div>
+      </div>
 
-          <label for="userMail">Adresse mail :</label>
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="userMail">Adresse mail :</label> <i class="fa fa-info-circle text-info"></i>
           <input type="mail" name="userMail" id="userMail" class="form-control"required></p>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label for="userMail">Mot de passe :</label>
+          <input type="password" name="userPassword" id="userPassword" class="form-control"required></p>
         </div>
       </div>
 
@@ -115,23 +125,30 @@
     $("#formSignIn").submit(function(e){
       e.preventDefault();
 
-      var firstname = $("#userLastname").val();
-      var lastname = $("#userFirstname").val();
-      var cardId = $("#userCardId").val();
-      var birthdate = $("#userBirthdate").val();
-      var street = $("#userStreet").val();
-      var city = $("#userCity").val();
-      var zipCode = $("#userZipeCode").val();
-      var phoneNumber = $("#userPhoneNumber").val();
-      var mail = $("#userMail").val();
+      $.ajax({
+          url:'/Student/Add',
+          type:'GET',
+          data:$("#formSignIn").serialize(),
+          success: function(data) {
+              displayToastr('studentRegistred');
+          },
+          error: function(xhr, status, error)  {
+            if(xhr.responseJSON.message  == 'alreadyExist')
+            {
+              displayToastr('errorMsg', 
+              'Un étudiant ayant les mêmes informations <i class="fa fa-info-circle"></i> existe déjà !');
+            }
+            else
+            {
+              displayToastr('error');
+            }
+          },
+      });
 
     });
 
     $("#formLogIn").submit(function(e){
       e.preventDefault();
-
-      var id = $("#userId").val();
-      var password = $("#userPassword").val();
 
     });
 

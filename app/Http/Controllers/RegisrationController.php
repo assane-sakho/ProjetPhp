@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Regisration;
+use App\Registration;
 use Illuminate\Http\Request;
 
-class RegisrationController extends Controller
+class RegistrationController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -41,10 +41,10 @@ class RegisrationController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Regisration  $regisration
+     * @param  \App\Registration  $Registration
      * @return \Illuminate\Http\Response
      */
-    public function show(Regisration $regisration)
+    public function show(Registration $Registration)
     {
         //
     }
@@ -52,10 +52,10 @@ class RegisrationController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Regisration  $regisration
+     * @param  \App\Registration  $Registration
      * @return \Illuminate\Http\Response
      */
-    public function edit(Regisration $regisration)
+    public function edit(Registration $Registration)
     {
         //
     }
@@ -64,10 +64,10 @@ class RegisrationController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Regisration  $regisration
+     * @param  \App\Registration  $Registration
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Regisration $regisration)
+    public function update(Request $request, Registration $Registration)
     {
         //
     }
@@ -75,10 +75,10 @@ class RegisrationController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Regisration  $regisration
+     * @param  \App\Registration  $Registration
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Regisration $regisration)
+    public function destroy(Registration $Registration)
     {
         //
     }

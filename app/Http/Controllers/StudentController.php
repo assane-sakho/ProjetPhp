@@ -3,83 +3,71 @@
 namespace App\Http\Controllers;
 
 use App\Student;
+use App\Address;
+use Response;
+
 use Illuminate\Http\Request;
 
 class StudentController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function add(Request $request)
     {
-        //
+        $lastname = $request->userLastname;
+        $firstname = $request->userFirstname;
+        $carId = $request->userCardId;
+        $birthdate = $request->userBirthdate;
+        $phoneNumber = $request->userPhoneNumber;
+        $email = $request->userMail;
+        $password = $request->userPassword;
+
+        $street = $request->userStreet;
+        $city = $request->userCity;
+        $zip_code = $request->userZipCode;
+
+        if(!$this->alreadyExist($lastname, $firstname, $carId, $phoneNumber, $email))
+        {
+            $address =  Address::create([ 
+                'street' => request('userStreet'),
+                'city' => request('userCity'),
+                'zip_code' => request("userZipCode")
+                ]);
+
+            Student::create([
+                'firstname' => $lastname,
+                'lastname' => $firstname,
+                'card_id' => $carId,
+                'birthdate' => $birthdate,
+                'phone_number' => $phoneNumber,
+                'email' => $email,
+                'password' => $password,
+                'address_id' => $address->id
+                ]);
+            $returnData = array(
+                'status' => 'success',
+            );
+            $returnCode = 200;
+        }
+        else{
+            $returnData = array(
+                'status' => 'error',
+                'message' => 'alreadyExist'
+            );
+            $returnCode = 500;
+        }
+        return Response::json($returnData, $returnCode);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function alreadyExist($lastname, $firstname, $cardId, $phoneNumber, $email)
     {
-        //
-    }
+        $studentCount = 
+        Student::where([
+            'lastname' => $lastname,
+            'firstname' => $firstname])
+        ->orwhere('card_id', $cardId)
+        ->orwhere('email', $email)
+        ->orwhere('phone_number', $phoneNumber)
+        ->count();
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Student  $student
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Student $student)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Student  $student
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Student $student)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Student  $student
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Student $student)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Student  $student
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Student $student)
-    {
-        //
+        return($studentCount >= 1);
     }
 }
