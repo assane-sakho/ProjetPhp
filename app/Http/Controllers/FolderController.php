@@ -9,6 +9,6 @@ class FolderController extends Controller
 {
     public function index()
     {
-        return view('folder.index');
+        return view('folders.index');
     }
 }

@@ -5,15 +5,8 @@
   </head>
   <body>
       @include('layout.partials.nav')
-      <div class="container-fluid">
-        <div class="row">
-          <main role="main" class="col-md-12 ml-sm-auto col-lg-12 px-4">
-            <p/>
-            <p/>
-            @yield('content')
-          </main>
-        </div>
-      </div>
+      
+      @yield('content')
       
       @include('layout.partials.footer')
 

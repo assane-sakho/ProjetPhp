@@ -1,101 +1,118 @@
 @extends('layout.mainlayout')
 
 @section('content')
-<div class="text-center">
-  </p>
-  <button class="btn btn-primary btn-lg" style="width: 25%;" id="btnSignIn">Deposer une candidature</button>&nbsp;
-  <button class="btn btn-success btn-lg" style="width: 25%;" id="btnLogIn">Se connecter</button>
-</div>  
+<section class="banner_part owl-carousel">
+    <div class="single_banner_part bg_1">
+        <div class="container">
+            <div class="row justify-content-center align-items-center">
+                <div class="col-lg-12">
+                    <div class="banner_iner">
+                        <h3 class="text-white">Bienvenue sur l'espace de candidature de </h3>
+                        <h4 class="text-white">Paris Nanterre</h4>
+                        <div class="text-center">
+                          <br/>
+                          <button class="btn btn-primary btn-lg" style="width: 25%;" id="btnSignIn">Deposer une candidature</button>&nbsp;
+                          <button class="btn btn-success btn-lg" style="width: 25%;" id="btnLogin">Se connecter</button>
+                        </div>  
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section id="bottomSection">
 
-<div class="d-flex justify-content-around p-5">
+  <div class="d-flex justify-content-around p-5" >
 
-  <div class="col-md-3" id="logInDiv">
-    <h4 class="mb-3">Connexion</h4>
-    <hr class="mb-4">
-    <form action="" id="formLogIn">
-      <label for="userLoginMail">Adresse mail :</label>
-      <input type="mail" name="userLoginMail" id="userLoginMail" class="form-control"required></p>
-
-      <label for="userLoginPassword">Mot de passe :</label>
-      <input type="password"name="userLoginPassword" id="userLoginPassword" class="form-control"required></p>
-
+    <div class="col-md-3" id="logInDiv">
+      <h4 class="mb-3">Connexion</h4>
       <hr class="mb-4">
-      <button class="btn btn-secondary btn-lg btn-block" type="submit">Se connecter</button>
-    </form>
-  </div>
+      <form action="" id="formLogIn">
+        <label for="userLoginMail">Adresse mail :</label>
+        <input type="mail" name="userLoginMail" id="userLoginMail" class="form-control"required></p>
 
-  <div class="col-md-8" id="signInDiv">
-    <form action="" id="formSignIn">
+        <label for="userLoginPassword">Mot de passe :</label>
+        <input type="password"name="userLoginPassword" id="userLoginPassword" class="form-control"required></p>
+
+        <hr class="mb-4">
+        <button class="btn btn-secondary btn-lg btn-block" type="submit">Se connecter</button>
+      </form>
+    </div>
+
+    <div class="col-md-8" id="signInDiv">
       <h4 class="mb-3">Inscription</h4>
       <hr class="mb-4">
 
-      <div class="row">
-        <div class="col-md-6 mb-3">
-          <label for="userLastname">Nom :</label> <i class="fa fa-info-circle text-info"></i>
-          <input type="text" name="userLastname" id="userLastname" class="form-control"required></p>
+      <form action="" id="formSignIn">
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="userLastname">Nom :</label> <i class="fa fa-info-circle text-info"></i>
+            <input type="text" name="userLastname" id="userLastname" class="form-control"required></p>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="userFirstname">Prénom :</label> <i class="fa fa-info-circle text-info"></i>
+            <input type="text" name="userFirstname" id="userFirstname" class="form-control"required></p>
+          </div>
         </div>
-        <div class="col-md-6 mb-3">
-          <label for="userFirstname">Prénom :</label> <i class="fa fa-info-circle text-info"></i>
-          <input type="text" name="userFirstname" id="userFirstname" class="form-control"required></p>
+
+        <hr class="mb-4">
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="userCardId">N° de carte d'identité :</label> <i class="fa fa-info-circle text-info"></i>
+            <input type="text" name="userCardId" id="userCardId" class="form-control"required></p>
+
+            <label for="userBirthdate">Date de naissance</label>
+            <input type="date" name="userBirthdate" id="userBirthdate" class="form-control"required></p>
+          </div>
         </div>
-      </div>
 
-      <hr class="mb-4">
+        <hr class="mb-4">
 
-      <div class="row">
-        <div class="col-md-6 mb-3">
-          <label for="userCardId">N° de carte d'identité :</label> <i class="fa fa-info-circle text-info"></i>
-          <input type="text" name="userCardId" id="userCardId" class="form-control"required></p>
-
-          <label for="userBirthdate">Date de naissance</label>
-          <input type="date" name="userBirthdate" id="userBirthdate" class="form-control"required></p>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="userStreet">Rue :</label>
+            <input type="text" name="userStreet" id="userStreet" class="form-control"required></p>
+          </div>
+          <div class="col-md-3 mb-3">
+            <label for="userCity">Ville :</label>
+            <input type="text" name="userCity" id="userCity" class="form-control"required></p>
+          </div>
+          <div class="col-md-3 mb-3">
+            <label for="userZipCode">Code postal :</label>
+            <input type="number" name="userZipCode" id="userZipCode" class="form-control"required></p>
+          </div>
         </div>
-      </div>
 
-      <hr class="mb-4">
+        <hr class="mb-4">
 
-      <div class="row">
-        <div class="col-md-6 mb-3">
-          <label for="userStreet">Rue :</label>
-          <input type="text" name="userStreet" id="userStreet" class="form-control"required></p>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="userPhoneNumber">Téléphone :</label> <i class="fa fa-info-circle text-info"></i>
+            <input type="number" name="userPhoneNumber" id="userPhoneNumber" class="form-control"required></p>
+          </div>
         </div>
-        <div class="col-md-3 mb-3">
-          <label for="userCity">Ville :</label>
-          <input type="text" name="userCity" id="userCity" class="form-control"required></p>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="userMail">Adresse mail :</label> <i class="fa fa-info-circle text-info"></i>
+            <input type="mail" name="userMail" id="userMail" class="form-control"required></p>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="userMail">Mot de passe :</label>
+            <input type="password" name="userPassword" id="userPassword" class="form-control"required></p>
+          </div>
         </div>
-        <div class="col-md-3 mb-3">
-          <label for="userZipCode">Code postal :</label>
-          <input type="number" name="userZipCode" id="userZipCode" class="form-control"required></p>
-        </div>
-      </div>
 
-      <hr class="mb-4">
+        <hr class="mb-4">
 
-      <div class="row">
-        <div class="col-md-6 mb-3">
-          <label for="userPhoneNumber">Téléphone :</label> <i class="fa fa-info-circle text-info"></i>
-          <input type="number" name="userPhoneNumber" id="userPhoneNumber" class="form-control"required></p>
-        </div>
-      </div>
+        <button class="btn btn-secondary btn-lg btn-block" type="submit">S'inscire</button>
+      </form>
+    </div>  
 
-      <div class="row">
-        <div class="col-md-6 mb-3">
-          <label for="userMail">Adresse mail :</label> <i class="fa fa-info-circle text-info"></i>
-          <input type="mail" name="userMail" id="userMail" class="form-control"required></p>
-        </div>
-        <div class="col-md-6 mb-3">
-          <label for="userMail">Mot de passe :</label>
-          <input type="password" name="userPassword" id="userPassword" class="form-control"required></p>
-        </div>
-      </div>
-
-      <hr class="mb-4">
-
-      <button class="btn btn-secondary btn-lg btn-block" type="submit">S'inscire</button>
-    </form>
-  </div>  
-
-</div>
+  </div>
+</section>
 
 @endsection
 @section('scripts')
@@ -103,8 +120,19 @@
   $(document).ready(function(){
     $('#signInDiv, #logInDiv').hide();
 
-    $('#btnSignIn, #btnLogIn').click(function(){
+    $('#btnSignIn, #btnLogin').click(function(){
       var btnId = $(this).attr('id');
+      var href ="signInDiv";
+
+      if(btnId == "btnLogin")
+      {
+        href = "logInDiv"
+      }
+
+      $('html, body').animate({
+          scrollTop: $("#bottomSection").offset().top
+      }, 2000);
+
       if(btnId == "btnSignIn")
       {
         $('#logInDiv').hide();
@@ -169,6 +197,9 @@
     });
 
   });
+  $('#btnSignIn, #btnLogin').click(function(){
+   
+});
   </script>
 @endsection
 

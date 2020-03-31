@@ -1,18 +1,43 @@
-<script  src="{{ asset('js/jquery-3.4.1.js') }}"></script>
-<script  src="{{ asset('js/bootstrap.min.js') }}"></script>
-<script  src="{{ asset('js/toastr/toastr.js') }}"></script>
-<script  src="{{ asset('js/smart_wizard/validator.min.js') }}"></script>
-<script  src="{{ asset('js/smart_wizard/jquery.smartWizard.js') }}"></script>
-<script  src="{{ asset('js/function.js') }}"></script>
-<script  src="{{ asset('js/dataTables/datatables.js') }}"></script>
-<script  src="{{ asset('js/dataTables/dataTables.buttons.min.js') }}"></script>
-<script  src="{{ asset('js/dataTables/buttons.flash.min.js') }}"></script>
-<script  src="{{ asset('js/dataTables/jszip.min.js') }}"></script>
-<script  src="{{ asset('js/dataTables/pdfmake.min.js') }}"></script>
-<script  src="{{ asset('js/dataTables/vfs_fonts.js') }}"></script>
-<script  src="{{ asset('js/dataTables/popper.min.js') }}"></script>
-<script  src="{{ asset('js/dataTables/buttons.html5.min.js') }}"></script>
-<script  src="{{ asset('js/dataTables/buttons.print.min.js') }}"></script>
+
+<!-- jquery slim -->
+<script src="js/jquery-3.4.1.min.js"></script>
+<!-- popper js -->
+<script src="js/popper.min.js"></script>
+<!-- bootstarp js -->
+<script src="js/bootstrap.min.js"></script>
+<!-- owl carousel js -->
+<script src="vendors/owl_carousel/js/owl.carousel.min.js"></script>
+<!-- aos js -->
+<script src="vendors/aos/aos.js"></script>
+<!-- custom js -->
+<script src="js/custom.js"></script>
+<!-- Functions js -->
+<script src="js/functions.js"></script>
+<!-- DataTables js -->
+<script src="vendors/dataTables/js/dataTables.js"></script>
+<!-- Toastr js -->
+<script src="vendors/toastr/js/toastr.js"></script>
+<!-- Validator js -->
+<script src="vendors/smart_wizard/js/validator.min.js"></script>
+<!-- Smart wizard js -->
+<script src="vendors/smart_wizard/js/jquery.smartWizard.js"></script>
+<!-- DataTables js -->
+<script src="vendors/dataTables/js/dataTables.js"></script>
+<!-- DataTables Button js -->
+<script src="vendors/dataTables/js/dataTables.buttons.min.js"></script>
+<!-- DataTables Button flash js -->
+<script src="vendors/dataTables/js/buttons.flash.min.js"></script>
+<!-- DataTables jszip js -->
+<script src="vendors/dataTables/js/jszip.min.js"></script>
+<!-- DataTables pdfmake js -->
+<script src="vendors/dataTables/js/pdfmake.min.js"></script>
+<!-- DataTables vfs_fonts js -->
+<script src="vendors/dataTables/js/vfs_fonts.js"></script>
+<!-- DataTables Button html5 js -->
+<script src="vendors/dataTables/js/buttons.html5.min.js"></script>
+<!-- DataTables Button print js -->
+<script src="vendors/dataTables/js/buttons.print.min.js"></script>
+
 <script type="text/javascript">
 $.ajaxSetup({
     headers: {

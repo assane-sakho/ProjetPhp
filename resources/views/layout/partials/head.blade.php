@@ -1,21 +1,30 @@
+<!DOCTYPE html>
+<html lang="fr">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta name="csrf-token" content="{!! csrf_token() !!}">
-
-    <link rel="icon" href="favicon.ico">
-
     <title>PHP Project</title>
-
-    <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/toastr/toastr.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/smart_wizard/smart_wizard.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/dataTables/datatables.css') }}" rel="stylesheet">
-
+    <link rel="icon" href="img/favicon.png" type="image/png">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css"/>
+    <!-- animate CSS -->
+    <link rel="stylesheet" href="css/animate.css"/>
+    <!-- font awesome CSS -->
+    <link rel="stylesheet" href="vendors/elegant_Icon/elegent_icon.css"/>
+    <!-- owl carousel CSS -->
+    <link rel="stylesheet" href="vendors/owl_carousel/css/owl.carousel.css"/>
+    <!-- flaticon CSS -->
+    <link rel="stylesheet" href="css/flaticon.css"/>
+    <!-- style CSS -->
+    <link rel="stylesheet" href="css/style.css"/>
+    <!-- Toastr CSS -->
+    <link rel="stylesheet" href="vendors/toastr/css/toastr.css"/>
+     <!-- DataTables CSS -->
+     <link rel="stylesheet" href="vendors/dataTables/css/dataTables.css"/>
+    <!-- Smart wizard CSS -->
+    <link rel="stylesheet" href="vendors/smart_wizard/css/smart_wizard.css"/>
+    <!-- Font awesome CSS -->
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
-  </head>
-  <h1></h1>
-  <h2 class="text-center">Gestion des candidatures</h2>
-
+</head>
