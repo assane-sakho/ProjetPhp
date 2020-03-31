@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Folder;
+use App\Registration;
 use Illuminate\Http\Request;
 
-class FolderController extends Controller
+class RegistrationController extends Controller
 {
     public function index()
     {
-        return view('folder.index');
+        return view('registration.index');
     }
 }

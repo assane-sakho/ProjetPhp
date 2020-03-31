@@ -1,9 +1,7 @@
 @extends('layout.mainlayout')
 
 @section('content')
-
 <div class="text-center">
-  <h1>Gestion des candidatures</h1>
   </p>
   <button class="btn btn-primary btn-lg" style="width: 25%;" id="btnSignIn">Deposer une candidature</button>&nbsp;
   <button class="btn btn-success btn-lg" style="width: 25%;" id="btnLogIn">Se connecter</button>
@@ -15,12 +13,11 @@
     <h4 class="mb-3">Connexion</h4>
     <hr class="mb-4">
     <form action="" id="formLogIn">
-      @csrf
-      <label for="userId">Adresse mail :</label>
-      <input type="mail" name="userId" id="userId" class="form-control"required></p>
+      <label for="userLoginMail">Adresse mail :</label>
+      <input type="mail" name="userLoginMail" id="userLoginMail" class="form-control"required></p>
 
-      <label for="userPassword">Mot de passe :</label>
-      <input type="password"name="userPassword" id="userPassword" class="form-control"required></p>
+      <label for="userLoginPassword">Mot de passe :</label>
+      <input type="password"name="userLoginPassword" id="userLoginPassword" class="form-control"required></p>
 
       <hr class="mb-4">
       <button class="btn btn-secondary btn-lg btn-block" type="submit">Se connecter</button>
@@ -29,7 +26,6 @@
 
   <div class="col-md-8" id="signInDiv">
     <form action="" id="formSignIn">
-      @csrf
       <h4 class="mb-3">Inscription</h4>
       <hr class="mb-4">
 
@@ -127,10 +123,11 @@
 
       $.ajax({
           url:'/Student/Add',
-          type:'GET',
+          type:'POST',
           data:$("#formSignIn").serialize(),
           success: function(data) {
               displayToastr('studentRegistred');
+              window.location.href = data.nextLocation;
           },
           error: function(xhr, status, error)  {
             if(xhr.responseJSON.message  == 'alreadyExist')
@@ -150,6 +147,25 @@
     $("#formLogIn").submit(function(e){
       e.preventDefault();
 
+      $.ajax({
+          url:'/Login',
+          type:'POST',
+          data:$("#formLogIn").serialize(),
+          success: function(data) {
+              displayToastr('connected', data.name);
+              window.location.href = data.nextLocation;
+          },
+          error: function(xhr, status, error)  {
+            if(xhr.responseJSON.message  == 'userNotFound')
+            {
+              displayToastr('errorMsg', 'Veuillez vérifier votre login et votre mot de passe !');
+            }
+            else
+            {
+              displayToastr('error');
+            }
+          },
+      });
     });
 
   });

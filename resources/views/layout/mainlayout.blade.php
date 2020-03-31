@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="fr">
-  <head>
+  <head class="bg-light">
     @include('layout.partials.head')
   </head>
-  <body class="bg-light">
+  <body>
       @include('layout.partials.nav')
       <div class="container-fluid">
         <div class="row">
           <main role="main" class="col-md-12 ml-sm-auto col-lg-12 px-4">
+            <p/>
+            <p/>
             @yield('content')
           </main>
         </div>
@@ -20,4 +22,3 @@
       @yield('scripts')
   </body>
 </html>
-

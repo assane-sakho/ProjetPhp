@@ -33,8 +33,8 @@ class StudentController extends Controller
                 ]);
 
             Student::create([
-                'firstname' => $lastname,
-                'lastname' => $firstname,
+                'lastname' => $lastname,
+                'firstname' => $firstname,
                 'card_id' => $carId,
                 'birthdate' => $birthdate,
                 'phone_number' => $phoneNumber,
@@ -44,6 +44,7 @@ class StudentController extends Controller
                 ]);
             $returnData = array(
                 'status' => 'success',
+                'nextLocation' => '/Registration',
             );
             $returnCode = 200;
         }
