@@ -12,8 +12,8 @@
                 <div class="row">
                     <div class="col-xl-6 col-lg-7 col-md-8">
                         <div class="header_contact_info">
-                            <a href="tel:+4641468425"><i class="icon_phone"></i>01 40 97 72 00</a>
-                            <a href="mailto:md.hadidrahman@gmail.com" target="_blank"><i class="icon_mail_alt"></i>inscriptions@liste.parinaterre.fr</a>
+                            <a href="tel:0140977200"><i class="icon_phone text-danger"></i>01 40 97 72 00</a>
+                            <a href="mailto:inscriptions@liste.parinaterre.fr" target="_blank"><i class="icon_mail_alt text-danger"></i>inscriptions@liste.parinaterre.fr</a>
                         </div>
                     </div>
                 </div>

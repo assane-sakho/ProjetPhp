@@ -11,8 +11,8 @@
                         <h4 class="text-white">Paris Nanterre</h4>
                         <div class="text-center">
                           <br/>
-                          <button class="btn btn-primary btn-lg" style="width: 25%;" id="btnSignIn">Deposer une candidature</button>&nbsp;
-                          <button class="btn btn-success btn-lg" style="width: 25%;" id="btnLogin">Se connecter</button>
+                          <button class="btn btn-primary btn-lg" type="button" style="width: 25%;" id="btnSignIn">Deposer une candidature</button>&nbsp;
+                          <button class="btn btn-success btn-lg" type="button" style="width: 25%;" id="btnLogin">Se connecter</button>
                         </div>  
                     </div>
                 </div>
@@ -35,7 +35,7 @@
         <input type="password"name="userLoginPassword" id="userLoginPassword" class="form-control"required></p>
 
         <hr class="mb-4">
-        <button class="btn btn-secondary btn-lg btn-block" type="submit">Se connecter</button>
+        <button class="btn btn-danger btn-lg btn-block" type="submit" value="Se connecter">Se connecter</button>
       </form>
     </div>
 
@@ -107,7 +107,7 @@
 
         <hr class="mb-4">
 
-        <button class="btn btn-secondary btn-lg btn-block" type="submit">S'inscire</button>
+        <button class="btn btn-danger btn-lg btn-block" type="submit" value="S'inscire">S'inscire</button>
       </form>
     </div>  
 
@@ -147,21 +147,29 @@
     });
 
     $("#formSignIn").submit(function(e){
+      var form = $(this);
       e.preventDefault();
 
       $.ajax({
           url:'/Student/Add',
           type:'POST',
-          data:$("#formSignIn").serialize(),
+          data: form.serialize(),
           success: function(data) {
+              form.find(":submit").prop('disabled', true);
               displayToastr('studentRegistred');
               window.location.href = data.nextLocation;
           },
           error: function(xhr, status, error)  {
+            form.find(":submit").prop('disabled', false);
             if(xhr.responseJSON.message  == 'alreadyExist')
             {
               displayToastr('errorMsg', 
-              'Un étudiant ayant les mêmes informations <i class="fa fa-info-circle"></i> existe déjà !');
+              'Un étudiant ayant les mêmes informations <i class="fa fa-info-circle text-info"></i> existe déjà !');
+            }
+            else if(xhr.responseJSON.message  == 'emailNotPossible')
+            {
+              displayToastr('errorMsg', 
+              'L\'adresse mail que vous avez renseigné n\'est pas dispoblible !');
             }
             else
             {
@@ -173,12 +181,13 @@
     });
 
     $("#formLogIn").submit(function(e){
+      var form = $(this);
       e.preventDefault();
 
       $.ajax({
           url:'/Login',
           type:'POST',
-          data:$("#formLogIn").serialize(),
+          data: form.serialize(),
           success: function(data) {
               displayToastr('connected', data.name);
               window.location.href = data.nextLocation;

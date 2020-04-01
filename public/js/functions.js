@@ -35,7 +35,7 @@ function displayToastr(type, message)
         toastr.info('Vérification terminé', title);
       break;
     case "errorMsg":
-      toastr.error("<i class=\"fa fa-exclamation-triangle\" aria-hidden=\"true\"></i> Attention<p/>" + message, title);
+      toastr.error("Attention <i class=\"fa fa-exclamation-triangle\" aria-hidden=\"true\"></i> <p/><br/>" + message, title);
       break;
   }
 }

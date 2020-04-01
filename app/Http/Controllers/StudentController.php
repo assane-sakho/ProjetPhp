@@ -24,7 +24,15 @@ class StudentController extends Controller
         $city = $request->userCity;
         $zip_code = $request->userZipCode;
 
-        if(!$this->alreadyExist($lastname, $firstname, $carId, $phoneNumber, $email))
+        if($email == 'admin@parisnanterre.fr')
+        {
+            $returnData = array(
+                'status' => 'error',
+                'message' => 'emailNotPossible'
+            );
+            $returnCode = 500;
+        }
+        else if(!$this->alreadyExist($lastname, $firstname, $carId, $phoneNumber, $email))
         {
             $address =  Address::create([ 
                 'street' => request('userStreet'),
@@ -42,6 +50,7 @@ class StudentController extends Controller
                 'password' => $password,
                 'address_id' => $address->id
                 ]);
+
             $returnData = array(
                 'status' => 'success',
                 'nextLocation' => '/Registration',

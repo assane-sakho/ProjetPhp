@@ -39,9 +39,32 @@
 <script src="vendors/dataTables/js/buttons.print.min.js"></script>
 
 <script type="text/javascript">
-$.ajaxSetup({
-    headers: {
-        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-    }
-});
+    var btnSubmitClicked;
+    var loadingText = 'Chargement ';
+    var loader = '&nbsp;<i class="fa fa-spinner fa-spin"></i>';   
+
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    $(':submit').click(function(){
+        btnSubmitClicked = this;
+        $(btnSubmitClicked).text(loadingText);
+        $(btnSubmitClicked).append(loader);
+    });
+
+    $(document).ajaxStart(function() {
+        $(':submit').each(function(){
+           $(this).prop('disabled', true);
+        });
+    });
+
+    $(document).ajaxStop(function() {
+        $(':submit').not(btnSubmitClicked).each(function(){
+            $(this).prop('disabled', false);
+        });
+        $(btnSubmitClicked).text($(btnSubmitClicked).val());
+    });
 </script>
