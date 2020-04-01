@@ -1,27 +1,42 @@
 @extends('layout.mainlayout')
 
 @section('content')
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <td>#</td>
-                        <td>Nom</td>
-                        <td>Prénom</td>
-                        <td>Niveau</td>
-                        <td>Statut</td>
-                        <td>Modifier le statut</td>
-                        <td>Télécharger les docs.</td>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
+
+<section class="breadcrumb_part blog_grid_bg">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 ">
+                <div class="breadcrumb_iner">
+                    <h2>Étude des dossiers</h2>
+                </div>
+            </div>
         </div>
     </div>
-</div>
+</section>
+
+<section class="popular_course section_padding section_bg">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <td>#</td>
+                            <td>Nom</td>
+                            <td>Prénom</td>
+                            <td>Niveau</td>
+                            <td>Statut</td>
+                            <td>Modifier le statut</td>
+                            <td>Télécharger les docs.</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
 
 @endsection
 
@@ -63,11 +78,10 @@
             },
             dom: 'Bfrtip',
             buttons: [
-                { extend: 'csv', text: 'CSV', title : fileName, exportOptions: { columns: ':visible:not(.not-export-col)'}},
-                { extend: 'excel', text: 'Excel', title : fileName, exportOptions: { columns: ':visible:not(.not-export-col)'} },
-                { extend: 'pdf', text: 'PDF', title : fileName, exportOptions: { columns: ':visible:not(.not-export-col)'} },
-                { extend: 'print', text: 'Imprimer', title : fileName, exportOptions: { columns: ':visible:not(.not-export-col)'} },
-                { extend: 'copy', text: 'Copier', title : fileName, exportOptions: { columns: ':visible:not(.not-export-col)'} }
+                { extend: 'csv', text: 'CSV', className: 'btn btn-info', title : fileName, exportOptions: { columns: ':visible:not(.not-export-col)'}},
+                { extend: 'excel', text: 'Excel', className: 'btn btn-info', title : fileName, exportOptions: { columns: ':visible:not(.not-export-col)'} },
+                { extend: 'pdf', text: 'PDF', className: 'btn btn-info', title : fileName, exportOptions: { columns: ':visible:not(.not-export-col)'} },
+                { extend: 'print', text: 'Imprimer', className: 'btn btn-info', title : fileName, exportOptions: { columns: ':visible:not(.not-export-col)'} },
             ]
         });
     });

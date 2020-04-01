@@ -7,7 +7,6 @@ Route::get('/', function () {
     return view('loginRegister.index');
 });
 
-
 /* Students */
 Route::post('/Student/Add', 'StudentController@add');
 
