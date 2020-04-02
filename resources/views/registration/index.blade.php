@@ -229,8 +229,8 @@
                 enableAnchorOnDoneStep: true // Enable/Disable the done steps navigation
             },
             lang: {
-                next: 'Précédent', 
-                previous: 'Suivant'
+                previous: 'Précédent',
+                next: 'Suivant' 
             },
         });
 

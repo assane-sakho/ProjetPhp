@@ -17,6 +17,9 @@ class CreateTrainingsTable extends Migration
             $table->id();
             $table->string('name');
         });
+
+        $seeder = new TrainingsSeeder();
+        $seeder->run();
     }
 
     /**

@@ -16,9 +16,9 @@ class CreateRegistrationsTable extends Migration
         Schema::create('registrations', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('student_id');
-            $table->unsignedBigInteger('training_id');
+            $table->unsignedBigInteger('training_id')->default(1);
             $table->unsignedBigInteger('folder_id');
-            $table->unsignedBigInteger('status_id');
+            $table->unsignedBigInteger('status_id')->default(1);
 
             $table->foreign('student_id')->references('id')->on('students');
             $table->foreign('training_id')->references('id')->on('trainings');
