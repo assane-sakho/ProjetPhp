@@ -1,3 +1,18 @@
+  @php
+    $homeHref ="";
+    if(session()->has('student'))
+    {
+        $homeHref = "/Registration";
+    }
+    else if(session()->has('teacher'))
+    {        
+        $homeHref = "/Folders";
+    }
+    else
+    {
+        $homeHref = "/";
+    }
+@endphp
     <!-- start Preloader  -->
     <div class="preloder_part">
         <div class="spinner">
@@ -28,22 +43,37 @@
                                 <i class="icon_menu"></i>
                             </div>
                             <div class="logo">
-                                <a href="/">
+                               <a href="{{ $homeHref }}">
                                     <img class="img-responsive" src="{{ asset('img/nanterreLogo.png') }}" alt="#">
                                 </a>
                             </div>
                             <nav class="navbar_bar">
                                 <ul>
-                                <li>
-                                    <a href="#"><h4>Gestion des candidatures</h4></a>
-                                </li>
-                                <li>
-                                    <a href="/">Profil</a>
-                                </li>
-                                <li>
-                                    <a href="/">Déconnexion</a>
-                                </li>
-                            </ul>
+                                    <li>
+                                        <a href="{{ $homeHref }}"><h4>Gestion des candidatures</h4></a>
+                                    </li>
+
+                                    @php
+                                        if(session()->has('student') || session()->has('teacher'))
+                                        {
+                                            if(session()->has('student'))
+                                            {
+                                    @endphp
+                                    <li>
+                                        <a href="/Profile">Profil</a>
+                                    </li>
+                                    @php
+                                            }
+                                    @endphp
+                                    <li>
+                                        <form action="/Logout" method="POST">
+                                            <a href="#" onclick="$(this).parent().submit();">Déconnexion</a>
+                                        </form>
+                                     </li>
+                                    @php
+                                        }
+                                    @endphp
+                                </ul>
                             </nav>
                         </div>
                     </div>

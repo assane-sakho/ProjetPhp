@@ -24,7 +24,7 @@
 
   <div class="d-flex justify-content-around p-5" >
 
-    <div class="col-md-3" id="logInDiv">
+    <div class="col-md-3" id="logInDiv" method="POST">
       <h4 class="mb-3">Connexion</h4>
       <hr class="mb-4">
       <form action="" id="formLogIn">
@@ -43,7 +43,7 @@
       <h4 class="mb-3">Inscription</h4>
       <hr class="mb-4">
 
-      <form action="" id="formSignIn">
+      <form action="" id="formSignIn" method="POST">
 
         <div class="row">
           <div class="col-md-6 mb-3">
@@ -168,8 +168,7 @@
             }
             else if(xhr.responseJSON.message  == 'emailNotPossible')
             {
-              displayToastr('errorMsg', 
-              'L\'adresse mail que vous avez renseigné n\'est pas dispoblible !');
+              displayToastr('errorMsg', 'L\'adresse mail que vous avez renseigné n\'est pas dispoblible !');
             }
             else
             {
@@ -193,6 +192,7 @@
               window.location.href = data.nextLocation;
           },
           error: function(xhr, status, error)  {
+            form.find(":submit").prop('disabled', false);
             if(xhr.responseJSON.message  == 'userNotFound')
             {
               displayToastr('errorMsg', 'Veuillez vérifier votre login et votre mot de passe !');

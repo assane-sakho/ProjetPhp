@@ -8,7 +8,7 @@ use App\Student;
 use App\Teacher;
 use Response;
 
-class LoginController extends Controller
+class LogController extends Controller
 {
     public function logIn(Request $request)
     {
@@ -37,6 +37,8 @@ class LoginController extends Controller
             }
             else
             {
+                $request->session()->put('teacher', $teacher);
+
                 $returnData = array(
                     'status' => 'success',
                     'name' => 'Professeur',
@@ -46,7 +48,9 @@ class LoginController extends Controller
             }    
         }
         else
-        {
+        {                           
+            $request->session()->put('student', $student);
+
             $returnData = array(
                 'status' => 'success',
                 'name' => $student->firstname . ' ' . $student->lastname ,
@@ -55,5 +59,13 @@ class LoginController extends Controller
             $returnCode = 200;
         }
         return Response::json($returnData, $returnCode);
+    }
+
+    public function logOut(Request $request)
+    {
+        $request->session()->forget('student');
+        $request->session()->forget('teacher');
+        
+        return view('index');
     }
 }

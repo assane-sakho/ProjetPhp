@@ -4,15 +4,17 @@ use Illuminate\Support\Facades\Route;
 
 /* Index */
 Route::get('/', function () { 
-    return view('loginRegister.index');
+    return view('index');
 });
 
 /* Students */
 Route::post('/Student/Add', 'StudentController@add');
+Route::post('/Student/Update', 'StudentController@Update');
 
 
-/* Login */
-Route::post('/Login', 'LoginController@logIn');
+/* Log */
+Route::post('/Login', 'LogController@logIn');
+Route::post('/Logout', 'LogController@logOut');
 
 
 /* Registrations */
@@ -20,3 +22,6 @@ Route::get('/Registration', 'RegistrationController@index');
 
 /* Folders */
 Route::get('/Folders', 'FolderController@index');
+
+/* Profile */
+Route::get('/Profile', 'StudentController@profile');

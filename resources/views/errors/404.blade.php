@@ -8,7 +8,7 @@
                     <div class="error_page_iner">
                         <img src="img/error.png" alt="#" class="img-fluid">
                         <h3>Nous sommes désolé, la page n'a pas été trouvé</h3>
-                        <p><a href="/" class="go_back"><i class="arrow_back"></i>Retour à l'accueil</a></p>
+                        <p><a href="/" class="go_back"> <i class="arrow_back"></i>Retour à l'accueil</a></p>
                     </div>
                 </div>
             </div>

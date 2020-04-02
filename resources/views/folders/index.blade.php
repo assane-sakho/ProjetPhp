@@ -13,7 +13,6 @@
         </div>
     </div>
 </section>
-
 <section class="popular_course section_padding section_bg">
     <div class="container">
         <div class="row">
