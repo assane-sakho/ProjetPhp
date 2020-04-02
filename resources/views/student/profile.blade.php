@@ -105,8 +105,6 @@
 @section('scripts')
 <script>
     $(document).ready(function(){
-        $(".go_back").hide();
-
         $("#formEdit").submit(function(e){
             var form = $(this);
             e.preventDefault();
@@ -118,7 +116,6 @@
                 success: function(data) {
                     form.find(":submit").prop('disabled', false);
                     displayToastr('studentRegistred');
-                    $(".go_back").show();
                 },
                 error: function(xhr, status, error)  {
                     form.find(":submit").prop('disabled', false);

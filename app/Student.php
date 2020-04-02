@@ -8,6 +8,7 @@ class Student extends Model
 {
     public $timestamps = false;
     protected $fillable = ['lastname', 'firstname', 'card_id', 'birthdate', 'phone_number', 'email', 'password', 'address_id'];
+    protected $dates = ['birthdate'];
 
     function address()
     {
