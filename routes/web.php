@@ -19,6 +19,7 @@ Route::post('/Logout', 'LogController@logOut');
 
 /* Registrations */
 Route::get('/Registration', 'RegistrationController@index');
+Route::post('/Registration/GetStepData', 'RegistrationController@getStepData');
 
 /* Folders */
 Route::get('/Folders', 'FolderController@index');

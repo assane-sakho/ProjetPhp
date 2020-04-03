@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="fr">
   <head class="bg-light">
-    @include('layout.partials.head')
+    @include('layout.partials._head')
   </head>
   <body>
-      @include('layout.partials.nav')
+      @include('layout.partials._nav')
       
       @yield('content')
       
-      @include('layout.partials.footer')
+      @include('layout.partials._footer')
 
-      @include('layout.partials.footer-scripts')
+      @include('layout.partials._footer-scripts')
 
       @yield('scripts')
   </body>

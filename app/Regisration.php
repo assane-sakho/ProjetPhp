@@ -13,4 +13,14 @@ class Registration extends Model
    {
        return $this->hasOne('App\Folder');
    }
+
+   function status()
+   {
+       return $this->hasOne('App\Folder');
+   }
+
+   function training()
+   {
+       return $this->hasOne('App\Folder');
+   }
 }
