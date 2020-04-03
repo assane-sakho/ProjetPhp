@@ -11,16 +11,21 @@ class Registration extends Model
 
    function folder()
    {
-       return $this->hasOne('App\Folder');
+       return $this->belongsTo('App\Folder');
    }
 
    function status()
    {
-       return $this->hasOne('App\Folder');
+       return $this->belongsTo('App\Folder');
    }
 
    function training()
    {
-       return $this->hasOne('App\Folder');
+       return $this->belongsTo('App\Folder');
    }
+
+   function registration()
+    {
+        return $this->hasMany('App\ReportCard');
+    }
 }

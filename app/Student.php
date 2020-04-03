@@ -14,4 +14,9 @@ class Student extends Model
     {
         return $this->belongsTo('App\Address');
     }
+
+    function registration()
+    {
+        return $this->hasOne('App\Registration');
+    }
 }

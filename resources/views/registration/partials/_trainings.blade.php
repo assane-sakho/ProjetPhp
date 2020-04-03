@@ -4,9 +4,23 @@
     <div class="form-group col-md-6">
         <select class="input-training form-control" name="training" id="training" required>
             <option value="">-- Sélectionnez une option</option>
-            @foreach ($trainings as $training)
-            <option value="{{ $training->id }}">{{ $training->name }}</option>
-            @endforeach
+            @php
+                $selected;
+                foreach ($trainings as $training)
+                {
+                    if($training->id == session('registration')->training_id)
+                    {
+                        $selected = "selected";
+                    }
+                    else
+                    {
+                        $selected = "";
+                    }
+            @endphp
+                <option value="{{ $training->id }}" {{ $selected }}>{{ $training->name }}</option>
+            @php
+                }
+            @endphp
         </select>
         <div class="help-block with-errors"></div>
     </div>

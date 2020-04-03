@@ -18,7 +18,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <form action="#" id="myForm" role="form" data-toggle="validator" method="post" accept-charset="utf-8">
+                <form action="#" id="registrationForm" role="form" data-toggle="validator" method="post" accept-charset="utf-8" enctype="multipart/form-data">
 
                     <!-- SmartWizard html -->
                     <div id="smartwizard">
@@ -32,26 +32,25 @@
                         </ul>
                         <div>
                             <div id="step-1">
-                               
+
                             </div>
                             <div id="step-2">
-                               
+
                             </div>
                             <div id="step-3">
-                             
+
                             </div>
                             <div id="step-4">
-                               
+
                             </div>
                             <div id="step-5">
-                               
+
                             </div>
                             <div id="step-6" class="">
-                               
+
                             </div>
                         </div>
                     </div>
-
                 </form>
             </div>
         </div>
@@ -67,9 +66,9 @@
         var dict = [
             "training",
             "cv",
-            "coverLetter",
-            "reportCard",
-            "vleScreenshot",
+            "cover_letter",
+            "report_card",
+            "vle_screenshot",
         ];
 
         var btnFinish = $('<button></button>')
@@ -118,6 +117,9 @@
 
         $("#smartwizard").on("leaveStep", function(e, anchorObject, stepNumber, stepDirection) {
             var elmForm = $("#form-step-" + stepNumber);
+
+
+
             // stepDirection === 'forward' :- this condition allows to do the form validation
             // only on forward navigation, that makes easy navigation on backwards still do the validation when going next
             if (stepDirection === 'forward' && elmForm) {
@@ -131,12 +133,22 @@
                     });
                     return false;
                 }
+                $.ajax({
+                    url: '/Registration/SaveStepData',
+                    type: 'POST',
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    data: new FormData($("#registrationForm")[0]),
+                    success: function(data) {
+                        return true;
+                    },
+                    error: function(xhr, status, error) {
+                        displayToastr('error');
+                    },
+                });
+
             }
-            $(elmErr).find("input").each(function() {
-                if (!this.value) {
-                    $(this).removeClass("bg-danger");
-                }
-            });
             return true;
         });
 
@@ -144,20 +156,18 @@
             if (stepNumber == 5) {
                 $('.btn-finish').removeClass('disabled');
 
-                    $(dict).each(function(i, item) {
-                        var text = "";
-                        if (item == "training") {
-                            text = $(".input-" + item +  " option:selected").text();
-                        }
-                        else
-                        {
-                            $(".input-" + item).each(function(i, input) {
-                                text += $(input).val().split('\\').pop() + " ";
-                            });
-                        }
-                      
-                        $("#td-" + item).text(text);
-                    })
+                $(dict).each(function(i, item) {
+                    var text = "";
+                    if (item == "training") {
+                        text = $(".input-" + item + " option:selected").text();
+                    } else {
+                        $(".input-" + item).each(function(i, input) {
+                            text += $(input).val().split('\\').pop() + " ";
+                        });
+                    }
+
+                    $("#td-" + item).text(text);
+                })
 
             } else {
                 $('.btn-finish').addClass('disabled');

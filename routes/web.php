@@ -20,6 +20,7 @@ Route::post('/Logout', 'LogController@logOut');
 /* Registrations */
 Route::get('/Registration', 'RegistrationController@index');
 Route::post('/Registration/GetStepData', 'RegistrationController@getStepData');
+Route::post('/Registration/SaveStepData', 'RegistrationController@saveStepData');
 
 /* Folders */
 Route::get('/Folders', 'FolderController@index');

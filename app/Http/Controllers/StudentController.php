@@ -33,7 +33,7 @@ class StudentController extends Controller
                 'message' => 'emailNotPossible'
             );
             $returnCode = 500;
-        } else if (!$this->alreadyExist(null, $lastname, $firstname, $carId, $phoneNumber, $email)) {
+        } else if (!$this->alreadyExist($lastname, $firstname, $carId, $phoneNumber, $email)) {
 
             $address =  Address::create([
                 'street' => $street,
@@ -54,12 +54,13 @@ class StudentController extends Controller
 
             $folder = Folder::create();
 
-            Registration::create([
+            $registration = Registration::create([
                 'student_id' => $student->id,
                 'folder_id' => $folder->id
             ]);
 
             $request->session()->put('student', $student);
+            $request->session()->put('registration', $registration);
 
             $returnData = array(
                 'status' => 'success',
@@ -76,8 +77,13 @@ class StudentController extends Controller
         return Response::json($returnData, $returnCode);
     }
 
-    public function alreadyExist($userId, $lastname, $firstname, $cardId, $phoneNumber, $email)
+    public function alreadyExist($lastname, $firstname, $cardId, $phoneNumber, $email)
     {
+        $userId = "";
+        if(session('student'))
+        {
+           $userId = session('student')->id;
+        }
         $studentsExceptCurrent = Student::where('id', '!=', $userId)->get();
 
         $allStudents = Student::where([
@@ -122,8 +128,8 @@ class StudentController extends Controller
                 'message' => 'emailNotPossible'
             );
             $returnCode = 500;
-        } else if (!$this->alreadyExist($id, $lastname, $firstname, $carId, $phoneNumber, $email)) {
-            $student = Student::find($id);
+        } else if (!$this->alreadyExist($lastname, $firstname, $carId, $phoneNumber, $email)) {
+            $student = session('student');
 
             $student->lastname = $lastname;
             $student->firstname = $firstname;
