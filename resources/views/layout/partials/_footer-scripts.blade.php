@@ -1,47 +1,46 @@
-
 <!-- jquery slim -->
-<script src="js/jquery-3.4.1.min.js"></script>
+<script src="{{ asset('js/jquery-3.4.1.min.js') }}"></script>
 <!-- popper js -->
-<script src="js/popper.min.js"></script>
+<script src="{{ asset('js/popper.min.js') }}"></script>
 <!-- bootstarp js -->
-<script src="js/bootstrap.min.js"></script>
+<script src="{{ asset('js/bootstrap.min.js') }}"></script>
 <!-- owl carousel js -->
-<script src="vendors/owl_carousel/js/owl.carousel.min.js"></script>
+<script src="{{ asset('vendors/owl_carousel/js/owl.carousel.min.js') }}"></script>
 <!-- aos js -->
-<script src="vendors/aos/aos.js"></script>
+<script src="{{ asset('vendors/aos/aos.js') }}"></script>
 <!-- custom js -->
-<script src="js/custom.js"></script>
+<script src="{{ asset('js/custom.js') }}"></script>
 <!-- Functions js -->
-<script src="js/functions.js"></script>
+<script src="{{ asset('js/functions.js') }}"></script>
 <!-- DataTables js -->
-<script src="vendors/dataTables/js/dataTables.js"></script>
+<script src="{{ asset('vendors/dataTables/js/dataTables.js') }}"></script>
 <!-- Toastr js -->
-<script src="vendors/toastr/js/toastr.js"></script>
+<script src="{{ asset('vendors/toastr/js/toastr.js') }}"></script>
 <!-- Validator js -->
-<script src="vendors/smart_wizard/js/validator.min.js"></script>
+<script src="{{ asset('vendors/smart_wizard/js/validator.min.js') }}"></script>
 <!-- Smart wizard js -->
-<script src="vendors/smart_wizard/js/jquery.smartWizard.js"></script>
+<script src="{{ asset('vendors/smart_wizard/js/jquery.smartWizard.js') }}"></script>
 <!-- DataTables js -->
-<script src="vendors/dataTables/js/dataTables.js"></script>
+<script src="{{ asset('vendors/dataTables/js/dataTables.js') }}"></script>
 <!-- DataTables Button js -->
-<script src="vendors/dataTables/js/dataTables.buttons.min.js"></script>
+<script src="{{ asset('vendors/dataTables/js/dataTables.buttons.min.js') }}"></script>
 <!-- DataTables Button flash js -->
-<script src="vendors/dataTables/js/buttons.flash.min.js"></script>
+<script src="{{ asset('vendors/dataTables/js/buttons.flash.min.js') }}"></script>
 <!-- DataTables jszip js -->
-<script src="vendors/dataTables/js/jszip.min.js"></script>
+<script src="{{ asset('vendors/dataTables/js/jszip.min.js') }}"></script>
 <!-- DataTables pdfmake js -->
-<script src="vendors/dataTables/js/pdfmake.min.js"></script>
+<script src="{{ asset('vendors/dataTables/js/pdfmake.min.js') }}"></script>
 <!-- DataTables vfs_fonts js -->
-<script src="vendors/dataTables/js/vfs_fonts.js"></script>
+<script src="{{ asset('vendors/dataTables/js/vfs_fonts.js') }}"></script>
 <!-- DataTables Button html5 js -->
-<script src="vendors/dataTables/js/buttons.html5.min.js"></script>
+<script src="{{ asset('vendors/dataTables/js/buttons.html5.min.js') }}"></script>
 <!-- DataTables Button print js -->
-<script src="vendors/dataTables/js/buttons.print.min.js"></script>
+<script src="{{ asset('vendors/dataTables/js/buttons.print.min.js') }}"></script>
 
 <script type="text/javascript">
     var btnSubmitClicked;
     var loadingText = 'Chargement ';
-    var loader = '&nbsp;<i class="fa fa-spinner fa-spin"></i>';   
+    var loader = '&nbsp;<i class="fa fa-spinner fa-spin"></i>';
 
     $.ajaxSetup({
         headers: {
@@ -49,22 +48,36 @@
         }
     });
 
-    $(':submit').click(function(){
+    $(':submit').click(function() {
         btnSubmitClicked = this;
         $(btnSubmitClicked).text(loadingText);
         $(btnSubmitClicked).append(loader);
     });
 
     $(document).ajaxStart(function() {
-        $(':submit').each(function(){
-           $(this).prop('disabled', true);
+        $(':submit').each(function() {
+            $(this).prop('disabled', true);
         });
     });
 
     $(document).ajaxStop(function() {
-        $(':submit').not(btnSubmitClicked).each(function(){
+        $(':submit').not(btnSubmitClicked).each(function() {
             $(this).prop('disabled', false);
         });
         $(btnSubmitClicked).text($(btnSubmitClicked).val());
+    });
+
+    $('#logout').click(function() {
+        $.ajax({
+            url: '/Logout',
+            type: 'POST',
+            success: function(data) {
+                window.location.href = "/";
+                displayToastr('disconnected');
+            },
+            error: function(xhr, status, error) {
+                displayToastr('error');
+            }
+        });
     });
 </script>

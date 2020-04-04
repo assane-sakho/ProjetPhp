@@ -3,7 +3,15 @@
 use Illuminate\Support\Facades\Route;
 
 /* Index */
-Route::get('/', function () { 
+Route::get('/', function () {
+    if(session('student'))
+    {
+        return view('registration.index');
+    } 
+    else if(session('teacher'))
+    {
+        return view('folders.index');
+    }
     return view('index');
 });
 
@@ -21,6 +29,7 @@ Route::post('/Logout', 'LogController@logOut');
 Route::get('/Registration', 'RegistrationController@index');
 Route::post('/Registration/GetStepData', 'RegistrationController@getStepData');
 Route::post('/Registration/SaveStepData', 'RegistrationController@saveStepData');
+Route::get('/Registration/GetFile', 'RegistrationController@getFile');
 
 /* Folders */
 Route::get('/Folders', 'FolderController@index');

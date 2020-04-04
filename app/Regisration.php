@@ -16,12 +16,12 @@ class Registration extends Model
 
    function status()
    {
-       return $this->belongsTo('App\Folder');
+       return $this->belongsTo('App\RegistrationStatus');
    }
 
    function training()
    {
-       return $this->belongsTo('App\Folder');
+       return $this->belongsTo('App\Training');
    }
 
    function registration()

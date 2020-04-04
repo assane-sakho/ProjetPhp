@@ -8,4 +8,9 @@ class ReportCard extends Model
 {
     public $timestamps = false;
     protected $fillable = ['name', 'folder_id'];
+
+    function folder()
+    {
+        return $this->hasOne('App\Folder');
+    }
 }

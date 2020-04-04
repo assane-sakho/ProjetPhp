@@ -56,20 +56,11 @@
         </div>
     </div>
 </section>
-
 @endsection
 
 @section('scripts')
 <script>
     $(document).ready(function() {
-
-        var dict = [
-            "training",
-            "cv",
-            "cover_letter",
-            "report_card",
-            "vle_screenshot",
-        ];
 
         var btnFinish = $('<button></button>')
             .text('Valider')
@@ -92,8 +83,7 @@
                         }
                     }
                 }
-            });
-
+        });
 
         $('#smartwizard').smartWizard({
             selected: 0,
@@ -117,8 +107,6 @@
 
         $("#smartwizard").on("leaveStep", function(e, anchorObject, stepNumber, stepDirection) {
             var elmForm = $("#form-step-" + stepNumber);
-
-
 
             // stepDirection === 'forward' :- this condition allows to do the form validation
             // only on forward navigation, that makes easy navigation on backwards still do the validation when going next
@@ -147,7 +135,6 @@
                         displayToastr('error');
                     },
                 });
-
             }
             return true;
         });
@@ -156,24 +143,12 @@
             if (stepNumber == 5) {
                 $('.btn-finish').removeClass('disabled');
 
-                $(dict).each(function(i, item) {
-                    var text = "";
-                    if (item == "training") {
-                        text = $(".input-" + item + " option:selected").text();
-                    } else {
-                        $(".input-" + item).each(function(i, input) {
-                            text += $(input).val().split('\\').pop() + " ";
-                        });
-                    }
-
-                    $("#td-" + item).text(text);
-                })
-
             } else {
                 $('.btn-finish').addClass('disabled');
             }
         });
 
+       
     });
 </script>
 @endsection

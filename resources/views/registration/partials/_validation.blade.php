@@ -36,7 +36,7 @@
             </tr>
             <tr>
                 <th>Filière choisis</th>
-                <td id="td-training"> </td>
+                <td>{{ session('registration')->training->name }}</td>
             </tr>
             <tr rowspan="2">
                 <td>&nbsp;</td>
@@ -44,19 +44,23 @@
             </tr>
             <tr>
                 <th>CV</th>
-                <td id="td-cv"> </td>
+                <td><embed src="/Registration/GetFile?fileName=cv" style="width:150px; height:200px;" frameborder="0"></td>
             </tr>
             <tr>
                 <th>Lettre de motivation</th>
-                <td id="td-coverLetter"></td>
+                <td><embed src="/Registration/GetFile?fileName=cover_letter" style="width:150px; height:200px;" frameborder="0"></td>
             </tr>
             <tr>
                 <th>Relevés de notes de l’année précédente</th>
-                <td id="td-reportCard"></td>
+                <td>
+                    @for ($i = 0; $i < count(session('folder')->report_card); $i++)
+                        <embed src="/Registration/GetFile?fileName=report_card&number={{$i}}" style="width:150px; height:200px;" frameborder="0">
+                    @endfor
+                </td>
             </tr>
             <tr>
                 <th>Imprime écran de l’ENT de l’année en cours</th>
-                <td id="td-vleScreenshot"></td>
+                <td><img class="img-fluid" src="/Registration/GetFile?fileName=vle_screenshot" alt=""></td>
             </tr>
         </table>
         <div class="help-block with-errors"></div>

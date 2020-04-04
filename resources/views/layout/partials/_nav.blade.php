@@ -66,9 +66,7 @@
                                             }
                                     @endphp
                                     <li>
-                                        <form action="/Logout" method="POST">
-                                            <a href="#" onclick="$(this).parent().submit();">Déconnexion</a>
-                                        </form>
+                                       <a id="logout" href="">Déconnexion</a>
                                      </li>
                                     @php
                                         }

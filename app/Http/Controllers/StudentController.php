@@ -61,6 +61,7 @@ class StudentController extends Controller
 
             $request->session()->put('student', $student);
             $request->session()->put('registration', $registration);
+            $request->session()->put('folder', $folder);
 
             $returnData = array(
                 'status' => 'success',

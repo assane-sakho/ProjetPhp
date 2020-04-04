@@ -12,7 +12,7 @@
             </div>
         </div>
     </div>
-    <img src="img/icon/shape_01.png" alt="#" class="footer_sharp_1">
-    <img src="img/icon/about_shape_02.png" alt="#" class="footer_sharp_2 custom-animation2">
-    <img src="img/icon/about_shape_03.png" alt="#" class="footer_sharp_3 custom-animation3">
+    <img src="{{ asset('img/icon/shape_01.png') }}" alt="#" class="footer_sharp_1">
+    <img src="{{ asset('img/icon/about_shape_02.png') }}" alt="#" class="footer_sharp_2 custom-animation2">
+    <img src="{{ asset('img/icon/about_shape_03.png') }}" alt="#" class="footer_sharp_3 custom-animation3">
 </footer>
