@@ -35,6 +35,7 @@ Route::post('/Registration/Complete', 'RegistrationController@complete');
 
 /* Folders */
 Route::get('/Folders', 'FolderController@index');
+Route::get('/Folders/Get', 'FolderController@get');
 
 /* Profile */
 Route::get('/Profile', 'StudentController@profile');

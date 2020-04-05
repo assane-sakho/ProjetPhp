@@ -36,6 +36,8 @@
 <script src="{{ asset('vendors/dataTables/js/buttons.html5.min.js') }}"></script>
 <!-- DataTables Button print js -->
 <script src="{{ asset('vendors/dataTables/js/buttons.print.min.js') }}"></script>
+<!-- FontAwesome js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js"></script>
 
 <script type="text/javascript">
     var btnSubmitClicked;
