@@ -22,8 +22,11 @@
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addTeacherModal">
                         Ajouter des professeurs
                     </button>
-                    <button type="button" class="btn btn-success">Télécharger toutes les candidatures</button>
-
+                </p><br />
+                <p>
+                    <form id="formDownloadAllRegistrations" action="" method="post">
+                        <button class="btn btn-success" id="downloadAllRegistration" value="Télécharger toutes les candidatures" type="submit">Télécharger toutes les candidatures</button>
+                    </form>
                 </p><br />
                 <form id="formDownloadRegistration" action="" method="POST">
                     <input type="hidden" id="student_id" name="student_id">
@@ -216,10 +219,12 @@
             $('#registrationStatus').val($(e.relatedTarget).data('statusid')).change();
         });
 
-        $(".downloadRegistration").click(function(e) {
+        $("#formDownloadRegistration").submit(function(e) {
             e.preventDefault();
-            var form = $("#formDownloadRegistration");
-            $("#student_id").val($(this).data('id'));
+            var form = $(this);
+            var btn = $(this).find("button[type=submit]:focus" );
+            $("#student_id").val($(btn).data('id'));
+
             $.ajax({
                 url: '/RegistrationsStudy/DownloadRegistration',
                 type: 'POST',
@@ -228,24 +233,53 @@
                     responseType: 'blob'
                 },
                 success: function(data, textStatus, request) {
-                    var fileName = request.getResponseHeader("Content-disposition").split('="')[1].replace('"', "");
-                    $(this).prop('disabled', false);
+                    form.find(":submit").prop('disabled', false);
+                    var contentDisposition = request.getResponseHeader("Content-disposition");
+                    var fileName = contentDisposition.split('filename')[1].split('"').join("").split('=').join("");
                     displayToastr('studentRegistred');
-                    var a = document.createElement('a');
-                    var url = window.URL.createObjectURL(data);
-                    a.href = url;
-                    a.download = fileName;
-                    document.body.append(a);
-                    a.click();
-                    a.remove();
-                    window.URL.revokeObjectURL(url);
+                    getFileFromData(data, fileName);
                 },
                 error: function(xhr, status, error) {
+                    form.find(":submit").prop('disabled', false);
                     $(this).prop('disabled', false);
                     displayToastr('error');
                 },
             });
         })
+
+        $("#formDownloadAllRegistrations").submit(function(e) {
+            var form = $(this);
+            e.preventDefault();
+            $.ajax({
+                url: '/RegistrationsStudy/DownloadAllRegistrations',
+                type: 'POST',
+                xhrFields: {
+                    responseType: 'blob'
+                },
+                success: function(data, textStatus, request) {
+                    form.find(":submit").prop('disabled', false);
+                    var contentDisposition = request.getResponseHeader("Content-Disposition");
+                    var fileName = contentDisposition.split('filename')[1].split('"').join("").split('=').join("");
+                    displayToastr('studentRegistred');
+                    getFileFromData(data, fileName);
+                },
+                error: function(xhr, status, error) {
+                    form.find(":submit").prop('disabled', false);
+                    displayToastr('error');
+                },
+            });
+        })
     });
+
+    function getFileFromData(data, fileName) {
+        var a = document.createElement('a');
+        var url = window.URL.createObjectURL(data);
+        a.href = url;
+        a.download = fileName;
+        document.body.append(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+    }
 </script>
 @endsection

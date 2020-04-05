@@ -37,6 +37,8 @@ Route::post('/Registration/Complete', 'RegistrationController@complete');
 Route::get('/RegistrationsStudy', 'RegistrationStudyController@index');
 Route::get('/RegistrationsStudy/Get', 'RegistrationStudyController@getRegistration');
 Route::post('/RegistrationsStudy/DownloadRegistration', 'RegistrationStudyController@downloadRegistration');
+Route::post('/RegistrationsStudy/DownloadAllRegistrations', 'RegistrationStudyController@downloadAllRegistrations');
+
 
 /* Profile */
 Route::get('/Profile', function () {
