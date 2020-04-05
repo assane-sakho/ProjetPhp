@@ -18,11 +18,13 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
+                @if(session('teacher')->id == 1)
                 <p>
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addTeacherModal">
                         Ajouter des professeurs
                     </button>
                 </p><br />
+                @endif
                 <p>
                     <form id="formDownloadAllRegistrations" action="" method="post">
                         <button class="btn btn-success" id="downloadAllRegistration" value="Télécharger toutes les candidatures" type="submit">Télécharger toutes les candidatures</button>
@@ -78,45 +80,46 @@
     </div>
 </section>
 
-
+@if(session('teacher')->id == 1)
 <div class="modal fade" id="addTeacherModal" tabindex="-1" role="dialog" aria-labelledby="addTeacherModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Ajouter des professeurs</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form action="Teacher/Add">
+            <form action="" id="formAddTeacher" method="POST">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ajouter des professeurs</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
                     <label for="teacherEmail">Email: </label>
-                    <input class="form-control" type="text" name="teacherEmail" id="teacherEmail"><br />
+                    <input class="form-control" type="email" name="teacherEmail" id="teacherEmail" required><br />
 
-                    <label for="teacherEmail">Mot de passe: </label>
-                    <input class="form-control" type="password" name="teacherPassword" id="teacherPassord">
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-success">Ajouter</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-            </div>
+                    <label for="teacherPassword">Mot de passe: </label>
+                    <input class="form-control" type="password" name="teacherPassword" id="teacherPassword" required>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success" value="Ajouter">Ajouter</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
+@endif
 
 <div class="modal fade" id="editStatusModal" tabindex="-1" role="dialog" aria-labelledby="editStatusModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Modifier le statut</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="formEditStatus" action="RegistrationStudy/EditStatus" method="POST">
-                    <input type="hidden" id="registrationId">
+            <form id="formEditStatus" action="" method="POST">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Modifier le statut</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="registrationId" name="registrationId">
                     <label for="registrationStatus">Statut :</label><br />
                     <select name="registrationStatus" id="registrationStatus" class="form-control">
                         <option value="">-- Sélectionnez un statut --</option>
@@ -124,12 +127,12 @@
                         <option value="{{ $status->id }}">{{ $status->title }}</option>
                         @endforeach
                     </select>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-warning">Modifier</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-            </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-warning">Modifier</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -140,7 +143,7 @@
 <script>
     $(document).ready(function() {
         var fileName = $("title").text() + " - " + $("#title").text();
-        // var filterValues = {};
+
         $(document).ready(function() {
             $('.table').DataTable({
                 "language": {
@@ -214,15 +217,63 @@
             });
         });
 
+        $('#addTeacherModal').on('show.bs.modal', function(e) {
+            $("#teacherEmail, #teacherPassword").val('');
+        });
+
         $('#editStatusModal').on('show.bs.modal', function(e) {
-            $("#registration").val($(e.relatedTarget).data('id'));
+            $("#registrationId").val($(e.relatedTarget).data('id'));
             $('#registrationStatus').val($(e.relatedTarget).data('statusid')).change();
+        });
+
+        $("#formAddTeacher").submit(function(e) {
+            var form = $(this);
+            e.preventDefault();
+
+            $.ajax({
+                url: '/Teacher/Add',
+                type: 'POST',
+                data: form.serialize(),
+                success: function(data) {
+                    form.find(":submit").prop('disabled', false);
+                    displayToastr('updated');
+                    $('#addTeacherModal').modal('toggle');
+                },
+                error: function(xhr, status, error) {
+                    form.find(":submit").prop('disabled', false);
+                    if (xhr.responseJSON.message == 'emailAlreadyExist') {
+                        displayToastr('errorMsg', 'Un professeur ayant la même adresse mail <i class="fa fa-info-circle text-info"></i> existe déjà !');
+                    } else {
+                        displayToastr('error');
+                    }
+                },
+            });
+        });
+
+        $("#formEditStatus").submit(function(e) {
+            var form = $(this);
+            e.preventDefault();
+
+            $.ajax({
+                url: '/RegistrationsStudy/EditStatus',
+                type: 'POST',
+                data: form.serialize(),
+                success: function(data) {
+                    form.find(":submit").prop('disabled', false);
+                    displayToastr('updated');
+                    $('#editStatusModal').modal('toggle');
+                },
+                error: function(xhr, status, error) {
+                    form.find(":submit").prop('disabled', false);
+                    displayToastr('error');
+                },
+            });
         });
 
         $("#formDownloadRegistration").submit(function(e) {
             e.preventDefault();
             var form = $(this);
-            var btn = $(this).find("button[type=submit]:focus" );
+            var btn = $(this).find("button[type=submit]:focus");
             $("#student_id").val($(btn).data('id'));
 
             $.ajax({
@@ -283,3 +334,8 @@
     }
 </script>
 @endsection
+<style>
+    .show {
+        background-color: none !important;
+    }
+</style>

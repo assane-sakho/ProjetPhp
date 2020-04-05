@@ -8,14 +8,12 @@ use Illuminate\Http\Request;
 use App\Helpers\FoldersFiles as HelpersFoldersFiles;
 use App\Student;
 use Illuminate\Support\Facades\Storage;
-use File;
 
 class RegistrationStudyController extends Controller
 {
     public function index()
     {
-        if(session()->has('teatcher'))
-        {
+        if (session()->has('teacher')) {
             $data =  array();
 
             $registrations = Registration::all();
@@ -26,6 +24,16 @@ class RegistrationStudyController extends Controller
             ]));
         }
         return view('errors.404');
+    }
+
+    public function editStatus(Request $request)
+    {
+        $registrationId = $request->registrationId;
+        $registration = Registration::find($registrationId);
+
+        $registrationStatusId = $request->registrationStatus;
+        $registration->status_id = $registrationStatusId;
+        $registration->save();
     }
 
     function downloadRegistration(Request $request)
@@ -42,7 +50,7 @@ class RegistrationStudyController extends Controller
     function downloadAllRegistrations(Request $request)
     {
         HelpersFoldersFiles::cleanDirectory(storage_path() . '/registrations');
-        
+
         $success = Storage::deleteDirectory('storage/registrations');
         if ($success) {
             $registrations = Registration::where("status_id", '!=', "1")->get();

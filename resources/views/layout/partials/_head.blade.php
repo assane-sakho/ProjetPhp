@@ -22,7 +22,7 @@
     <!-- Toastr CSS -->
     <link rel="stylesheet" href="{{ asset('vendors/toastr/css/toastr.css') }}"/>
      <!-- DataTables CSS -->
-     <link rel="stylesheet" href="{{ asset('vendors/dataTables/css/dataTables.css') }}"/>
+     <link rel="stylesheet" href="{{ asset('vendors/datatables/css/datatables.css') }}"/>
     <!-- Smart wizard CSS -->
     <link rel="stylesheet" href="{{ asset('vendors/smart_wizard/css/smart_wizard.css') }}"/>
     <!-- Font awesome CSS -->

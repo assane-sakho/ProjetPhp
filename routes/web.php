@@ -33,7 +33,12 @@ Route::get('/Profile', function () {
 
 /* Students */
 Route::post('/Student/Add', 'StudentController@add');
-Route::post('/Student/Update', 'StudentController@Update');
+Route::post('/Student/Update', 'StudentController@update');
+
+
+/* Teacher */
+Route::post('/Teacher/Add', 'TeacherController@add');
+Route::post('/Teacher/Update', 'TeacherController@update');
 
 
 /* Registrations */
@@ -49,3 +54,4 @@ Route::post('/Registration/Complete', 'RegistrationController@complete');
 Route::get('/RegistrationsStudy', 'RegistrationStudyController@index');
 Route::post('/RegistrationsStudy/DownloadRegistration', 'RegistrationStudyController@downloadRegistration');
 Route::post('/RegistrationsStudy/DownloadAllRegistrations', 'RegistrationStudyController@downloadAllRegistrations');
+Route::post('/RegistrationsStudy/EditStatus', 'RegistrationStudyController@editStatus');

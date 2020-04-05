@@ -13,7 +13,7 @@
 <!-- Functions js -->
 <script src="{{ asset('js/functions.js') }}"></script>
 <!-- DataTables js -->
-<script src="{{ asset('vendors/dataTables/js/dataTables.js') }}"></script>
+<script src="{{ asset('vendors/datatables/js/datatables.js') }}"></script>
 <!-- Toastr js -->
 <script src="{{ asset('vendors/toastr/js/toastr.js') }}"></script>
 <!-- Validator js -->
@@ -21,21 +21,21 @@
 <!-- Smart wizard js -->
 <script src="{{ asset('vendors/smart_wizard/js/jquery.smartWizard.js') }}"></script>
 <!-- DataTables js -->
-<script src="{{ asset('vendors/dataTables/js/dataTables.js') }}"></script>
+<script src="{{ asset('vendors/datatables/js/datatables.js') }}"></script>
 <!-- DataTables Button js -->
-<script src="{{ asset('vendors/dataTables/js/dataTables.buttons.min.js') }}"></script>
+<script src="{{ asset('vendors/datatables/js/datatables.buttons.min.js') }}"></script>
 <!-- DataTables Button flash js -->
-<script src="{{ asset('vendors/dataTables/js/buttons.flash.min.js') }}"></script>
+<script src="{{ asset('vendors/datatables/js/buttons.flash.min.js') }}"></script>
 <!-- DataTables jszip js -->
-<script src="{{ asset('vendors/dataTables/js/jszip.min.js') }}"></script>
+<script src="{{ asset('vendors/datatables/js/jszip.min.js') }}"></script>
 <!-- DataTables pdfmake js -->
-<script src="{{ asset('vendors/dataTables/js/pdfmake.min.js') }}"></script>
+<script src="{{ asset('vendors/datatables/js/pdfmake.min.js') }}"></script>
 <!-- DataTables vfs_fonts js -->
-<script src="{{ asset('vendors/dataTables/js/vfs_fonts.js') }}"></script>
+<script src="{{ asset('vendors/datatables/js/vfs_fonts.js') }}"></script>
 <!-- DataTables Button html5 js -->
-<script src="{{ asset('vendors/dataTables/js/buttons.html5.min.js') }}"></script>
+<script src="{{ asset('vendors/datatables/js/buttons.html5.min.js') }}"></script>
 <!-- DataTables Button print js -->
-<script src="{{ asset('vendors/dataTables/js/buttons.print.min.js') }}"></script>
+<script src="{{ asset('vendors/datatables/js/buttons.print.min.js') }}"></script>
 <!-- FontAwesome js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js"></script>
 
