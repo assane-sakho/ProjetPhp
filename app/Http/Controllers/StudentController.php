@@ -8,11 +8,28 @@ use App\Registration;
 use App\Folder;
 
 use Response;
-
 use Illuminate\Http\Request;
 
 class StudentController extends Controller
 {
+    public function alreadyExist($lastname, $firstname, $cardId, $phoneNumber, $email)
+    {
+        $userId =  session('student')->id ?? '';
+
+        $studentsExceptCurrent = Student::where('id', '!=', $userId)->get();
+
+        $allStudents = Student::where([
+            'lastname' => $lastname,
+            'firstname' => $firstname
+         ])->orwhere('card_id', $cardId)
+           ->orwhere('email', $email)
+           ->orwhere('phone_number', $phoneNumber)->get();
+
+        $intersect = $allStudents->intersect($studentsExceptCurrent);
+
+        return ($intersect->count() >= 1);
+    }
+    
     public function add(Request $request)
     {
         $lastname = $request->userLastname;
@@ -74,32 +91,6 @@ class StudentController extends Controller
             $returnCode = 500;
         }
         return Response::json($returnData, $returnCode);
-    }
-
-    public function alreadyExist($lastname, $firstname, $cardId, $phoneNumber, $email)
-    {
-        $userId =  session('student')->id ?? '';
-
-        $studentsExceptCurrent = Student::where('id', '!=', $userId)->get();
-
-        $allStudents = Student::where([
-            'lastname' => $lastname,
-            'firstname' => $firstname
-         ])->orwhere('card_id', $cardId)
-           ->orwhere('email', $email)
-           ->orwhere('phone_number', $phoneNumber)->get();
-
-        $intersect = $allStudents->intersect($studentsExceptCurrent);
-
-        return ($intersect->count() >= 1);
-    }
-
-    public function profile(Request $request)
-    {
-        if ($request->session()->has('student')) {
-            return view('student.profile');
-        }
-        return view('errors.404');
     }
 
     public function update(Request $request)

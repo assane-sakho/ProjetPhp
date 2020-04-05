@@ -4,82 +4,73 @@ namespace App\Http\Controllers;
 
 use App\Teacher;
 use Illuminate\Http\Request;
+use Response;
 
 class TeacherController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function alreadyExist($email)
     {
-        //
+       return Teacher::where("email", $email)->count() == 1;
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function add(Request $request)
     {
-        //
+        $email = $request->teacherEmail;
+        $password = $request->teacherPassword;
+
+        if(!$this->alreadyExist($email))
+        {
+            Teacher::create([
+                "email" => $email,
+                "password" => $password,
+            ]);
+            $returnData = array(
+                'status' => 'error',
+                'message' => 'emailNotPossible'
+            );
+            $returnCode = 500;
+        }
+        else
+        {
+            $returnData = array(
+                'status' => 'error',
+                'message' => 'emailAlreadyExist'
+            );
+            $returnCode = 500;
+        }
+        return Response::json($returnData, $returnCode);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function update(Request $request)
     {
-        //
-    }
+        $teacherId = $request->teacherId;
+        $email = $request->teacherEmail;
+        $password = $request->teacherPassword;
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Teacher  $teacher
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Teacher $teacher)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Teacher  $teacher
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Teacher $teacher)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Teacher  $teacher
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Teacher $teacher)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Teacher  $teacher
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Teacher $teacher)
-    {
-        //
+    
+        if(!$this->alreadyExist($email))
+        {
+            $teacher = Teacher::find($teacherId);
+            $teacher->email = $email;
+            if($password != "")
+            {
+                $teacher->password = $email;
+            }
+            $teacher->save();
+            
+            $returnData = array(
+                'status' => 'success'
+            );
+            $returnCode = 200;
+        }
+        else
+        {
+            $returnData = array(
+                'status' => 'error',
+                'message' => 'emailAlreadyExist'
+            );
+            $returnCode = 500;
+        }
+        return Response::json($returnData, $returnCode);
     }
 }

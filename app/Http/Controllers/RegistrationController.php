@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+
 use App\Helpers\FoldersFiles as HelpersFoldersFiles;
 use App\Http\Controllers\Controller;
 
@@ -9,28 +11,30 @@ use App\Registration;
 use App\Training;
 use App\ReportCard;
 
-use FoldersFiles;
-
-use Illuminate\Http\Request;
-
 class RegistrationController extends Controller
 {
     public function index()
     {
-        return view('registration.index');
+        if (session()->has('student'))
+            return view('registration.index');
+        return view('errors.404');
     }
 
     public function getFile(Request $request)
     {
-        $studentFolder = Registration::find(session('student')->registration->id)->folder;
+        if (session()->has('student'))
+        {
+            $studentFolder = Registration::find(session('student')->registration->id)->folder;
 
-        if ($request->fileName != "report_card") {
-            $fileName = $studentFolder[$request->fileName];
-        } else {
-            $fileName = $studentFolder->report_card[$request->number]->name;
+            if ($request->fileName != "report_card") {
+                $fileName = $studentFolder[$request->fileName];
+            } else {
+                $fileName = $studentFolder->report_card[$request->number]->name;
+            }
+    
+            return HelpersFoldersFiles::getFile($fileName);
         }
-
-        return HelpersFoldersFiles::getFile($fileName);
+        return view('errors.404');
     }
 
     public function deleteFile(Request $request)
@@ -152,7 +156,7 @@ class RegistrationController extends Controller
         }
     }
 
-    public function complete(Request $request)
+    public function complete()
     {
         $studentRegistration = session('student')->registration;
         $studentRegistration->status_id = 2;

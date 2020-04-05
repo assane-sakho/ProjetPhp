@@ -14,14 +14,18 @@ class RegistrationStudyController extends Controller
 {
     public function index()
     {
-        $data =  array();
+        if(session()->has('teatcher'))
+        {
+            $data =  array();
 
-        $registrations = Registration::all();
-        $statuses = RegistrationStatus::where("id", '!=', 1)->get();
-        return view('registrationsStudy.index', compact([
-            "registrations", "registrations",
-            "statuses", "statuses",
-        ]));
+            $registrations = Registration::all();
+            $statuses = RegistrationStatus::where("id", '!=', 1)->get();
+            return view('registrationsStudy.index', compact([
+                "registrations", "registrations",
+                "statuses", "statuses",
+            ]));
+        }
+        return view('errors.404');
     }
 
     function downloadRegistration(Request $request)
