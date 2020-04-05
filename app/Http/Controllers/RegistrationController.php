@@ -22,7 +22,7 @@ class RegistrationController extends Controller
 
     public function getFile(Request $request)
     {
-        $studentFolder = session('student')->registration->folder;
+        $studentFolder = Registration::find(session('student')->registration->id)->folder;
 
         if ($request->fileName != "report_card") {
             $fileName = $studentFolder[$request->fileName];
@@ -35,7 +35,7 @@ class RegistrationController extends Controller
 
     public function deleteFile(Request $request)
     {
-        $studentFolder = session('student')->registration->folder;
+        $studentFolder = Registration::find(session('student')->registration->id)->folder;
 
         if ($request->fileName != "report_card") {
             $fileName = $studentFolder[$request->fileName];
@@ -43,7 +43,7 @@ class RegistrationController extends Controller
             $fileName = $studentFolder->report_card[$request->number]->name;
         }
         ReportCard::where(['name' => $fileName, 'folder_id' => $studentFolder->id])->delete();
-        HelpersFoldersFiles::getFile($fileName);
+        HelpersFoldersFiles::deleteFile($fileName);
     }
 
     public function getStepData(Request $request)
@@ -53,7 +53,7 @@ class RegistrationController extends Controller
         $acceptedFile = "";
         $viewName = "fileUpload";
         $filesUploaded = array();
-        $studentRegistration = session('student')->registration;
+        $studentRegistration = Registration::find(session('student')->registration->id);
         $studentFolder = $studentRegistration->folder;
         $isComplete = $studentRegistration->status_id != 1;
 
@@ -104,21 +104,23 @@ class RegistrationController extends Controller
         if (count($filesUploaded) == 1 && $inputName != "report_card") {
             $viewName = "fileReplace";
         }
-
-        return view('registration.partials._' . $viewName, compact([
-            "isComplete", "isComplete",
-            "filesUploaded", "filesUploaded",
-            "inputName", "inputName",
-            "fileText", "fileText",
-            "uploadTitle", "uploadTitle",
-            "acceptedFile", "acceptedFile",
-            "stepNumber", "stepNumber"])
+        return view(
+            'registration.partials._' . $viewName,
+            compact([
+                "isComplete", "isComplete",
+                "filesUploaded", "filesUploaded",
+                "inputName", "inputName",
+                "fileText", "fileText",
+                "uploadTitle", "uploadTitle",
+                "acceptedFile", "acceptedFile",
+                "stepNumber", "stepNumber"
+            ])
         );
     }
 
     public function saveStepData(Request $request)
     {
-        $studentRegistration = session('student')->registration;
+        $studentRegistration = Registration::find(session('student')->registration->id);
         $studentFolder = $studentRegistration->folder;
 
         $report_cardCount = count($studentFolder->report_card);
@@ -135,6 +137,7 @@ class RegistrationController extends Controller
                 $file = $request->file($input);
                 $fileName = $input . '.' . $file->getClientOriginalExtension();
                 HelpersFoldersFiles::saveFile($file, $fileName);
+
                 if (($input == "report_card_" . $report_cardCount) && ($report_cardCount < 3) && (!$studentFolder->report_card->has($input))) {
                     ReportCard::create(["name" => $fileName, "folder_id" => $studentFolder->id]);
                 } else {

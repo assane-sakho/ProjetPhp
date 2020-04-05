@@ -6,7 +6,7 @@
     }
     else if(session()->has('teacher'))
     {        
-        $homeHref = "/Folders";
+        $homeHref = "/RegistrationsStudy";
     }
     else
     {
@@ -56,15 +56,12 @@
                                     @php
                                         if(session()->has('student') || session()->has('teacher'))
                                         {
-                                            if(session()->has('student'))
-                                            {
+                                            
                                     @endphp
                                     <li>
                                         <a href="/Profile">Profil</a>
                                     </li>
-                                    @php
-                                            }
-                                    @endphp
+                           
                                     <li>
                                        <a id="logout" href="">Déconnexion</a>
                                      </li>

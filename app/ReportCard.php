@@ -11,6 +11,6 @@ class ReportCard extends Model
 
     function folder()
     {
-        return $this->hasOne('App\Folder');
+        return $this->belongsTo('App\Folder');
     }
 }

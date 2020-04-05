@@ -10,7 +10,7 @@ Route::get('/', function () {
     } 
     else if(session('teacher'))
     {
-        return view('folders.index');
+        return view('registrationStudy.index');
     }
     return view('index');
 });
@@ -33,9 +33,20 @@ Route::get('/Registration/GetFile', 'RegistrationController@getFile');
 Route::post('/Registration/DeleteFile', 'RegistrationController@deleteFile');
 Route::post('/Registration/Complete', 'RegistrationController@complete');
 
-/* Folders */
-Route::get('/Folders', 'FolderController@index');
-Route::get('/Folders/Get', 'FolderController@get');
+/* RegistrationStudy */
+Route::get('/RegistrationsStudy', 'RegistrationStudyController@index');
+Route::get('/RegistrationsStudy/Get', 'RegistrationStudyController@getRegistration');
+Route::post('/RegistrationsStudy/DownloadRegistration', 'RegistrationStudyController@downloadRegistration');
 
 /* Profile */
-Route::get('/Profile', 'StudentController@profile');
+Route::get('/Profile', function () {
+    if(session('student'))
+    {
+        return view('student.profile');
+    } 
+    else if(session('teacher'))
+    {
+        return view('teacher.profile');
+    }
+    return view('index');
+});

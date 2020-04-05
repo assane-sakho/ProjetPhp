@@ -2,11 +2,9 @@
 
 namespace App\Helpers;
 
-use Illuminate\Http\Request;
-use App\Registration;
-use App\ReportCard;
 use Response;
 use File;
+use ZipArchive;
 
 class FoldersFiles
 {
@@ -30,12 +28,37 @@ class FoldersFiles
 
     public static function deleteFile($fileName)
     {
-        File::delete(FoldersFiles::getPath() . $fileName);
+        $pathToFile = FoldersFiles::getPath() . $fileName;
+        File::delete($pathToFile);
     }
 
-    public static function getPath()
+    public static function getPath($studentId = null)
     {
-        $studentId = session('student')->id;
-        return storage_path() . '/uploads/' . $studentId . '/';
+        $_studentId = session()->has('student') ? session('student')->id : $studentId;
+        return storage_path() . '/uploads/' . $_studentId . '/';
+    }
+
+    public static function downloadZip($studentId, $fileName)
+    {
+        $zip = new ZipArchive;
+
+        $path = storage_path() . '/registrations/' . $fileName;
+        $pathFiles = FoldersFiles::getPath($studentId);
+        if ($zip->open($path, ZipArchive::CREATE) === TRUE) {
+            $files = File::files($pathFiles);
+
+            foreach ($files as $key => $value) {
+                $relativeNameInZipFile = basename($value);
+                $zip->addFile($value, $relativeNameInZipFile);
+            }
+
+            $zip->close();
+        }
+        $headers = array(
+            'Content-Type: application/zip',
+            'Content-disposition: attachment; filename:"' . $fileName . '"'
+        );
+
+        return response()->download($path, $fileName, $headers);
     }
 }

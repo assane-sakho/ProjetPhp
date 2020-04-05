@@ -16,7 +16,7 @@ class Registration extends Model
 
    function registration_status()
    {
-       return $this->belongsTo('App\RegistrationStatus', 'id', 'id');
+       return $this->belongsTo('App\RegistrationStatus', 'status_id', 'id');
    }
 
    function training()

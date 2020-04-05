@@ -42,7 +42,7 @@ class LogController extends Controller
                 $returnData = array(
                     'status' => 'success',
                     'name' => 'Professeur',
-                    'nextLocation' => '/Folders',
+                    'nextLocation' => '/RegistrationsStudy',
                 );
                 $returnCode = 200;
             }    
