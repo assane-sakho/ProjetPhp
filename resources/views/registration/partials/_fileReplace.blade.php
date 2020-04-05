@@ -4,22 +4,23 @@
     <div class="form-group col-md-10">
         <p>Vous avez déjà enregistré <b><u data-toggle="modal" data-target="#displayFilesModal-{{ $inputName }}">{{ count($filesUploaded)}} document(s)</u></b>.
         </p>
-
+        @if(!$isComplete)
         <p class=" warningReplace-{{ $inputName }}"><b class="text-danger">Attention</b> : Remplacer le document actuel effaçera le précédent.
             <br />
-            <button type="button" class="btn btn-sm btn-warning warningReplace-{{ $inputName }}" onclick="
+            <button type="button" class="btn btn-sm btnRegistration btn-warning warningReplace-{{ $inputName }}" onclick="
             $('#divUpload-{{ $inputName }}').removeClass('d-none');
             $('#{{ $inputName }}').removeAttr('disabled');
             $('.cancelReplace-{{ $inputName }}').show();
             $('.warningReplace-{{ $inputName }}').hide();">Remplacer</button>
         </p>
         <p>
-            <button type="button" class="btn btn-sm btn-info cancelReplace-{{ $inputName }}" onclick="
+            <button type="button" class="btn btn-sm btnRegistration btn-info cancelReplace-{{ $inputName }}" onclick="
             $('#divUpload-{{ $inputName }}').addClass('d-none');
             $('#{{ $inputName }}').prop('disabled', true);
             $('.warningReplace-{{ $inputName }}').show();
             $('.cancelReplace-{{ $inputName }}').hide();">Annuler le remplacement</button>
         </p>
+        @endif
         <br />
         <div id="divUpload-{{ $inputName }}" class="d-none">
             <table class="table table-bordered">
@@ -52,7 +53,7 @@
                                 <div class="spinner-border spinner-border-sm text-primary" role="status">
                                 </div>
                             </div>
-                            <br />
+                            <p />
                             @if( $inputName == "vle_screenshot")
                             <img id="img-{{ $inputName }}" class="img-fluid" src="/Registration/GetFile?fileName={{ $inputName }}" alt="">
                             @else
@@ -71,8 +72,9 @@
 <script>
     $(document).ready(function() {
         $('.cancelReplace-{{ $inputName }}').hide();
-        $('#embed-{{ $inputName }}, #img-{{ $inputName }}').on('load', function() {
+        $('#embed-{{ $inputName }}').on('load', function() {
             $("#loading-{{ $inputName }}").hide();
         });
+        $("#loading-{{ $inputName }}").hide()
     });
 </script>

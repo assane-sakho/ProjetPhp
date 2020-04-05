@@ -13,4 +13,9 @@ class Folder extends Model
     {
         return $this->hasMany('App\ReportCard');
     }
+
+    function registration()
+    {
+        return $this->hasOne('App\Registration');
+    }
 }

@@ -24,8 +24,8 @@ class Registration extends Model
        return $this->belongsTo('App\Training');
    }
 
-   function registration()
-    {
-        return $this->hasMany('App\ReportCard');
-    }
+   function student()
+   {
+       return $this->belongsTo('App\Student');
+   }
 }

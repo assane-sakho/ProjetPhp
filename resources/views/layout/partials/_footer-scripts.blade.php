@@ -79,5 +79,6 @@
                 displayToastr('error');
             }
         });
+
     });
 </script>

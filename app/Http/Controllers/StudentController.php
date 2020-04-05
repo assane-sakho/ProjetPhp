@@ -54,14 +54,12 @@ class StudentController extends Controller
 
             $folder = Folder::create();
 
-            $registration = Registration::create([
+            Registration::create([
                 'student_id' => $student->id,
                 'folder_id' => $folder->id
             ]);
 
             $request->session()->put('student', $student);
-            $request->session()->put('registration', $registration);
-            $request->session()->put('folder', $folder);
 
             $returnData = array(
                 'status' => 'success',
@@ -80,20 +78,16 @@ class StudentController extends Controller
 
     public function alreadyExist($lastname, $firstname, $cardId, $phoneNumber, $email)
     {
-        $userId = "";
-        if(session('student'))
-        {
-           $userId = session('student')->id;
-        }
+        $userId =  session('student')->id ?? '';
+
         $studentsExceptCurrent = Student::where('id', '!=', $userId)->get();
 
         $allStudents = Student::where([
             'lastname' => $lastname,
             'firstname' => $firstname
-        ])
-            ->orwhere('card_id', $cardId)
-            ->orwhere('email', $email)
-            ->orwhere('phone_number', $phoneNumber)->get();
+         ])->orwhere('card_id', $cardId)
+           ->orwhere('email', $email)
+           ->orwhere('phone_number', $phoneNumber)->get();
 
         $intersect = $allStudents->intersect($studentsExceptCurrent);
 
@@ -110,7 +104,6 @@ class StudentController extends Controller
 
     public function update(Request $request)
     {
-        $id = $request->userId;
         $lastname = $request->userLastname;
         $firstname = $request->userFirstname;
         $carId = $request->userCardId;
@@ -148,6 +141,7 @@ class StudentController extends Controller
             $student->address->city = $city;
             $student->address->zip_code = $zip_code;
 
+            $student->save();
             $request->session()->pull('student', $student);
             $request->session()->put('student', $student);
 

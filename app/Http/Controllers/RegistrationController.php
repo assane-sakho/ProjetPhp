@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\FoldersFiles as HelpersFoldersFiles;
+use App\Http\Controllers\Controller;
+
 use App\Registration;
 use App\Training;
 use App\ReportCard;
-use App\Folder;
-use Response;
+
+use FoldersFiles;
 
 use Illuminate\Http\Request;
 
@@ -17,24 +20,52 @@ class RegistrationController extends Controller
         return view('registration.index');
     }
 
+    public function getFile(Request $request)
+    {
+        $studentFolder = session('student')->registration->folder;
+
+        if ($request->fileName != "report_card") {
+            $fileName = $studentFolder[$request->fileName];
+        } else {
+            $fileName = $studentFolder->report_card[$request->number]->name;
+        }
+
+        return HelpersFoldersFiles::getFile($fileName);
+    }
+
+    public function deleteFile(Request $request)
+    {
+        $studentFolder = session('student')->registration->folder;
+
+        if ($request->fileName != "report_card") {
+            $fileName = $studentFolder[$request->fileName];
+        } else {
+            $fileName = $studentFolder->report_card[$request->number]->name;
+        }
+        ReportCard::where(['name' => $fileName, 'folder_id' => $studentFolder->id])->delete();
+        HelpersFoldersFiles::getFile($fileName);
+    }
+
     public function getStepData(Request $request)
     {
         $stepNumber = $request->step_number;
-
-        $studentRegistration = session('registration');
-        $studentFolder = session('folder');
-
         $uploadTitle = "";
         $acceptedFile = "";
         $viewName = "fileUpload";
-        $report_cardInputName = "report_card_" . count($studentFolder->report_card);
-
         $filesUploaded = array();
+        $studentRegistration = session('student')->registration;
+        $studentFolder = $studentRegistration->folder;
+        $isComplete = $studentRegistration->status_id != 1;
 
         switch ($stepNumber) {
             case 0:
                 $trainings = Training::all();
-                return view('registration.partials._trainings', compact(["trainings", "trainings"]));
+                $student_training_id = $studentRegistration->training_id;
+                return view('registration.partials._trainings', compact([
+                    "isComplete", "isComplete",
+                    "trainings", "trainings",
+                    "student_training_id", "student_training_id",
+                ]));
                 break;
             case 1:
                 $fileText = "CV";
@@ -49,45 +80,47 @@ class RegistrationController extends Controller
                 array_push($filesUploaded, $studentFolder->cover_letter);
                 break;
             case 3:
-                $fileText = "Relevés de notes";
-                $inputName = "report_card_" . count(session('folder')->report_card);
-                $uploadTitle = "vos " . lcfirst($fileText);
+                $fileText = "Relevé de notes";
+                $inputName = "report_card";
                 foreach ($studentFolder->report_card as $report_card) {
                     array_push($filesUploaded, $report_card->name);
                 }
+                $viewName = "reportCardUpload";
                 break;
             case 4:
                 $fileText = "Imprime écran de l'ENT de l'année en cours";
                 $inputName = "vle_screenshot";
                 $uploadTitle = "votre " . lcfirst($fileText);
                 $acceptedFile = "image/x-png, image/jpeg, ";
-                $filesUploaded[] = $studentFolder->vle_screenshot;
+                array_push($filesUploaded, $studentFolder->vle_screenshot);
                 break;
             case 5:
                 return view('registration.partials._validation');
                 break;
         }
+
         $filesUploaded = array_filter($filesUploaded);
-        if (count($filesUploaded) == 1 && $inputName != $report_cardInputName || ($inputName == $report_cardInputName && count($filesUploaded) == 3)) {
+
+        if (count($filesUploaded) == 1 && $inputName != "report_card") {
             $viewName = "fileReplace";
         }
 
-        return view('registration.partials._' . $viewName, compact(
-            ["filesUploaded", "filesUploaded"],
-            ["inputName", "inputName"],
-            ["fileText", "fileText"],
-            ["uploadTitle", "uploadTitle"],
-            ["acceptedFile", "acceptedFile"],
-            ["stepNumber", "stepNumber"]
-        ));
+        return view('registration.partials._' . $viewName, compact([
+            "isComplete", "isComplete",
+            "filesUploaded", "filesUploaded",
+            "inputName", "inputName",
+            "fileText", "fileText",
+            "uploadTitle", "uploadTitle",
+            "acceptedFile", "acceptedFile",
+            "stepNumber", "stepNumber"])
+        );
     }
 
     public function saveStepData(Request $request)
     {
-        $studentRegistration = session('registration');
-        $studentFolder = session('folder');
+        $studentRegistration = session('student')->registration;
+        $studentFolder = $studentRegistration->folder;
 
-        $studentId = $studentRegistration->student_id;
         $report_cardCount = count($studentFolder->report_card);
 
         $files = array(
@@ -101,60 +134,25 @@ class RegistrationController extends Controller
             if ($request->has($input)) {
                 $file = $request->file($input);
                 $fileName = $input . '.' . $file->getClientOriginalExtension();
-
+                HelpersFoldersFiles::saveFile($file, $fileName);
                 if (($input == "report_card_" . $report_cardCount) && ($report_cardCount < 3) && (!$studentFolder->report_card->has($input))) {
                     ReportCard::create(["name" => $fileName, "folder_id" => $studentFolder->id]);
-                    $studentFolder = Folder::find($studentFolder->id);
                 } else {
                     $studentFolder[$input] = $fileName;
                 }
-
-                $image['filePath'] = $file->getClientOriginalName();
-                $file->move(storage_path() . '/uploads/' . $studentId . '/', $fileName);
-                $studentFolder->save();
             }
         }
-
-        if ($request["training"]) {
+        $studentFolder->save();
+        if ($request->has("training")) {
             $studentRegistration->training_id = $request["training"];
             $studentRegistration->save();
         }
-
-        session()->pull('registration', $studentRegistration);
-        session()->put('registration', $studentRegistration);
-
-        session()->pull('folder', $studentFolder);
-        session()->put('folder', $studentFolder);
     }
 
-    public function getFile(Request $request)
+    public function complete(Request $request)
     {
-        $studentRegistration = session('registration');
-        $studentFolder = session('folder');
-        $studentId = $studentRegistration->student_id;
-
-
-        if ($request->fileName != "report_card") {
-            $fileName = $studentFolder[$request->fileName];
-        } else {
-            $fileName = $studentFolder->report_card[$request->number]->name;
-        }
-
-        $path = storage_path() . '/uploads/' . $studentId . '/' .  $fileName;
-
-        return Response::make(file_get_contents($path), 200, [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="' . $fileName . '"'
-        ]);
-    }
-
-    public function updateStatus($statusId)
-    {
-        $studentRegistration = session('registration');
-        $studentRegistration->status_id = 1;
+        $studentRegistration = session('student')->registration;
+        $studentRegistration->status_id = 2;
         $studentRegistration->save();
-
-        session()->pull('registration', $studentRegistration);
-        session()->put('registration', $studentRegistration);
     }
 }

@@ -2,13 +2,16 @@
 <h5>Sélectionnez une formation</h5>
 <div id="form-step-0" role="form" data-toggle="validator">
     <div class="form-group col-md-6">
-        <select class="input-training form-control" name="training" id="training" required>
+        @php
+            $disabled = $isComplete ? "disabled" : "";
+        @endphp
+        <select class="input-training form-control" name="training" id="training" required {{ $disabled }}> 
             <option value="">-- Sélectionnez une option</option>
             @php
                 $selected;
                 foreach ($trainings as $training)
                 {
-                    if($training->id == session('registration')->training_id)
+                    if($training->id == $student_training_id)
                     {
                         $selected = "selected";
                     }

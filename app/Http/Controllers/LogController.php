@@ -50,8 +50,6 @@ class LogController extends Controller
         else
         {                           
             $request->session()->put('student', $student);
-            $request->session()->put('registration', $student->registration);
-            $request->session()->put('folder', $student->registration->folder);
 
             $returnData = array(
                 'status' => 'success',
@@ -66,8 +64,6 @@ class LogController extends Controller
     public function logOut(Request $request)
     {
         $request->session()->forget('student');
-        $request->session()->forget('registration');
-        $request->session()->forget('folder');
         $request->session()->forget('teacher');
 
         return view('index');

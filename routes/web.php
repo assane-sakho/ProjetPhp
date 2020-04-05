@@ -30,6 +30,8 @@ Route::get('/Registration', 'RegistrationController@index');
 Route::post('/Registration/GetStepData', 'RegistrationController@getStepData');
 Route::post('/Registration/SaveStepData', 'RegistrationController@saveStepData');
 Route::get('/Registration/GetFile', 'RegistrationController@getFile');
+Route::post('/Registration/DeleteFile', 'RegistrationController@deleteFile');
+Route::post('/Registration/Complete', 'RegistrationController@complete');
 
 /* Folders */
 Route::get('/Folders', 'FolderController@index');

@@ -49,6 +49,10 @@ function displayToastr(type, message) {
                     message,
                 title
             );
+
+            break;
+        case "registrationSaved":
+            toastr.success("Votre candidature a été enregistré", title);
             break;
     }
 }

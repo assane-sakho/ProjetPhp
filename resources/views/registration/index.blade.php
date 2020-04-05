@@ -18,7 +18,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <form action="#" id="registrationForm" role="form" data-toggle="validator" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+                <form action="/Registration/Save" id="registrationForm" role="form" data-toggle="validator" method="post" accept-charset="utf-8" enctype="multipart/form-data">
 
                     <!-- SmartWizard html -->
                     <div id="smartwizard">
@@ -61,34 +61,53 @@
 @section('scripts')
 <script>
     $(document).ready(function() {
+        let registrationEditable = ('{{ session("student")->registration->status_id }}' == '1');
+        if (!registrationEditable) {
+            $(".form-control").prop('disabled', true);
+            $(".btnRegistration").remove();
+        }
 
-        var btnFinish = $('<button></button>')
-            .text('Valider')
-            .addClass('btn btn-info')
-            .addClass('btn-finish')
-            .addClass('disabled')
-            .on('click', function() {
-                if (!$(this).hasClass('disabled')) {
-                    var elmForm = $("#myForm");
-                    if (elmForm) {
-                        elmForm.validator('validate');
-                        var elmErr = elmForm.find('.has-error');
-                        if (elmErr && elmErr.length > 0) {
-                            alert('Oops we still have error in the form');
-                            return false;
-                        } else {
-                            alert('Great! we are ready to submit form');
-                            elmForm.submit();
-                            return false;
+        var btnFinish;
+
+        if (registrationEditable) {
+            btnFinish = $('<button></button>')
+                .text('Valider')
+                .addClass('btn btn-info btn-finish btnRegistration')
+                .addClass('disabled')
+                .prop("type", "button")
+                .on('click', function() {
+                    if (!$(this).hasClass('disabled')) {
+                        var elmForm = $("#myForm");
+                        if (elmForm) {
+                            elmForm.validator('validate');
+                            var elmErr = elmForm.find('.has-error');
+                            if (elmErr && elmErr.length > 0) {
+                                return false;
+                            } else {
+                                $.ajax({
+                                    url: '/Registration/Complete',
+                                    type: 'POST',
+                                    success: function(data) {
+                                        displayToastr('registrationSaved');
+                                        $(".btnRegistration").remove();
+                                    },
+                                    error: function(xhr, status, error) {
+                                        displayToastr('error');
+                                    },
+                                });
+                                return false;
+                            }
                         }
                     }
-                }
-        });
+                });
+        }
 
         $('#smartwizard').smartWizard({
             selected: 0,
             theme: 'default',
             transitionEffect: 'fade',
+            contentCache: false,
+            showStepURLhash: false,
             toolbarSettings: {
                 toolbarPosition: 'bottom',
                 toolbarExtraButtons: [btnFinish]
@@ -97,7 +116,8 @@
                 markDoneStep: true, // add done css
                 markAllPreviousStepsAsDone: true, // When a step selected by url hash, all previous steps are marked done
                 removeDoneStepOnNavigateBack: true, // While navigate back done step after active step will be cleared
-                enableAnchorOnDoneStep: true // Enable/Disable the done steps navigation
+                enableAnchorOnDoneStep: true, // Enable/Disable the done steps navigation
+                enableAllAnchors: !registrationEditable
             },
             lang: {
                 previous: 'Précédent',
@@ -121,34 +141,34 @@
                     });
                     return false;
                 }
-                $.ajax({
-                    url: '/Registration/SaveStepData',
-                    type: 'POST',
-                    cache: false,
-                    contentType: false,
-                    processData: false,
-                    data: new FormData($("#registrationForm")[0]),
-                    success: function(data) {
-                        return true;
-                    },
-                    error: function(xhr, status, error) {
-                        displayToastr('error');
-                    },
-                });
+                if (registrationEditable) {
+                    $.ajax({
+                        url: '/Registration/SaveStepData',
+                        type: 'POST',
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        data: new FormData($("#registrationForm")[0]),
+                        success: function(data) {
+                            return true;
+                        },
+                        error: function(xhr, status, error) {
+                            displayToastr('error');
+                        },
+                    });
+                }
             }
             return true;
         });
 
         $("#smartwizard").on("showStep", function(e, anchorObject, stepNumber, stepDirection) {
-            if (stepNumber == 5) {
+            if (stepNumber == 5 && registrationEditable) {
                 $('.btn-finish').removeClass('disabled');
 
             } else {
                 $('.btn-finish').addClass('disabled');
             }
         });
-
-       
     });
 </script>
 @endsection

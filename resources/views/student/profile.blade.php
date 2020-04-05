@@ -42,7 +42,7 @@
                         <br/>
 
                         <label for="userBirthdate">Date de naissance</label>
-                        <input type="date" name="userBirthdate" id="userBirthdate" value="{{ session('student')->birthdate }}" class="form-control" required><p/>
+                        <input type="date" name="userBirthdate" id="userBirthdate" value="{{ session('student')->birthdate->format('Y-m-d') }}" class="form-control" required><p/>
                     </div>
                 </div>
 
@@ -90,7 +90,7 @@
 
                 <hr class="mb-4">
 
-                <button class="btn btn-danger btn-lg btn-block" type="submit" value="Modifier">Modifier</button>
+                <button class="btn btn-danger btn-lg btn-block btnRegistration" type="submit" value="Modifier">Modifier</button>
             </form>
             <br/>
             <p class="text-center">
@@ -105,6 +105,12 @@
 @section('scripts')
 <script>
     $(document).ready(function(){
+        let registrationEditable = ('{{ session("student")->registration->status_id }}' == '1');
+        if (!registrationEditable) {
+            $(".form-control").prop('disabled', true);
+            $(".btnRegistration").remove();
+        }
+
         $("#formEdit").submit(function(e){
             var form = $(this);
             e.preventDefault();
