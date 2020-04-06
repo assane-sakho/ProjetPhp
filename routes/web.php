@@ -6,9 +6,9 @@ use Illuminate\Support\Facades\Route;
 /* Index */
 
 Route::get('/', function () {
-    if (session('student')) {
+    if (session()->has('student')) {
         return view('registration.index');
-    } else if (session('teacher')) {
+    } else if (session()->has('teacher')) {
         return view('registrationStudy.index');
     }
     return view('index');

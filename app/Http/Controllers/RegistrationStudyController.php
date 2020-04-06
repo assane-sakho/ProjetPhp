@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Registration;
 use App\RegistrationStatus;
+use App\Student;
+use App\Training;
+
 use Illuminate\Http\Request;
 use App\Helpers\FoldersFiles as HelpersFoldersFiles;
-use App\Student;
+
 use Response;
 
 class RegistrationStudyController extends Controller
@@ -18,9 +21,12 @@ class RegistrationStudyController extends Controller
 
             $registrations = Registration::all();
             $statuses = RegistrationStatus::where("id", '!=', 1)->get();
+            $trainings = Training::all();
+
             return view('registrationsStudy.index', compact([
                 "registrations", "registrations",
                 "statuses", "statuses",
+                "trainings", "trainings",
             ]));
         }
         return view('errors.404');
@@ -51,16 +57,22 @@ class RegistrationStudyController extends Controller
     {
         HelpersFoldersFiles::cleanDirectory(storage_path() . '/registrations');
 
-        $registrationStatus = $request->registration_status_d;
+        $registration_status = $request->registration_status_d;
+        $training_d = $request->training_d;
 
-        if ($registrationStatus == "all") {
-            $registrations = Registration::where("status_id", '!=', "1")->get();
+        if ($registration_status == "all") {
+            $registrations = Registration::where("status_id", '!=', "1");
         } else {
-            $registrations = Registration::where("status_id", $registrationStatus)->get();
+            $registrations = Registration::where("status_id", $registration_status);
         }
 
-        if($registrations->count() == 0)
-        {
+        if ($training_d != "all") {
+            $registrations = $registrations->where("training_id", $training_d)->get();
+        } else {
+            $registrations = $registrations->get();
+        }
+
+        if ($registrations->count() == 0) {
             $returnData = array(
                 'status' => 'error',
                 'message' => 'noRegistration'

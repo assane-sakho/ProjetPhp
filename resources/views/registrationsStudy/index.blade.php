@@ -38,8 +38,22 @@
                                 <td>#</td>
                                 <td>Nom</td>
                                 <td>Prénom</td>
-                                <td>Niveau</td>
-                                <td>Statut</td>
+                                <td>
+                                    <select class="form-control" id="trainingFilter">
+                                        <option value="">Niveau</option>
+                                        @foreach($trainings as $training)
+                                        <option value="{{ $training->name }}">{{ $training->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="form-control" id="statusFilter">
+                                        <option value="">Statut</option>
+                                        @foreach($statuses as $status)
+                                        <option value="{{ $status->title }}">{{ $status->title }}</option>
+                                        @endforeach
+                                    </select>
+                                </td>
                                 <td>Modifier le statut</td>
                                 <td>Télécharger les docs.</td>
                             </tr>
@@ -119,9 +133,17 @@
             </div>
             <div class="modal-body">
                 <form id="formDownloadAllRegistrations" action="" method="post">
+                    <label for="registration_status_d">Choix des niveaux :</label><br />
+                    <select class="form-control" id="training_d" name="training_d">
+                        <option value="all">Tout les niveaux</option>
+                        @foreach($trainings as $training)
+                        <option value="{{ $training->id }}">{{ $training->name }}</option>
+                        @endforeach
+                    </select>
+                    <br />
                     <label for="registration_status_d">Choix des candidatures :</label><br />
                     <select name="registration_status_d" id="registration_status_d" class="form-control">
-                        <option value="all">Toutes les candidatures</option>
+                        <option value="all">Tout les statuts</option>
                         @foreach($statuses as $status)
                         <option value="{{ $status->id }}">{{ $status->title }}</option>
                         @endforeach
@@ -242,7 +264,28 @@
                         columns: ':visible:not(.not-export-col)'
                     }
                 },
-            ]
+            ],
+            columnDefs: [{
+                "targets": [3, 4],
+                "orderable": false
+            }],
+            orders: []
+        });
+
+        $("#trainingFilter").on('change', function() {
+            table
+                .columns([3])
+                .search(this.value)
+                .draw();
+        });
+
+        $("#statusFilter").on('change', function() {
+            var regex = this.value ? '^' + this.value + '$' : '';
+
+            table
+                .columns([4])
+                .search(regex, true, false)
+                .draw();
         });
 
         $('#addTeacherModal').on('show.bs.modal', function(e) {
@@ -250,7 +293,7 @@
         });
 
         $('#downloadRegisrationModal').on('show.bs.modal', function(e) {
-            $("#registration_status_d").val('all').change();
+            $("#registration_status_d, #training_d").val('all').change();
         });
 
         $('#editStatusModal').on('show.bs.modal', function(e) {
