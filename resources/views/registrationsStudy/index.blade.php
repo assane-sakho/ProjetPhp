@@ -30,7 +30,7 @@
                         <button class="btn btn-success" id="downloadAllRegistration" value="Télécharger toutes les candidatures" type="submit">Télécharger toutes les candidatures</button>
                     </form>
                 </p><br />
-                <form id="formDownloadRegistration" action="" method="POST">
+                <form id="formDownloadRegistration" action="" method="post">
                     <input type="hidden" id="student_id" name="student_id">
                     <table class="table table-striped">
                         <thead>
@@ -55,7 +55,7 @@
                                 <td>
                                     <div class="text-center">
                                         @if($registration->registration_status->id != 1)
-                                        <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#editStatusModal" data-id="{{ $registration->id }}" data-statusid="{{ $registration->registration_status->id}}">Modifier</button>
+                                        <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#editStatusModal" data-id="{{ $registration->id }}">Modifier</button>
                                         @else
                                         <i class="fas fa-hourglass"></i>
                                         @endif
@@ -64,7 +64,7 @@
                                 <td>
                                     <div class="text-center">
                                         @if($registration->registration_status->id != 1)
-                                        <button type="submit" value="Téléchager" id="btnDownload{{ $registration->id }}" class="btn btn-success downloadRegistration" data-id="{{ $registration->student->id }}">Télécharger</button>
+                                        <button type="submit" value="Téléchager" class="btn btn-success downloadRegistration" data-id="{{ $registration->student->id }}">Télécharger</button>
                                         @else
                                         <i class="fas fa-hourglass"></i>
                                         @endif
@@ -220,8 +220,11 @@
         });
 
         $('#editStatusModal').on('show.bs.modal', function(e) {
-            $("#registrationId").val($(e.relatedTarget).data('id'));
-            $('#registrationStatus').val($(e.relatedTarget).data('statusid')).change();
+            var registrationId = $(e.relatedTarget).data('id');
+            $("#registrationId").val(registrationId);
+            var rowIdx = $("tr:contains(" + registrationId+ ")").index();
+            var statusTitle = table.row(rowIdx).data()[4];
+            $("#registrationStatus option").each(function() { this.selected = (this.text == statusTitle); });
         });
 
         $("#formAddTeacher").submit(function(e) {
@@ -249,6 +252,9 @@
         });
 
         $("#formEditStatus").submit(function(e) {
+            var registrationId = $("#registrationId").val();
+            var statusTitle = $("#registrationStatus option:selected").text();
+            var rowIdx = $("tr:contains(" + registrationId+ ")").index();
             var form = $(this);
             e.preventDefault();
 
@@ -261,9 +267,9 @@
                     displayToastr('updated');
                     $('#editStatusModal').modal('toggle');
                     table.cell({
-                        row: $("tr:contains('" + $("#registrationId").val() + "')").index(),
+                        row: rowIdx,
                         column: 4
-                    }).data($("#registrationStatus option:selected").text());
+                    }).data(statusTitle).draw();
                 },
                 error: function(xhr, status, error) {
                     form.find(":submit").prop('disabled', false);

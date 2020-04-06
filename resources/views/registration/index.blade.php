@@ -28,7 +28,7 @@
                             <li><a href="#step-3" data-content-url="/Registration/GetStepData">Étape 3<br /><small>Dépôt - Lettre de motivation</small></a></li>
                             <li><a href="#step-4" data-content-url="/Registration/GetStepData">Étape 4<br /><small>Dépôt - Relevés de notes</small></a></li>
                             <li><a href="#step-5" data-content-url="/Registration/GetStepData">Étape 5<br /><small>Dépot - Imprime écran ENT</small></a></li>
-                            <li><a href="#step-6" data-content-url="/Registration/GetStepData">Étape 6<br /><small>Validation</small></a></li>
+                            <li><a href="#step-6" data-content-url="/Registration/GetStepData">Étape 6<br /><small> {{ !session('isRegistrationComplete')  ? "Validation" : "Récapitulatif" }}</small></a></li>
                         </ul>
                         <div>
                             <div id="step-1">
@@ -61,7 +61,14 @@
 @section('scripts')
 <script>
     $(document).ready(function() {
-        let registrationEditable = ('{{ session("student")->registration->status_id }}' == '1');
+        var registration_statusId = '{{ session("student")->registration->status_id }}';
+        let registrationEditable = "{{ !session('isRegistrationComplete') }}";
+
+        if(registration_statusId == 3)
+        {
+            displayToastr('warning', 'Votre candidature a été signalée comme incomplète.<br/><br/>Veuillez compléter votre candidature avant de l\'envoyer de nouveau.');
+        }
+
         if (!registrationEditable) {
             $(".form-control").prop('disabled', true);
             $(".btnRegistration").remove();
@@ -89,7 +96,7 @@
                                     type: 'POST',
                                     success: function(data) {
                                         displayToastr('registrationSaved');
-                                        $(".btnRegistration").remove();
+                                        window.location.reload();
                                     },
                                     error: function(xhr, status, error) {
                                         displayToastr('error');

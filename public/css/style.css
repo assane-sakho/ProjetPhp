@@ -4970,4 +4970,7 @@ a:focus, .button:focus, button:focus, .btn:focus {
   color: #fff;
 }
 
+.with-errors {
+  color :red;
+}
 /*# sourceMappingURL=style.css.map */

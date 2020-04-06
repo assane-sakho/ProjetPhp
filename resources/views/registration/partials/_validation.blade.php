@@ -1,8 +1,20 @@
 <br />
+@if(!session('isRegistrationComplete'))
 <h5>Validation du dossier</h5>
+@else
+<h5>Récapitulatif du dossier</h5>
+@endif
 <div id="form-step-5" role="form" data-toggle="validator">
     <div class="form-group col-md-10">
         <table class="table table-bordered">
+            <tr>
+                <th>Statut de la candidature</th>
+                <td class="text-info">{{ session('student')->registration->registration_status->title}}</td>
+            </tr>
+            <tr rowspan="2">
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
             <tr>
                 <th>Nom</th>
                 <td>{{ session('student')->lastname }} </td>
@@ -55,7 +67,7 @@
                 <td>
                     @for ($i = 0; $i < count(session('student')->registration->folder->report_card); $i++)
                         <embed src="/Registration/GetFile?fileName=report_card&number={{$i}}" style="width:150px; height:200px;" frameborder="0">
-                    @endfor
+                        @endfor
                 </td>
             </tr>
             <tr>

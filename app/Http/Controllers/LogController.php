@@ -48,8 +48,12 @@ class LogController extends Controller
             }    
         }
         else
-        {                           
+        {                    
+            $registrationStatusId = $student->registration->status_id ;
+            $isRegistrationComplete = $registrationStatusId != 1 && $registrationStatusId != 3;
+
             $request->session()->put('student', $student);
+            $request->session()->put('isRegistrationComplete', $isRegistrationComplete);
 
             $returnData = array(
                 'status' => 'success',
@@ -64,6 +68,8 @@ class LogController extends Controller
     public function logOut(Request $request)
     {
         $request->session()->forget('student');
+        $request->session()->forget('isRegistrationComplete');
+
         $request->session()->forget('teacher');
 
         return view('index');

@@ -133,8 +133,7 @@ class StudentController extends Controller
             $student->address->zip_code = $zip_code;
 
             $student->save();
-            $request->session()->pull('student', $student);
-            $request->session()->put('student', $student);
+            session()->put('student', $student);
 
             $returnData = array(
                 'status' => 'success',

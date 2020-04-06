@@ -3,7 +3,7 @@
 <div id="form-step-0" role="form" data-toggle="validator">
     <div class="form-group col-md-6">
         @php
-            $disabled = $isComplete ? "disabled" : "";
+            $disabled = session('isRegistrationComplete') ? "disabled" : "";
         @endphp
         <select class="input-training form-control" name="training" id="training" required {{ $disabled }}> 
             <option value="">-- Sélectionnez une option</option>

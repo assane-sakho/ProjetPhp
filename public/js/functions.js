@@ -2,7 +2,7 @@ function displayToastr(type, message) {
     var title = $("title").text() + " - " + "Administration";
     var timeOut =
         type == "error" || type == "errorMsg" || type == "warning"
-            ? 3000
+            ? 5000
             : 2000;
 
     toastr.options = {
@@ -13,7 +13,7 @@ function displayToastr(type, message) {
 
     switch (type) {
         case "studentRegistred":
-            toastr.success("Vos données ont été ajoutés.", title);
+            toastr.success("Vos données ont été ajoutées.", title);
             break;
         case "connected":
             toastr.info("Bienvenue " + message, title);
@@ -25,34 +25,25 @@ function displayToastr(type, message) {
             toastr.error("Une erreur est survenue.", title);
             break;
         case "updated":
-            toastr.success("Les modifications ont été enregistrés.", title);
-            break;
-        case "loaded":
-            toastr.success("Les données ont été chargés.", title);
+            toastr.success("Les modifications ont été enregistrées.", title);
             break;
         case "deleted":
-            toastr.info("Les données ont été supprimés.", title);
+            toastr.info("Les données ont été supprimées.", title);
             break;
         case "warning":
             toastr.warning(
-                '<i class="fa fa-exclamation-triangle" aria-hidden="true"></i> Attention<p/>' +
-                    message,
-                title
-            );
-            break;
-        case "checked":
-            toastr.info("Vérification terminé", title);
+                '<i class="fa fa-exclamation-triangle" aria-hidden="true"></i> Attention<br/><br/>' +
+                    message + ".",title);
             break;
         case "errorMsg":
             toastr.error(
-                'Attention <i class="fa fa-exclamation-triangle" aria-hidden="true"></i> <p/><br/>' +
-                    message,
+                'Attention <i class="fa fa-exclamation-triangle" aria-hidden="true"></i><br/><br/>' +
+                    message + ".",
                 title
             );
-
             break;
         case "registrationSaved":
-            toastr.success("Votre candidature a été enregistré", title);
+            toastr.success("Votre candidature a été enregistrée.", title);
             break;
     }
 }

@@ -59,14 +59,12 @@ class RegistrationController extends Controller
         $filesUploaded = array();
         $studentRegistration = Registration::find(session('student')->registration->id);
         $studentFolder = $studentRegistration->folder;
-        $isComplete = $studentRegistration->status_id != 1;
 
         switch ($stepNumber) {
             case 0:
                 $trainings = Training::all();
                 $student_training_id = $studentRegistration->training_id;
                 return view('registration.partials._trainings', compact([
-                    "isComplete", "isComplete",
                     "trainings", "trainings",
                     "student_training_id", "student_training_id",
                 ]));
@@ -111,7 +109,6 @@ class RegistrationController extends Controller
         return view(
             'registration.partials._' . $viewName,
             compact([
-                "isComplete", "isComplete",
                 "filesUploaded", "filesUploaded",
                 "inputName", "inputName",
                 "fileText", "fileText",
@@ -154,6 +151,7 @@ class RegistrationController extends Controller
             $studentRegistration->training_id = $request["training"];
             $studentRegistration->save();
         }
+        session()->put('student', $studentRegistration->student);
     }
 
     public function complete()
@@ -161,5 +159,7 @@ class RegistrationController extends Controller
         $studentRegistration = session('student')->registration;
         $studentRegistration->status_id = 2;
         $studentRegistration->save();
+        session()->put('student', $studentRegistration->student);
+        session()->put('isRegistrationComplete', true);
     }
 }
