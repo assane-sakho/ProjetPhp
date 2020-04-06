@@ -25,11 +25,11 @@
                     </button>
                 </p><br />
                 @endif
-                <p>
-                    <form id="formDownloadAllRegistrations" action="" method="post">
-                        <button class="btn btn-success" id="downloadAllRegistration" value="Télécharger toutes les candidatures" type="submit">Télécharger toutes les candidatures</button>
-                    </form>
-                </p><br />
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#downloadRegisrationModal">
+                    Télécharger les candidatures
+                </button>
+                <br />
+                <br />
                 <form id="formDownloadRegistration" action="" method="post">
                     <input type="hidden" id="student_id" name="student_id">
                     <table class="table table-striped">
@@ -107,6 +107,36 @@
     </div>
 </div>
 @endif
+
+<div class="modal fade" id="downloadRegisrationModal" tabindex="-1" role="dialog" aria-labelledby="downloadRegisrationModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modifier le statut</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="formDownloadAllRegistrations" action="" method="post">
+                    <label for="registration_status_d">Choix des candidatures :</label><br />
+                    <select name="registration_status_d" id="registration_status_d" class="form-control">
+                        <option value="all">Toutes les candidatures</option>
+                        @foreach($statuses as $status)
+                        <option value="{{ $status->id }}">{{ $status->title }}</option>
+                        @endforeach
+                    </select>
+                    <br />
+                    <br />
+                    <button class="btn btn-success" id="downloadAllRegistration" value="Télécharger" type="submit">Télécharger</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="modal fade" id="editStatusModal" tabindex="-1" role="dialog" aria-labelledby="editStatusModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -219,12 +249,18 @@
             $("#teacherEmail, #teacherPassword").val('');
         });
 
+        $('#downloadRegisrationModal').on('show.bs.modal', function(e) {
+            $("#registration_status_d").val('all').change();
+        });
+
         $('#editStatusModal').on('show.bs.modal', function(e) {
             var registrationId = $(e.relatedTarget).data('id');
             $("#registrationId").val(registrationId);
-            var rowIdx = $("tr:contains(" + registrationId+ ")").index();
+            var rowIdx = $("tr:contains(" + registrationId + ")").index();
             var statusTitle = table.row(rowIdx).data()[4];
-            $("#registrationStatus option").each(function() { this.selected = (this.text == statusTitle); });
+            $("#registrationStatus option").each(function() {
+                this.selected = (this.text == statusTitle);
+            });
         });
 
         $("#formAddTeacher").submit(function(e) {
@@ -254,7 +290,7 @@
         $("#formEditStatus").submit(function(e) {
             var registrationId = $("#registrationId").val();
             var statusTitle = $("#registrationStatus option:selected").text();
-            var rowIdx = $("tr:contains(" + registrationId+ ")").index();
+            var rowIdx = $("tr:contains(" + registrationId + ")").index();
             var form = $(this);
             e.preventDefault();
 
@@ -309,11 +345,23 @@
         $("#formDownloadAllRegistrations").submit(function(e) {
             var form = $(this);
             e.preventDefault();
+
             $.ajax({
                 url: '/RegistrationsStudy/DownloadAllRegistrations',
                 type: 'POST',
-                xhrFields: {
-                    responseType: 'blob'
+                data: form.serialize(),
+                xhr: function() {
+                    var xhr = new XMLHttpRequest();
+                    xhr.onreadystatechange = function() {
+                        if (xhr.readyState == 2) {
+                            if (xhr.status == 200) {
+                                xhr.responseType = "blob";
+                            } else {
+                                xhr.responseType = "text";
+                            }
+                        }
+                    };
+                    return xhr;
                 },
                 success: function(data, textStatus, request) {
                     form.find(":submit").prop('disabled', false);
@@ -322,11 +370,16 @@
                     displayToastr('studentRegistred');
                     getFileFromData(data, fileName);
                 },
-                error: function(xhr, status, error) {
+                error: function(xhr, textStatus, errorThrown) {
                     form.find(":submit").prop('disabled', false);
-                    displayToastr('error');
-                },
+                    if (xhr.responseJSON.message == 'noRegistration') {
+                        displayToastr('errorMsg', 'Aucune candidature n\'a été trouvé pour le filtre sélectionné');
+                    } else {
+                        displayToastr('error');
+                    }
+                }
             });
+
         })
     });
 
@@ -342,8 +395,3 @@
     }
 </script>
 @endsection
-<style>
-    .show {
-        background-color: none !important;
-    }
-</style>

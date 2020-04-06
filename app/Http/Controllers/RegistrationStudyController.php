@@ -7,7 +7,7 @@ use App\RegistrationStatus;
 use Illuminate\Http\Request;
 use App\Helpers\FoldersFiles as HelpersFoldersFiles;
 use App\Student;
-use Illuminate\Support\Facades\Storage;
+use Response;
 
 class RegistrationStudyController extends Controller
 {
@@ -51,18 +51,24 @@ class RegistrationStudyController extends Controller
     {
         HelpersFoldersFiles::cleanDirectory(storage_path() . '/registrations');
 
-        $success = Storage::deleteDirectory('storage/registrations');
-        if ($success) {
+        $registrationStatus = $request->registration_status_d;
+
+        if ($registrationStatus == "all") {
             $registrations = Registration::where("status_id", '!=', "1")->get();
-            foreach ($registrations as $registration) {
-                $student = $registration->student;
-                $fileName = 'Candidature_' . $student->registration->training->name . '_' . $student->lastname . '-' . $student->firstname . '.zip';
-                HelpersFoldersFiles::downloadZip($student->id, $fileName);
-            }
-            return HelpersFoldersFiles::downloadZip($student->id, null);
+        } else {
+            $registrations = Registration::where("status_id", $registrationStatus)->get();
         }
 
-        $registrations = Registration::where("status_id", '!=', "1")->get();
+        if($registrations->count() == 0)
+        {
+            $returnData = array(
+                'status' => 'error',
+                'message' => 'noRegistration'
+            );
+            $returnCode = 500;
+            return Response::json($returnData, $returnCode);
+        }
+
         foreach ($registrations as $registration) {
             $student = $registration->student;
             $fileName = 'Candidature_' . $student->registration->training->name . '_' . $student->lastname . '-' . $student->firstname . '.zip';

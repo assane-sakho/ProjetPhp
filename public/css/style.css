@@ -367,11 +367,7 @@ a:focus, .button:focus, button:focus, .btn:focus {
   }
 }
 
-.show .btn {
-  background-color: #2572ff;
-  color: #fff;
-  border-radius: 5px 5px 0 0;
-}
+
 .show .dropdown-toggle::after {
   transform: rotate(180deg);
   color: #fff;
