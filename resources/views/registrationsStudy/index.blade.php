@@ -129,7 +129,7 @@
                     </select>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-warning">Modifier</button>
+                    <button type="submit" class="btn btn-warning" value="Modifier">Modifier</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
                 </div>
             </form>
@@ -144,77 +144,75 @@
     $(document).ready(function() {
         var fileName = $("title").text() + " - " + $("#title").text();
 
-        $(document).ready(function() {
-            $('.table').DataTable({
-                "language": {
-                    "sEmptyTable": "Aucune donnée disponible dans le tableau",
-                    "sInfo": "Affichage de l'élément _START_ à _END_ sur _TOTAL_ éléments",
-                    "sInfoEmpty": "Affichage de l'élément 0 à 0 sur 0 élément",
-                    "sInfoFiltered": "(filtré à partir de _MAX_ éléments au total)",
-                    "sInfoPostFix": "",
-                    "sInfoThousands": ",",
-                    "sLengthMenu": "Afficher _MENU_ éléments",
-                    "sLoadingRecords": "Chargement...",
-                    "sProcessing": "Traitement...",
-                    "sSearch": "Rechercher :",
-                    "sZeroRecords": "Aucun élément correspondant trouvé",
-                    "oPaginate": {
-                        "sFirst": "Premier",
-                        "sLast": "Dernier",
-                        "sNext": "Suivant",
-                        "sPrevious": "Précédent"
-                    },
-                    "oAria": {
-                        "sSortAscending": ": activer pour trier la colonne par ordre croissant",
-                        "sSortDescending": ": activer pour trier la colonne par ordre décroissant"
-                    },
-                    "select": {
-                        "rows": {
-                            "_": "%d lignes sélectionnées",
-                            "0": "Aucune ligne sélectionnée",
-                            "1": "1 ligne sélectionnée"
-                        }
+        var table = $('.table').DataTable({
+            "language": {
+                "sEmptyTable": "Aucune donnée disponible dans le tableau",
+                "sInfo": "Affichage de l'élément _START_ à _END_ sur _TOTAL_ éléments",
+                "sInfoEmpty": "Affichage de l'élément 0 à 0 sur 0 élément",
+                "sInfoFiltered": "(filtré à partir de _MAX_ éléments au total)",
+                "sInfoPostFix": "",
+                "sInfoThousands": ",",
+                "sLengthMenu": "Afficher _MENU_ éléments",
+                "sLoadingRecords": "Chargement...",
+                "sProcessing": "Traitement...",
+                "sSearch": "Rechercher :",
+                "sZeroRecords": "Aucun élément correspondant trouvé",
+                "oPaginate": {
+                    "sFirst": "Premier",
+                    "sLast": "Dernier",
+                    "sNext": "Suivant",
+                    "sPrevious": "Précédent"
+                },
+                "oAria": {
+                    "sSortAscending": ": activer pour trier la colonne par ordre croissant",
+                    "sSortDescending": ": activer pour trier la colonne par ordre décroissant"
+                },
+                "select": {
+                    "rows": {
+                        "_": "%d lignes sélectionnées",
+                        "0": "Aucune ligne sélectionnée",
+                        "1": "1 ligne sélectionnée"
+                    }
+                }
+            },
+            dom: 'Bfrtip',
+            buttons: [{
+                    extend: 'csv',
+                    text: 'CSV',
+                    className: 'btn btn-info',
+                    title: fileName,
+                    exportOptions: {
+                        columns: ':visible:not(.not-export-col)'
                     }
                 },
-                dom: 'Bfrtip',
-                buttons: [{
-                        extend: 'csv',
-                        text: 'CSV',
-                        className: 'btn btn-info',
-                        title: fileName,
-                        exportOptions: {
-                            columns: ':visible:not(.not-export-col)'
-                        }
-                    },
-                    {
-                        extend: 'excel',
-                        text: 'Excel',
-                        className: 'btn btn-info',
-                        title: fileName,
-                        exportOptions: {
-                            columns: ':visible:not(.not-export-col)'
-                        }
-                    },
-                    {
-                        extend: 'pdf',
-                        text: 'PDF',
-                        className: 'btn btn-info',
-                        title: fileName,
-                        exportOptions: {
-                            columns: ':visible:not(.not-export-col)'
-                        }
-                    },
-                    {
-                        extend: 'print',
-                        text: 'Imprimer',
-                        className: 'btn btn-info',
-                        title: fileName,
-                        exportOptions: {
-                            columns: ':visible:not(.not-export-col)'
-                        }
-                    },
-                ]
-            });
+                {
+                    extend: 'excel',
+                    text: 'Excel',
+                    className: 'btn btn-info',
+                    title: fileName,
+                    exportOptions: {
+                        columns: ':visible:not(.not-export-col)'
+                    }
+                },
+                {
+                    extend: 'pdf',
+                    text: 'PDF',
+                    className: 'btn btn-info',
+                    title: fileName,
+                    exportOptions: {
+                        columns: ':visible:not(.not-export-col)'
+                    }
+                },
+                {
+                    extend: 'print',
+                    text: 'Imprimer',
+                    className: 'btn btn-info',
+                    title: fileName,
+                    exportOptions: {
+                        columns: ':visible:not(.not-export-col)'
+                    }
+                },
+            ]
         });
 
         $('#addTeacherModal').on('show.bs.modal', function(e) {
@@ -262,6 +260,10 @@
                     form.find(":submit").prop('disabled', false);
                     displayToastr('updated');
                     $('#editStatusModal').modal('toggle');
+                    table.cell({
+                        row: $("tr:contains('" + $("#registrationId").val() + "')").index(),
+                        column: 4
+                    }).data($("#registrationStatus option:selected").text());
                 },
                 error: function(xhr, status, error) {
                     form.find(":submit").prop('disabled', false);
