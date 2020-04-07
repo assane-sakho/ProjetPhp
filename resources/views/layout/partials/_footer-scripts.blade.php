@@ -38,49 +38,56 @@
 <script src="{{ asset('vendors/datatables/js/buttons.print.min.js') }}"></script>
 <!-- FontAwesome js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js"></script>
+<!-- DataTables Button print js -->
+<script src="{{ asset('js/moment-with-locales.min.js') }}"></script>
+
 
 <script type="text/javascript">
-    var btnSubmitClicked;
-    var loadingText = 'Chargement ';
-    var loader = '&nbsp;<i class="fa fa-spinner fa-spin"></i>';
+    $(document).ready(function() {
 
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
+        var btnSubmitClicked;
+        var loadingText = 'Chargement ';
+        var loader = '&nbsp;<i class="fa fa-spinner fa-spin"></i>';
+        moment.locale('fr')
 
-    $(':submit').click(function() {
-        btnSubmitClicked = this;
-        $(btnSubmitClicked).text(loadingText);
-        $(btnSubmitClicked).append(loader);
-    });
-
-    $(document).ajaxStart(function() {
-        $(':submit').each(function() {
-            $(this).prop('disabled', true);
-        });
-    });
-
-    $(document).ajaxStop(function() {
-        $(':submit').not(btnSubmitClicked).each(function() {
-            $(this).prop('disabled', false);
-        });
-        $(btnSubmitClicked).text($(btnSubmitClicked).val());
-    });
-
-    $('#logout').click(function() {
-        $.ajax({
-            url: '/Logout',
-            type: 'POST',
-            success: function(data) {
-                window.location.href = "/";
-                displayToastr('disconnected');
-            },
-            error: function(xhr, status, error) {
-                displayToastr('error');
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
 
+        $(':submit').click(function() {
+            btnSubmitClicked = this;
+            $(btnSubmitClicked).text(loadingText);
+            $(btnSubmitClicked).append(loader);
+        });
+
+        $(document).ajaxStart(function() {
+            $(':submit').each(function() {
+                $(this).prop('disabled', true);
+            });
+        });
+
+        $(document).ajaxStop(function() {
+            $(':submit').not(btnSubmitClicked).each(function() {
+                $(this).prop('disabled', false);
+            });
+            $(btnSubmitClicked).text($(btnSubmitClicked).val());
+        });
+
+        $('#logout').click(function() {
+            $.ajax({
+                url: '/Logout',
+                type: 'POST',
+                success: function(data) {
+                    window.location.href = "/";
+                    displayToastr('disconnected');
+                },
+                error: function(xhr, status, error) {
+                    displayToastr('error');
+                }
+            });
+
+        });
     });
 </script>

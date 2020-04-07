@@ -61,7 +61,9 @@
                                     <li>
                                         <a href="/Profile">Profil</a>
                                     </li>
-                           
+                                    <li>
+                                        <a href="/Discussion">Messagerie</a>
+                                    </li>
                                     <li>
                                        <a id="logout" href="">Déconnexion</a>
                                      </li>

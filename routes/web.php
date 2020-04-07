@@ -55,3 +55,10 @@ Route::get('/RegistrationsStudy', 'RegistrationStudyController@index');
 Route::post('/RegistrationsStudy/DownloadRegistration', 'RegistrationStudyController@downloadRegistration');
 Route::post('/RegistrationsStudy/DownloadAllRegistrations', 'RegistrationStudyController@downloadAllRegistrations');
 Route::post('/RegistrationsStudy/EditStatus', 'RegistrationStudyController@editStatus');
+
+
+/* Message */
+Route::get('/Discussion', 'MessageController@index');
+Route::get('/Discussion/GetStudentMessage', 'MessageController@getStudentMessage');
+Route::post('/Discussion/AddNewMessage', 'MessageController@add');
+Route::post('/Discussion/AddTeacherResponse', 'MessageController@addTeacherResponse');

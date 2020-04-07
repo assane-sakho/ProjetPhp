@@ -1098,7 +1098,7 @@ a:focus, .button:focus, button:focus, .btn:focus {
 }
 @media (min-width: 768px) {
   .navbar_bar {
-    width: 690px;
+    width: 790px;
     left: 15px;
   }
 }

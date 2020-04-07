@@ -38,12 +38,18 @@ function displayToastr(type, message) {
         case "errorMsg":
             toastr.error(
                 'Attention <i class="fa fa-exclamation-triangle" aria-hidden="true"></i><br/><br/>' +
-                    message + ".",
+                    message,
                 title
             );
             break;
         case "registrationSaved":
             toastr.success("Votre candidature a été enregistrée.", title);
+            break;
+        case "messageLoaded":
+            toastr.success("Les messages ont été chargés.", title);
+            break;
+        case "messageSent":
+            toastr.info("Message envoyé.", title);
             break;
     }
 }
