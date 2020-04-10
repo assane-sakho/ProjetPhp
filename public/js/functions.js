@@ -6,7 +6,7 @@ function displayToastr(type, message) {
             : 2000;
 
     toastr.options = {
-        timeOut: timeOut
+        timeOut: timeOut,
     };
 
     toastr.clear();
@@ -33,7 +33,10 @@ function displayToastr(type, message) {
         case "warning":
             toastr.warning(
                 '<i class="fa fa-exclamation-triangle" aria-hidden="true"></i> Attention<br/><br/>' +
-                    message + ".",title);
+                    message +
+                    ".",
+                title
+            );
             break;
         case "errorMsg":
             toastr.error(
@@ -50,6 +53,9 @@ function displayToastr(type, message) {
             break;
         case "messageSent":
             toastr.info("Message envoyé.", title);
+            break;
+        case "fileLoaded":
+            toastr.success("Fichier chargé !", title);
             break;
     }
 }

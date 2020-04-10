@@ -8,9 +8,10 @@ use App\Student;
 use App\Training;
 
 use Illuminate\Http\Request;
-use App\Helpers\FoldersFiles as HelpersFoldersFiles;
+use App\Helpers\FolderHelper;
 
 use Response;
+use Carbon;
 
 class RegistrationStudyController extends Controller
 {
@@ -47,30 +48,18 @@ class RegistrationStudyController extends Controller
         $studentId = $request->student_id;
         $student = Student::find($studentId);
 
-        $fileName = 'Candidature_' . $student->registration->training->name . '_' . $student->lastname . '-' . $student->firstname . '.zip';
-        HelpersFoldersFiles::deleteFile($fileName);
+        $fileName = 'Candidature ' . $student->registration->training->name . ' - ' . $student->fullName() . '.zip';
 
-        return HelpersFoldersFiles::downloadZip($studentId, $fileName);
+        return FolderHelper::downloadZip($fileName, $student);
     }
 
     function downloadAllRegistrations(Request $request)
     {
-        HelpersFoldersFiles::cleanDirectory(storage_path() . '/registrations');
-
         $registration_status = $request->registration_status_d;
         $training_d = $request->training_d;
+        $today = Carbon\Carbon::now()->format('Y-m-d');
 
-        if ($registration_status == "all") {
-            $registrations = Registration::where("status_id", '!=', "1");
-        } else {
-            $registrations = Registration::where("status_id", $registration_status);
-        }
-
-        if ($training_d != "all") {
-            $registrations = $registrations->where("training_id", $training_d)->get();
-        } else {
-            $registrations = $registrations->get();
-        }
+        $registrations = $this->getRegistrationsToDownload($registration_status, $training_d);
 
         if ($registrations->count() == 0) {
             $returnData = array(
@@ -83,9 +72,28 @@ class RegistrationStudyController extends Controller
 
         foreach ($registrations as $registration) {
             $student = $registration->student;
-            $fileName = 'Candidature_' . $student->registration->training->name . '_' . $student->lastname . '-' . $student->firstname . '.zip';
-            HelpersFoldersFiles::downloadZip($student->id, $fileName);
+            $fileName = 'Candidature ' . $student->registration->training->name . ' - ' . $student->fullName() . '.zip';
+            FolderHelper::downloadZip($fileName, $student);
         }
-        return HelpersFoldersFiles::downloadZip($student->id, null);
+        $fileName = 'Candidatures ' .  $today . '.zip';
+        FolderHelper::deleteFile($fileName);
+        return FolderHelper::downloadZip($fileName);
+    }
+
+    function getRegistrationsToDownload($registration_status, $training_d)
+    {
+        if ($registration_status == "all") {
+            $registrations = Registration::where("status_id", '!=', "1");
+        } else {
+            $registrations = Registration::where("status_id", $registration_status);
+        }
+
+        if ($training_d != "all") {
+            $registrations = $registrations->where("training_id", $training_d)->get();
+        } else {
+            $registrations = $registrations->get();
+        }
+
+        return $registrations;
     }
 }

@@ -55,7 +55,7 @@
                             </div>
                             <p />
                             @if( $inputName == "vle_screenshot")
-                            <img id="img-{{ $inputName }}" class="img-fluid" src="/Registration/GetFile?fileName={{ $inputName }}" alt="">
+                            <img id="img-{{ $inputName }}" class="img-fluid" src="/Registration/GetFile?fileName={{ $inputName }}" alt="vle_screenshot">
                             @else
                             <embed id="embed-{{ $inputName }}" src="/Registration/GetFile?fileName={{ $inputName }}" style="width:600px; height:800px;" frameborder="0">
                             @endif

@@ -12,7 +12,7 @@
         </div>
     </div>
 </section>
-<section class="popular_course section_bg section_padding">
+<section class="popular_course section_bg section_padding" id="selectStudentSection">
     <div class="container">
         <div class="row">
             <div class="col-md-12">
@@ -34,7 +34,7 @@
             </div>
         </div>
 </section>
-<section class="popular_course section_padding section_bg">
+<section class="popular_course section_padding section_bg" id="sendSection">
     <div class="container">
         <div class="row">
             <div class="col-md-12">
@@ -67,9 +67,17 @@
             var studentMessages = '{!! $studentMessages !!}';
             setConversation(JSON.parse(studentMessages), 'asStudent');
         } else {
-            getStudentMessages();
+            if ($("#studentMessage").val() === null) {
+                var div = $("#studentMessage").parent();
+                div.empty();
+                div.append('<i class="fa fa-info-circle"></i>');
+                div.append('<p>Il n\'y a pas de message actuellement.</p>');
+                $("#studentMessage, #sendSection").remove();
+            } else {
+                getStudentMessages();
+            }
         }
-       
+
         $("#form").submit(function(e) {
             var form = $(this);
             e.preventDefault();
@@ -85,12 +93,9 @@
                 },
                 error: function(xhr, status, error) {
                     $("#form, #content").hide();
-                    if(xhr.responseJSON.message  == 'noMessageFound')
-                    {   
+                    if (xhr.responseJSON.message == 'noMessageFound') {
                         displayToastr('errorMsg', 'Vous avez répondus à tout les messages !');
-                    }
-                    else
-                    {
+                    } else {
                         displayToastr('error');
                     }
                 },
@@ -111,14 +116,11 @@
                 success: function(data) {
                     displayToastr('messageLoaded');
                     setConversation(data, 'asTeacher');
-                    if($(".media").last().hasClass('responseContent'))
-                    {
+                    if ($(".media").last().hasClass('responseContent')) {
                         $("#form, #content").hide();
                         $(".col-md-12").find('b').remove();
                         $(".col-md-12").first().append('<b>En attente d\'un message de l\'élève.</b>');
-                    }
-                    else
-                    {
+                    } else {
                         $("#form, #content").show();
                         $(".col-md-12").find('b').remove();
 

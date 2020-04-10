@@ -7,9 +7,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     if (session()->has('student')) {
-        return view('registration.index');
+        return redirect()->action('RegistrationController@index');
     } else if (session()->has('teacher')) {
-        return view('registrationStudy.index');
+        return redirect()->action('RegistrationStudyController@index');
     }
     return view('index');
 });

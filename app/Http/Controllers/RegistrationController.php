@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Helpers\FoldersFiles as HelpersFoldersFiles;
+use App\Helpers\FolderHelper;
 use App\Http\Controllers\Controller;
 
 use App\Registration;
@@ -32,7 +32,7 @@ class RegistrationController extends Controller
                 $fileName = $studentFolder->report_card[$request->number]->name;
             }
     
-            return HelpersFoldersFiles::getFile($fileName);
+            return FolderHelper::getFile($fileName);
         }
         return view('errors.404');
     }
@@ -47,7 +47,7 @@ class RegistrationController extends Controller
             $fileName = $studentFolder->report_card[$request->number]->name;
         }
         ReportCard::where(['name' => $fileName, 'folder_id' => $studentFolder->id])->delete();
-        HelpersFoldersFiles::deleteFile($fileName);
+        FolderHelper::deleteFile($fileName);
     }
 
     public function getStepData(Request $request)
@@ -137,7 +137,8 @@ class RegistrationController extends Controller
             if ($request->has($input)) {
                 $file = $request->file($input);
                 $fileName = $input . '.' . $file->getClientOriginalExtension();
-                HelpersFoldersFiles::saveFile($file, $fileName);
+                FolderHelper::deleteFile($studentFolder[$input]);
+                FolderHelper::storeFile($file, $fileName);
 
                 if (($input == "report_card_" . $report_cardCount) && ($report_cardCount < 3) && (!$studentFolder->report_card->has($input))) {
                     ReportCard::create(["name" => $fileName, "folder_id" => $studentFolder->id]);

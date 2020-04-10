@@ -194,7 +194,7 @@
 @section('scripts')
 <script>
     $(document).ready(function() {
-        var fileName = $("title").text() + " - " + $("#title").text();
+        var fileName = 'Candidatures_' + moment().format('DD-MMMM-YYYY');
 
         var table = $('.table').DataTable({
             "language": {
@@ -363,6 +363,7 @@
             var btn = $(this).find("button[type=submit]:focus");
             $("#student_id").val($(btn).data('id'));
 
+            var xhr = new XMLHttpRequest();
             $.ajax({
                 url: '/RegistrationsStudy/DownloadRegistration',
                 type: 'POST',
@@ -370,12 +371,15 @@
                 xhrFields: {
                     responseType: 'blob'
                 },
+                xhr: function() {
+                    return xhr;
+                },
                 success: function(data, textStatus, request) {
-                    form.find(":submit").prop('disabled', false);
-                    var contentDisposition = request.getResponseHeader("Content-disposition");
+                    var contentDisposition = request.getResponseHeader("Content-Disposition");
                     var fileName = contentDisposition.split('filename')[1].split('"').join("").split('=').join("");
-                    displayToastr('studentRegistred');
                     getFileFromData(data, fileName);
+                    form.find(":submit").prop('disabled', false);
+                    displayToastr('fileLoaded');
                 },
                 error: function(xhr, status, error) {
                     form.find(":submit").prop('disabled', false);
@@ -389,12 +393,12 @@
             var form = $(this);
             e.preventDefault();
 
+            var xhr = new XMLHttpRequest();
             $.ajax({
                 url: '/RegistrationsStudy/DownloadAllRegistrations',
                 type: 'POST',
-                data: form.serialize(),
+                data: $("#formDownloadAllRegistrations").serialize(),
                 xhr: function() {
-                    var xhr = new XMLHttpRequest();
                     xhr.onreadystatechange = function() {
                         if (xhr.readyState == 2) {
                             if (xhr.status == 200) {
@@ -407,15 +411,15 @@
                     return xhr;
                 },
                 success: function(data, textStatus, request) {
-                    form.find(":submit").prop('disabled', false);
                     var contentDisposition = request.getResponseHeader("Content-Disposition");
                     var fileName = contentDisposition.split('filename')[1].split('"').join("").split('=').join("");
-                    displayToastr('studentRegistred');
                     getFileFromData(data, fileName);
-                },
-                error: function(xhr, textStatus, errorThrown) {
                     form.find(":submit").prop('disabled', false);
-                    if (xhr.responseJSON.message == 'noRegistration') {
+                    displayToastr('fileLoaded');
+                },
+                error: function() {
+                    form.find(":submit").prop('disabled', false);
+                    if (JSON.parse(xhr.responseText).message == 'noRegistration') {
                         displayToastr('errorMsg', 'Aucune candidature n\'a été trouvé pour le filtre sélectionné');
                     } else {
                         displayToastr('error');
@@ -425,6 +429,7 @@
 
         })
     });
+
 
     function getFileFromData(data, fileName) {
         var a = document.createElement('a');

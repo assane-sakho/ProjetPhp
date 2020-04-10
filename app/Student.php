@@ -24,4 +24,14 @@ class Student extends Model
     {
         return $this->belongsTo('App\Message');
     }
+
+    public function fullName()
+    {
+        return $this->lastname . ' ' . $this->firstname;
+    }
+
+    public function folderPath()
+    {
+        return 'uploads\\' . $this->id . '\\';
+    }
 }

@@ -40,7 +40,7 @@
                     <div class="col-lg-12">
                         <div class="header_iner d-flex justify-content-between align-items-center">
                             <div class="sidebar_icon troggle_icon d-lg-none">
-                                <i class="icon_menu"></i>
+                                <i class="fa fa-bars"></i>
                             </div>
                             <div class="logo">
                                <a href="{{ $homeHref }}">
