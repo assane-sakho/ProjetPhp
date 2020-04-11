@@ -29,7 +29,7 @@
       <hr class="mb-4">
       <form action="" id="formLogIn">
         <label for="userLoginMail">Adresse mail :</label>
-        <input type="mail" name="userLoginMail" id="userLoginMail" class="form-control"required></p>
+        <input type="email" name="userLoginMail" id="userLoginMail" class="form-control"required></p>
 
         <label for="userLoginPassword">Mot de passe :</label>
         <input type="password"name="userLoginPassword" id="userLoginPassword" class="form-control"required></p>
