@@ -6,7 +6,7 @@
             <tr>
                 <td>{{ $fileText }}</td>
                 <td>
-                    <input class="input-{{ $inputName }} form-control" accept="{{ $acceptedFile }}application/pdf" name="{{ $inputName }}" id="{{ $inputName }}" type="file" onchange="$(this).removeClass('bg-danger');" required>
+                    <input class="input-{{ $inputName }} form-control" accept="{{ $acceptedFile }}" name="{{ $inputName }}" id="{{ $inputName }}" type="file" onchange="$(this).removeClass('bg-danger');" required>
                 </td>
             </tr>
         </table>

@@ -9,7 +9,7 @@ class Folder extends Model
     public $timestamps = false;
     protected $fillable = ['cv', 'cover_letter', 'vle_screenshot'];
 
-    function report_card()
+    function report_cards()
     {
         return $this->hasMany('App\ReportCard');
     }

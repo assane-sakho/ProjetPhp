@@ -6,7 +6,7 @@ use Response;
 
 class LogHelper
 {
-    public static function connectTryConnectUser($email, $password)
+    public static function tryConnectUser($email, $password)
     {
         $studentExistResult = StudentHelper::checkIfStudentExist($email, $password);
         $studentExist = $studentExistResult[0];

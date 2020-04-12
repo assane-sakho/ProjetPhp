@@ -13,7 +13,7 @@ class LogController extends Controller
         $email = $request->userLoginMail;
         $password = $request->userLoginPassword;
 
-        return LogHelper::connectTryConnectUser($email, $password);
+        return LogHelper::tryConnectUser($email, $password);
     }
 
     public function logOut()

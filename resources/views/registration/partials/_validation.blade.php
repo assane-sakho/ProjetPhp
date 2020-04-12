@@ -65,7 +65,7 @@
             <tr>
                 <th>Relevés de notes de l’année précédente</th>
                 <td>
-                    @for ($i = 0; $i < count(session('student')->registration->folder->report_card); $i++)
+                    @for ($i = 0; $i < count(session('student')->registration->folder->report_cards); $i++)
                         <embed src="/Registration/GetFile?fileName=report_card&number={{$i}}" style="width:150px; height:200px;" frameborder="0">
                         @endfor
                 </td>

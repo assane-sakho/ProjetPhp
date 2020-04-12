@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Helpers\FolderHelper;
+use App\Helpers\FileHelper;
+use App\Helpers\RegistrationHelper;
 use App\Http\Controllers\Controller;
 
 use App\Registration;
@@ -22,137 +23,66 @@ class RegistrationController extends Controller
 
     public function getFile(Request $request)
     {
-        if (session()->has('student'))
-        {
-            $studentFolder = Registration::find(session('student')->registration->id)->folder;
+        if (session()->has('student')) {
+            $fileWanted = $request->fileName;
+            $index = $request->number;
 
-            if ($request->fileName != "report_card") {
-                $fileName = $studentFolder[$request->fileName];
-            } else {
-                $fileName = $studentFolder->report_card[$request->number]->name;
-            }
-    
-            return FolderHelper::getFile($fileName);
+            return FileHelper::getFile($fileWanted, $index);
         }
         return view('errors.404');
     }
 
     public function deleteFile(Request $request)
     {
-        $studentFolder = Registration::find(session('student')->registration->id)->folder;
+        $fileToDelete = $request->fileName;
+        $index = $request->number;
 
-        if ($request->fileName != "report_card") {
-            $fileName = $studentFolder[$request->fileName];
-        } else {
-            $fileName = $studentFolder->report_card[$request->number]->name;
-        }
-        ReportCard::where(['name' => $fileName, 'folder_id' => $studentFolder->id])->delete();
-        FolderHelper::deleteFile($fileName);
+        FileHelper::deleteFile($fileToDelete, $index);
     }
 
     public function getStepData(Request $request)
     {
         $stepNumber = $request->step_number;
-        $uploadTitle = "";
-        $acceptedFile = "";
-        $viewName = "fileUpload";
-        $filesUploaded = array();
+
         $studentRegistration = Registration::find(session('student')->registration->id);
         $studentFolder = $studentRegistration->folder;
 
-        switch ($stepNumber) {
-            case 0:
-                $trainings = Training::all();
-                $student_training_id = $studentRegistration->training_id;
-                return view('registration.partials._trainings', compact([
-                    "trainings", "trainings",
-                    "student_training_id", "student_training_id",
-                ]));
-                break;
-            case 1:
-                $fileText = "CV";
-                $inputName = "cv";
-                $uploadTitle = "votre " . $fileText;
-                array_push($filesUploaded, $studentFolder->cv);
-                break;
-            case 2:
-                $fileText = "Lettre de motivation";
-                $inputName = "cover_letter";
-                $uploadTitle = "votre " . lcfirst($fileText);
-                array_push($filesUploaded, $studentFolder->cover_letter);
-                break;
-            case 3:
-                $fileText = "Relevé de notes";
-                $inputName = "report_card";
-                foreach ($studentFolder->report_card as $report_card) {
-                    array_push($filesUploaded, $report_card->name);
-                }
-                $viewName = "reportCardUpload";
-                break;
-            case 4:
-                $fileText = "Imprime écran de l'ENT de l'année en cours";
-                $inputName = "vle_screenshot";
-                $uploadTitle = "votre " . lcfirst($fileText);
-                $acceptedFile = "image/x-png, image/jpeg, ";
-                array_push($filesUploaded, $studentFolder->vle_screenshot);
-                break;
-            case 5:
-                return view('registration.partials._validation');
-                break;
+        $stepInfo = RegistrationHelper::getStepsnfo()[$stepNumber];
+
+        $trainings = $stepInfo["trainings"] ?? null;
+        $student_training_id = $stepInfo["student_training_id"] ?? null;
+        $fileText = $stepInfo["fileText"] ?? null;
+        $inputName = $stepInfo["inputName"] ?? null;
+        $uploadTitle = $stepInfo["uploadTitle"] ?? null;
+        $acceptedFile = $stepInfo["acceptedFile"] ?? null;
+        $filesUploaded = $stepInfo["filesUploaded"] ?? null;
+        $viewName = $stepInfo["viewName"];
+
+        if ($filesUploaded != null) {
+            $filesUploaded =  array_filter($filesUploaded);
         }
 
-        $filesUploaded = array_filter($filesUploaded);
-
-        if (count($filesUploaded) == 1 && $inputName != "report_card") {
-            $viewName = "fileReplace";
-        }
         return view(
-            'registration.partials._' . $viewName,
+            'registration.partials.' . $viewName,
             compact([
-                "filesUploaded", "filesUploaded",
-                "inputName", "inputName",
-                "fileText", "fileText",
-                "uploadTitle", "uploadTitle",
-                "acceptedFile", "acceptedFile",
-                "stepNumber", "stepNumber"
+                "stepNumber", "trainings", "student_training_id", "fileText", "inputName", "uploadTitle", "acceptedFile", "filesUploaded",
             ])
         );
     }
 
     public function saveStepData(Request $request)
     {
-        $studentRegistration = Registration::find(session('student')->registration->id);
-        $studentFolder = $studentRegistration->folder;
-
-        $report_cardCount = count($studentFolder->report_card);
-
-        $files = array(
-            "cv",
-            "cover_letter",
-            "vle_screenshot",
-            "report_card_" . $report_cardCount,
-        );
-
-        foreach ($files as $input) {
-            if ($request->has($input)) {
-                $file = $request->file($input);
-                $fileName = $input . '.' . $file->getClientOriginalExtension();
-                FolderHelper::deleteFile($studentFolder[$input]);
-                FolderHelper::storeFile($file, $fileName);
-
-                if (($input == "report_card_" . $report_cardCount) && ($report_cardCount < 3) && (!$studentFolder->report_card->has($input))) {
-                    ReportCard::create(["name" => $fileName, "folder_id" => $studentFolder->id]);
-                } else {
-                    $studentFolder[$input] = $fileName;
-                }
+        $folderFiles = FileHelper::getFileArray();
+        foreach ($folderFiles as $folderFile) {
+            if ($request->has($folderFile)) {
+                $fileToUpload = $request->file($folderFile);
+                RegistrationHelper::uploadFile($folderFile, $fileToUpload);
             }
         }
-        $studentFolder->save();
-        if ($request->has("training")) {
-            $studentRegistration->training_id = $request["training"];
-            $studentRegistration->save();
+
+        if ($request->has('training')) {
+            RegistrationHelper::updateTraining($request["training"]);
         }
-        session()->put('student', $studentRegistration->student);
     }
 
     public function complete()

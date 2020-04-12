@@ -21,4 +21,11 @@ class StudentHelper
         }
         return array($result, $student);
     }
+
+    public static function updateSessionVar()
+    {
+        $id = session('student')->id;
+        $student = Student::find($id);
+        session()->put('student', $student);
+    }
 }

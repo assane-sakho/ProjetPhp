@@ -4,39 +4,16 @@ namespace App\Helpers;
 
 use File;
 
+use App\ReportCard;
+
 use Illuminate\Support\Facades\Storage;
 use League\Flysystem\Filesystem;
 use League\Flysystem\ZipArchive\ZipArchiveAdapter;
 use Symfony\Component\HttpFoundation\Response;
 use ZipArchive;
 
-class FolderHelper
+class RegistrationFileHelper
 {
-    public static function getFile($fileName)
-    {
-        $path = session('student')->folderPath() . $fileName;
-
-        $type = explode('.', $fileName)[1] == 'pdf' ? 'application/pdf' : 'image/jpg';
-        $headers = [
-            'Content-Type'        =>  $type,
-            'Content-Disposition' => 'filename="' . $fileName . '"',
-        ];
-
-        return response(Storage::disk('s3')->get($path))->withHeaders($headers);
-    }
-
-    public static function storeFile($file, $fileName)
-    {
-        $path = session('student')->folderPath();
-        $file->storeAs($path,  $fileName, 's3');
-    }
-
-    public static function deleteFile($fileName)
-    {
-        Storage::disk('s3')->delete($fileName);
-        @unlink(storage_path('app/registrations/' .$fileName));
-    }
-
     public static function cleanDirectory($path)
     {
         $files = File::files($path);
