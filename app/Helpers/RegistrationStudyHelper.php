@@ -2,25 +2,24 @@
 
 namespace App\Helpers;
 
+use App\Registration;
 use File;
 
-use App\ReportCard;
 
 use Illuminate\Support\Facades\Storage;
 use League\Flysystem\Filesystem;
 use League\Flysystem\ZipArchive\ZipArchiveAdapter;
-use Symfony\Component\HttpFoundation\Response;
 use ZipArchive;
+use  Carbon;
 
-class RegistrationFileHelper
+class RegistrationStudyHelper
 {
-    public static function cleanDirectory($path)
-    {
-        $files = File::files($path);
 
-        foreach ($files as $key => $value) {
-            File::delete($value);
-        }
+    public static function updateStatus($registrationId, $registrationStatusId)
+    {
+        $registration = Registration::find($registrationId);
+        $registration->status_id = $registrationStatusId;
+        $registration->save();
     }
 
     public static function downloadZip($fileName, $student = null)
@@ -64,5 +63,36 @@ class RegistrationFileHelper
             'Content-disposition: attachment; filename:`' . $fileName . '`'
         );
         return response()->download($filePath, $fileName, $headers);
+    }
+
+    public static function getRegistrationsToDownload($registration_status, $training_d)
+    {
+        if ($registration_status == "all") {
+            $registrations = Registration::where("status_id", '!=', "1");
+        } else {
+            $registrations = Registration::where("status_id", $registration_status);
+        }
+
+        if ($training_d != "all") {
+            $registrations = $registrations->where("training_id", $training_d)->get();
+        } else {
+            $registrations = $registrations->get();
+        }
+
+        return $registrations;
+    }
+
+    public static function downloadAllRegistration($registrations)
+    {
+        $today = Carbon\Carbon::now()->format('Y-m-d');
+
+        foreach ($registrations as $registration) {
+            $student = $registration->student;
+            $fileName = 'Candidature ' . $student->registration->training->name . ' - ' . $student->fullName() . '.zip';
+            RegistrationStudyHelper::downloadZip($fileName, $student);
+        }
+        $fileName = 'Candidatures ' .  $today . '.zip';
+        @unlink(storage_path('app/registrations/' . $fileName));
+        return RegistrationStudyHelper::downloadZip($fileName);
     }
 }
