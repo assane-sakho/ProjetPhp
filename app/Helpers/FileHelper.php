@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Storage;
 
 class FileHelper
 {
-        public static function storeFile($file, $fileName)
+    public static function storeFile($file, $fileName)
     {
         $student  = session('student');
         $studentFolderPath = $student->folderPath();
@@ -14,7 +14,7 @@ class FileHelper
         $file->storeAs($studentFolderPath, $fileName, 's3');
     }
 
-        public static function getFile($fileWanted, $index = null)
+    public static function getFile($fileWanted, $index = null)
     {
         $student  = session('student');
         $studentFolder = $student->registration->folder;
@@ -77,7 +77,7 @@ class FileHelper
         return $currentFileName;
     }
 
-        public static function getFileArray()
+    public static function getFileArray()
     {
         $student  = session('student');
         $studentFolder = $student->registration->folder;

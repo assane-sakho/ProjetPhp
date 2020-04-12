@@ -64,7 +64,7 @@
                                 <td>{{ $registration->id }}</td>
                                 <td>{{ $registration->student->lastname }}</td>
                                 <td>{{ $registration->student->firstname  }}</td>
-                                <td>{{ $registration->training->name }}</td>
+                                <td>{{ $registration->training->name ?? 'Non renseigné' }}</td>
                                 <td>{{ $registration->registration_status->title  }}</td>
                                 <td>
                                     <div class="text-center">

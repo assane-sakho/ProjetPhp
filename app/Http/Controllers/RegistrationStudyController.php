@@ -18,16 +18,14 @@ class RegistrationStudyController extends Controller
     public function index()
     {
         if (session()->has('teacher')) {
-            $data =  array();
-
             $registrations = Registration::all();
             $statuses = RegistrationStatus::where("id", '!=', 1)->get();
             $trainings = Training::all();
 
             return view('registrationsStudy.index', compact([
-                "registrations", "registrations",
-                "statuses", "statuses",
-                "trainings", "trainings",
+                "registrations", 
+                "statuses",
+                "trainings"
             ]));
         }
         return view('errors.404');

@@ -7,7 +7,7 @@ use App\Training;
 
 class RegistrationHelper
 {
-        public static function uploadFile($folderFile, $fileToUpload)
+    public static function uploadFile($folderFile, $fileToUpload)
     {
         $student  = session('student');
         $studentFolder = $student->registration->folder;
@@ -31,7 +31,7 @@ class RegistrationHelper
         StudentHelper::updateSessionVar();
     }
 
-        public static function updateTraining($training_id)
+    public static function updateTraining($training_id)
     {
         $student  = session('student');
         $studentRegistration =  $student->registration;
@@ -40,7 +40,7 @@ class RegistrationHelper
         $studentRegistration->save();
     }
 
-        public static function deleteReportCard($fileName)
+    public static function deleteReportCard($fileName)
     {
         $student  = session('student');
         $studentFolder = $student->registration->folder;

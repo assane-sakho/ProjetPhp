@@ -2,8 +2,6 @@
 
 namespace App\Helpers;
 
-use Response;
-
 class LogHelper
 {
     public static function tryConnectUser($email, $password)
@@ -26,7 +24,7 @@ class LogHelper
             return LogHelper::connectStudent($student);
         }
     }
-  
+
     public static function connectStudent($student)
     {
         $registrationStatusId = $student->registration->status_id;
@@ -35,38 +33,21 @@ class LogHelper
         session()->put('student', $student);
         session()->put('isRegistrationComplete', $isRegistrationComplete);
 
-        $returnData = array(
-            'status' => 'success',
-            'name' => $student->firstname . ' ' . $student->lastname,
-            'nextLocation' => '/Registration',
-        );
-        $returnCode = 200;
-        return Response::json($returnData, $returnCode);
+        return ResponseHelper::returnResponseSuccess(['name' => $student->fullName(), 'nextLocation' => '/Registration']);
     }
 
     public static function connectTeacher($teacher)
     {
         session()->put('teacher', $teacher);
 
-        $returnData = array(
-            'status' => 'success',
-            'name' => 'Professeur',
-            'nextLocation' => '/RegistrationsStudy',
-        );
-        $returnCode = 200;
-        return Response::json($returnData, $returnCode);
+        return ResponseHelper::returnResponseSuccess(['name' => 'Professeur', 'nextLocation' => '/RegistrationsStudy']);
     }
 
     public static function userNotConnected()
     {
-        $returnData = array(
-            'status' => 'error',
-            'message' => 'userNotFound'
-        );
-        $returnCode = 500;
-        return Response::json($returnData, $returnCode);
+        return ResponseHelper::returnResponseError('userNotFound');
     }
-   
+
     public static function disconnectUser()
     {
         session()->forget('student');
