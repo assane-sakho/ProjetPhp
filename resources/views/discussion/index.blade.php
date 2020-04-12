@@ -20,7 +20,7 @@
                     @if(session()->has('teacher'))
                     <h4>Sélectionnez un étudiant :</h4>
                     <select name="studentMessage" id="studentMessage" class="form-control">
-                        @foreach($students as $student)
+                        @foreach($data['students'] as $student)
                         <option value="{{ $student->id }} ">{{ $student->lastname }} {{ $student->firstname}}</option>
                         @endforeach
                     </select>
@@ -40,10 +40,10 @@
             <div class="col-md-12">
                 <form action="" method="POST" id="form">
                     <input type="hidden" id="student_id" name="student_id">
-                    <label for="content">{{ $labelText }}: </label>
+                    <label for="content">{{ $data['labelText'] }}: </label>
                     <textarea name="content" id="content" cols="30" rows="10" class="form-control"></textarea>
                     <br />
-                    <button type="submit" class="btn btn-info" value="Envoyer">{{ $btnText }}</button>
+                    <button type="submit" class="btn btn-info" value="Envoyer">{{ $data['btnText'] }}</button>
                 </form>
                 <p class="text-center">
                     <a href="/Registration" class="go_back"> <i class="arrow_back"></i>Retour au dépot de candidature</a>
@@ -59,12 +59,12 @@
 <script>
     $(document).ready(function() {
         if ('{{ session()->has("student") }}' == '1') {
-            if ('{{ $canSend }}' != 'true') {
+            if ('{{ $data["canSend"] ?? "false" }}' != 'true') {
                 $("#form, #content").remove();
                 $(".col-md-12").first().append('<b>En attente de la réponse d\'un professeur.</b>');
             }
 
-            var studentMessages = '{!! $studentMessages !!}';
+            var studentMessages = '{!! $data["studentMessages"] ?? "null" !!}';
             setConversation(JSON.parse(studentMessages), 'asStudent');
         } else {
             if ($("#studentMessage").val() === null) {
@@ -83,7 +83,7 @@
             e.preventDefault();
             $("#student_id").val($("#studentMessage").val());
             $.ajax({
-                url: '{{ $formAction }}',
+                url: '{{ $data["formAction"] }}',
                 type: 'POST',
                 data: form.serialize(),
                 success: function(data) {

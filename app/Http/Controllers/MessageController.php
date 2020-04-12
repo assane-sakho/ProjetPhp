@@ -3,87 +3,42 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+
 use App\Message;
-use App\Student;
-use Carbon\Carbon;
-use Response;
+use App\Helpers\MessageHelper;
 
 class MessageController extends Controller
 {
     public function index()
     {
-        $students = '';
-        $studentMessages = '';
-        $canSend = 'true';
-
         if (session()->has('student')) {
-            $studentMessages = Message::where("student_id", session('student')->id)->get();
-            $formAction = "/Discussion/AddNewMessage";
-            $labelText ='Laisser un message à un professeur';
-            $btnText ='Envoyer';
-
-            $lastMessage = Message::whereNull(["responseContent", "responseDate"])->get()->sortByDesc('id')->first();
-            if($lastMessage != null)
-            {
-                $canSend = 'false';
-            }
+            $data = MessageHelper::getStudentMessageInfo();
         } else if (session()->has('teacher')) {
-            $uniqueStudentIdMessage = Message::get('student_id')->unique('student_id')->pluck('student_id')->toArray();;
-            $students= Student::whereIn('id', $uniqueStudentIdMessage )->get();
-            $formAction = "/Discussion/AddTeacherResponse";
-            $labelText ='Répondre à l\'élève';
-            $btnText ='Répondre';
-          
+            $data = MessageHelper::getTeacherMessageInfo();
         } else {
             return view('index');
         }
 
-        return view('discussion.index', compact([
-            "canSend",
-            "labelText",
-            "btnText",
-            "students",
-            "studentMessages",
-            "formAction",
-        ]));
+        return view('discussion.index', compact(["data"]));
     }
 
     public function add(Request $request)
     {
-        $message =  Message::create([
-            "student_id" => session('student')->id,
-            "messageContent" => $request->content,
-            "messageDate" => Carbon::now()->format('Y-m-d H:i')
-        ]);
-        return $message;
+        $messageContent = $request->content;
+        return MessageHelper::addStudentMessage($messageContent);
     }
 
     public function addTeacherResponse(Request $request)
     {
-        $message = Message::where([
-            "student_id" => $request->student_id,
-            "responseContent" => null,
-            "responseDate" => null,
-        ])->get()->sortByDesc('id')->first();
-      
-        if($message == null)
-        {
-            $returnData = array(
-                'status' => 'error',
-                'message' => 'noMessageFound'
-            );
-            $returnCode = 500;
-            return Response::json($returnData, $returnCode);
-        }
-
-        $message->responseContent = $request->content;
-        $message->responseDate = Carbon::now()->format('Y-m-d H:i');
-        $message->save();
-        return $message;
+        $studentId = $request->student_id;
+        $responseContent =  $request->content;
+    
+        return MessageHelper::addTeacherResponse($studentId, $responseContent);
     }
 
     public function getStudentMessage(Request $request)
     {
-        return  Message::where("student_id", $request->studentId)->get();
+        $studentId = $request->studentId;
+        return MessageHelper::getStudentMessage($studentId);
     }
 }
