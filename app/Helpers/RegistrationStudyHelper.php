@@ -2,9 +2,12 @@
 
 namespace App\Helpers;
 
+use App\Training;
 use App\Registration;
-use File;
+use App\RegistrationStatus;
+use App\Teacher;
 
+use File;
 
 use Illuminate\Support\Facades\Storage;
 use League\Flysystem\Filesystem;
@@ -94,5 +97,20 @@ class RegistrationStudyHelper
         $fileName = 'Candidatures ' .  $today . '.zip';
         @unlink(storage_path('app/registrations/' . $fileName));
         return RegistrationStudyHelper::downloadZip($fileName);
+    }
+
+    public static function getData()
+    {
+        $registrations = Registration::all();
+        $statuses = RegistrationStatus::where("id", '!=', 1)->get();
+        $trainings = Training::all();
+        $teachers = Teacher::where("email", "!=", "admin@parisnanterre.fr")->get();
+
+        return [
+            "registrations" => $registrations,
+            "statuses" => $statuses,
+            "trainings" => $trainings,
+            "teachers" => $teachers,
+        ];
     }
 }

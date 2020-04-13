@@ -1,22 +1,29 @@
 @php
-$i = 0;
+    $i = 0;
 @endphp
+
 <br />
 <h5>Déposez vos relevés de notes</h5>
 <div id="form-step-{{ $stepNumber }}" role="form" data-toggle="validator">
     <div class="form-group col-md-10">
         <table class="table table-bordered">
-            @for(; $i < count($filesUploaded); $i++)
+            @for(; $i < count($data['filesUploaded']); $i++)
             <tr>
-                <td class="{{ $inputName }}_title">{{ $fileText }} n° {{ $i+1 }}</td>
+                <td class="{{ $data['inputName'] }}_title">{{ $data['fileText'] }} n° {{ $i+1 }}</td>
                 <td>
-                    <embed id="embed-{{ $inputName }}_{{ $i }}" src="/Registration/GetFile?fileName={{ $inputName }}&number={{ $i }}" style="width:600px; height:800px;" frameborder="0">
+                    <embed 
+                        id="embed-{{ $data['inputName'] }}_{{ $i }}" 
+                        src="/Registration/GetFile?fileName={{ $data['inputName'] }}&number={{ $i }}" 
+                        style="width:600px; height:800px;"
+                        frameborder="0"
+                    >
                 </td>
-                @if(!session('isRegistrationComplete') && count($filesUploaded) > 1)
+                @if(!session('isRegistrationComplete') && count($data['filesUploaded']) > 1)
                 <td><button class="btn btn-danger btnRegistration deleteFile" type="button">Supprimer</button></td>
                 @endif
                 </tr>
             @endfor
+
             @if($i < 3 && !session('isRegistrationComplete'))
                 @php 
                     $required= "";
@@ -24,9 +31,14 @@ $i = 0;
                         $required="required" ;
                 @endphp 
             <tr>
-                <td class="{{ $inputName }}_title">{{ $fileText }} n° {{ $i +1 }}</td>
+                <td class="{{ $data['inputName'] }}_title">{{ $data['fileText'] }} n° {{ $i +1 }}</td>
                 <td>
-                    <input class="input-{{ $inputName }} form-control" accept="application/pdf" name="{{ $inputName }}_{{ $i }}" id="{{ $inputName }}_{{ $i }}" type="file" onchange="$(this).removeClass('bg-danger');" {{$required }}>
+                    <input class="input-{{ $data['inputName'] }} form-control" 
+                    accept="application/pdf"
+                    name="{{ $data['inputName'] }}_{{ $i }}"
+                    id="{{ $data['inputName'] }}_{{ $i }}" 
+                    type="file" 
+                    onchange="$(this).removeClass('bg-danger');" {{ $required }}>
                 </td>
             </tr>
             @endif
@@ -43,7 +55,7 @@ $i = 0;
             url: '/Registration/DeleteFile',
             type: 'POST',
             data: {
-                fileName: "{{ $inputName }}",
+                fileName: "{{ $data['inputName'] }}",
                 number: index
             },
             success: function(data) {
@@ -59,7 +71,7 @@ $i = 0;
                     length: reportCardCount
                 }, (v, k) => k + 1)
                 var i = 0;
-                $(table).find('.{{ $inputName }}_title').each(function() {
+                $(table).find('.{{ $data['inputName'] }}_title').each(function() {
                     $(this).text($(this).text().slice(0, -1) + listOfIndex[i]);
                     i++;
                 });

@@ -27,7 +27,7 @@ class Student extends Model
 
     public function fullName()
     {
-        return $this->lastname . ' ' . $this->firstname;
+        return $this->firstname . ' ' . $this->lastname;
     }
 
     public function folderPath()

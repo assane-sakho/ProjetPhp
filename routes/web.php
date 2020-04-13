@@ -54,7 +54,7 @@ Route::post('/Registration/Complete', 'RegistrationController@complete');
 Route::get('/RegistrationsStudy', 'RegistrationStudyController@index');
 Route::post('/RegistrationsStudy/DownloadRegistration', 'RegistrationStudyController@downloadRegistration');
 Route::post('/RegistrationsStudy/DownloadAllRegistrations', 'RegistrationStudyController@downloadAllRegistrations');
-Route::post('/RegistrationsStudy/EditStatus', 'RegistrationStudyController@editStatus');
+Route::post('/RegistrationsStudy/UpdateStatus', 'RegistrationStudyController@updateStatus');
 
 
 /* Message */

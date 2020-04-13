@@ -52,7 +52,7 @@ class RegistrationHelper
         StudentHelper::updateSessionVar();
     }
 
-    public static function getStepsnfo()
+    public static function getStepinfos()
     {
         $viewNameUpload = "_fileUpload";
         $viewNameReplace = "_fileReplace";
@@ -98,12 +98,18 @@ class RegistrationHelper
                 "uploadTitle" => "votre imprime écran de l'ENT de l'année en cours",
                 "filesUploaded" => array($studentFolder->vle_screenshot),
                 "acceptedFile" => "image/x-png, image/jpeg",
-                "viewName" => $studentFolder->vle_screenshoot == null  ? $viewNameUpload : $viewNameReplace
+                "viewName" => $studentFolder->vle_screenshot == null  ? $viewNameUpload : $viewNameReplace
             ],
             5 => [
                 "viewName" => "_validation"
             ]
         ];
+
+        for ($i = 0; $i < count($uploadsInfos); $i++) {
+            if (array_key_exists('filesUploaded', $uploadsInfos[$i])) {
+                $uploadsInfos[$i]['filesUploaded'] = array_filter($uploadsInfos[$i]['filesUploaded']);
+            }
+        }
         return $uploadsInfos;
     }
 }

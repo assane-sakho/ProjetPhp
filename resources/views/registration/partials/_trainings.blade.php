@@ -9,9 +9,9 @@
             <option value="">-- Sélectionnez une option</option>
             @php
                 $selected;
-                foreach ($trainings as $training)
+                foreach ($data['trainings'] as $training)
                 {
-                    if($training->id == $student_training_id)
+                    if($training->id == $data['student_training_id'])
                     {
                         $selected = "selected";
                     }

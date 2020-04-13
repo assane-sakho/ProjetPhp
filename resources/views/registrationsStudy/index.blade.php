@@ -32,7 +32,7 @@
                 <br />
                 <form id="formDownloadRegistration" action="" method="post">
                     <input type="hidden" id="student_id" name="student_id">
-                    <table class="table table-striped">
+                    <table class="table table-striped" id="registrationsTable">
                         <thead>
                             <tr>
                                 <td>#</td>
@@ -41,7 +41,7 @@
                                 <td>
                                     <select class="form-control" id="trainingFilter">
                                         <option value="">Niveau</option>
-                                        @foreach($trainings as $training)
+                                        @foreach($data['trainings'] as $training)
                                         <option value="{{ $training->name }}">{{ $training->name }}</option>
                                         @endforeach
                                     </select>
@@ -49,7 +49,7 @@
                                 <td>
                                     <select class="form-control" id="statusFilter">
                                         <option value="">Statut</option>
-                                        @foreach($statuses as $status)
+                                        @foreach($data['statuses'] as $status)
                                         <option value="{{ $status->title }}">{{ $status->title }}</option>
                                         @endforeach
                                     </select>
@@ -59,14 +59,14 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($registrations as $registration)
+                            @foreach($data['registrations'] as $registration)
                             <tr>
                                 <td>{{ $registration->id }}</td>
                                 <td>{{ $registration->student->lastname }}</td>
                                 <td>{{ $registration->student->firstname  }}</td>
                                 <td>{{ $registration->training->name ?? 'Non renseigné' }}</td>
                                 <td>{{ $registration->registration_status->title  }}</td>
-                                <td>
+                                <td class="not-export-col">
                                     <div class="text-center">
                                         @if($registration->registration_status->id != 1)
                                         <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#editStatusModal" data-id="{{ $registration->id }}">Modifier</button>
@@ -75,7 +75,7 @@
                                         @endif
                                     </div>
                                 </td>
-                                <td>
+                                <td class="not-export-col">
                                     <div class="text-center">
                                         @if($registration->registration_status->id != 1)
                                         <button type="submit" value="Téléchager" class="btn btn-success downloadRegistration" data-id="{{ $registration->student->id }}">Télécharger</button>
@@ -96,7 +96,7 @@
 
 @if(session('teacher')->id == 1)
 <div class="modal fade" id="addTeacherModal" tabindex="-1" role="dialog" aria-labelledby="addTeacherModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <form action="" id="formAddTeacher" method="POST">
                 <div class="modal-header">
@@ -106,6 +106,28 @@
                     </button>
                 </div>
                 <div class="modal-body">
+                    @if(count($data['teachers']) > 0)
+                    Professeurs existants :
+                    <table class="table table-bordered" id="teachersTable">
+                        <thead>
+                            <tr>
+                                <td>#</td>
+                                <td>email</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($data['teachers'] as $teacher)
+                            <tr>
+                                <td>{{ $teacher->id }}</td>
+                                <td>{{ $teacher->email }}</td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                    <br/>
+                    <br/>
+                    <hr>
+                    @endif
                     <label for="teacherEmail">Email: </label>
                     <input class="form-control" type="email" name="teacherEmail" id="teacherEmail" required><br />
 
@@ -136,7 +158,7 @@
                     <label for="registration_status_d">Choix des niveaux :</label><br />
                     <select class="form-control" id="training_d" name="training_d">
                         <option value="all">Tout les niveaux</option>
-                        @foreach($trainings as $training)
+                        @foreach($data['trainings'] as $training)
                         <option value="{{ $training->id }}">{{ $training->name }}</option>
                         @endforeach
                     </select>
@@ -144,7 +166,7 @@
                     <label for="registration_status_d">Choix des candidatures :</label><br />
                     <select name="registration_status_d" id="registration_status_d" class="form-control">
                         <option value="all">Tout les statuts</option>
-                        @foreach($statuses as $status)
+                        @foreach($data['statuses'] as $status)
                         <option value="{{ $status->id }}">{{ $status->title }}</option>
                         @endforeach
                     </select>
@@ -175,7 +197,7 @@
                     <label for="registrationStatus">Statut :</label><br />
                     <select name="registrationStatus" id="registrationStatus" class="form-control">
                         <option value="">-- Sélectionnez un statut --</option>
-                        @foreach($statuses as $status)
+                        @foreach($data['statuses'] as $status)
                         <option value="{{ $status->id }}">{{ $status->title }}</option>
                         @endforeach
                     </select>
@@ -194,45 +216,17 @@
 @section('scripts')
 <script>
     $(document).ready(function() {
-        var fileName = 'Candidatures_' + moment().format('DD-MMMM-YYYY');
 
-        var table = $('.table').DataTable({
-            "language": {
-                "sEmptyTable": "Aucune donnée disponible dans le tableau",
-                "sInfo": "Affichage de l'élément _START_ à _END_ sur _TOTAL_ éléments",
-                "sInfoEmpty": "Affichage de l'élément 0 à 0 sur 0 élément",
-                "sInfoFiltered": "(filtré à partir de _MAX_ éléments au total)",
-                "sInfoPostFix": "",
-                "sInfoThousands": ",",
-                "sLengthMenu": "Afficher _MENU_ éléments",
-                "sLoadingRecords": "Chargement...",
-                "sProcessing": "Traitement...",
-                "sSearch": "Rechercher :",
-                "sZeroRecords": "Aucun élément correspondant trouvé",
-                "oPaginate": {
-                    "sFirst": "Premier",
-                    "sLast": "Dernier",
-                    "sNext": "Suivant",
-                    "sPrevious": "Précédent"
-                },
-                "oAria": {
-                    "sSortAscending": ": activer pour trier la colonne par ordre croissant",
-                    "sSortDescending": ": activer pour trier la colonne par ordre décroissant"
-                },
-                "select": {
-                    "rows": {
-                        "_": "%d lignes sélectionnées",
-                        "0": "Aucune ligne sélectionnée",
-                        "1": "1 ligne sélectionnée"
-                    }
-                }
-            },
-            dom: 'Bfrtip',
+        var fileNameExportTeachers = 'Listes des professeurs - ' + moment().format('DD-MMMM-YYYY');
+
+        $('#teachersTable').DataTable({
+            info: false,
+            paging : false,
             buttons: [{
                     extend: 'csv',
                     text: 'CSV',
                     className: 'btn btn-info',
-                    title: fileName,
+                    title: fileNameExportTeachers,
                     exportOptions: {
                         columns: ':visible:not(.not-export-col)'
                     }
@@ -241,7 +235,7 @@
                     extend: 'excel',
                     text: 'Excel',
                     className: 'btn btn-info',
-                    title: fileName,
+                    title: fileNameExportTeachers,
                     exportOptions: {
                         columns: ':visible:not(.not-export-col)'
                     }
@@ -250,7 +244,7 @@
                     extend: 'pdf',
                     text: 'PDF',
                     className: 'btn btn-info',
-                    title: fileName,
+                    title: fileNameExportTeachers,
                     exportOptions: {
                         columns: ':visible:not(.not-export-col)'
                     }
@@ -259,7 +253,49 @@
                     extend: 'print',
                     text: 'Imprimer',
                     className: 'btn btn-info',
-                    title: fileName,
+                    title: fileNameExportTeachers,
+                    exportOptions: {
+                        columns: ':visible:not(.not-export-col)'
+                    }
+                },
+            ]
+        });
+
+        var fileNameExportRegistrations = 'Candidatures - ' + moment().format('DD-MMMM-YYYY');
+
+        var registrationsTable = $('#registrationsTable').DataTable({
+            buttons: [{
+                    extend: 'csv',
+                    text: 'CSV',
+                    className: 'btn btn-info',
+                    title: fileNameExportRegistrations,
+                    exportOptions: {
+                        columns: ':visible:not(.not-export-col)'
+                    }
+                },
+                {
+                    extend: 'excel',
+                    text: 'Excel',
+                    className: 'btn btn-info',
+                    title: fileNameExportRegistrations,
+                    exportOptions: {
+                        columns: ':visible:not(.not-export-col)'
+                    }
+                },
+                {
+                    extend: 'pdf',
+                    text: 'PDF',
+                    className: 'btn btn-info',
+                    title: fileNameExportRegistrations,
+                    exportOptions: {
+                        columns: ':visible:not(.not-export-col)'
+                    }
+                },
+                {
+                    extend: 'print',
+                    text: 'Imprimer',
+                    className: 'btn btn-info',
+                    title: fileNameExportRegistrations,
                     exportOptions: {
                         columns: ':visible:not(.not-export-col)'
                     }
@@ -273,7 +309,7 @@
         });
 
         $("#trainingFilter").on('change', function() {
-            table
+            registrationsTable
                 .columns([3])
                 .search(this.value)
                 .draw();
@@ -282,7 +318,7 @@
         $("#statusFilter").on('change', function() {
             var regex = this.value ? '^' + this.value + '$' : '';
 
-            table
+            registrationsTable
                 .columns([4])
                 .search(regex, true, false)
                 .draw();
@@ -300,7 +336,7 @@
             var registrationId = $(e.relatedTarget).data('id');
             $("#registrationId").val(registrationId);
             var rowIdx = $("tr:contains(" + registrationId + ")").index();
-            var statusTitle = table.row(rowIdx).data()[4];
+            var statusTitle = registrationsTable.row(rowIdx).data()[4];
             $("#registrationStatus option").each(function() {
                 this.selected = (this.text == statusTitle);
             });
@@ -338,14 +374,14 @@
             e.preventDefault();
 
             $.ajax({
-                url: '/RegistrationsStudy/EditStatus',
+                url: '/RegistrationsStudy/UpdateStatus',
                 type: 'POST',
                 data: form.serialize(),
                 success: function(data) {
                     form.find(":submit").prop('disabled', false);
                     displayToastr('updated');
                     $('#editStatusModal').modal('toggle');
-                    table.cell({
+                    registrationsTable.cell({
                         row: rowIdx,
                         column: 4
                     }).data(statusTitle).draw();
@@ -376,8 +412,8 @@
                 },
                 success: function(data, textStatus, request) {
                     var contentDisposition = request.getResponseHeader("Content-Disposition");
-                    var fileName = contentDisposition.split('filename')[1].split('"').join("").split('=').join("");
-                    getFileFromData(data, fileName);
+                    var fileNameExportRegistrations = contentDisposition.split('filename')[1].split('"').join("").split('=').join("");
+                    getFileFromData(data, fileNameExportRegistrations);
                     form.find(":submit").prop('disabled', false);
                     displayToastr('fileLoaded');
                 },
@@ -412,8 +448,8 @@
                 },
                 success: function(data, textStatus, request) {
                     var contentDisposition = request.getResponseHeader("Content-Disposition");
-                    var fileName = contentDisposition.split('filename')[1].split('"').join("").split('=').join("");
-                    getFileFromData(data, fileName);
+                    var fileNameExportRegistrations = contentDisposition.split('filename')[1].split('"').join("").split('=').join("");
+                    getFileFromData(data, fileNameExportRegistrations);
                     form.find(":submit").prop('disabled', false);
                     displayToastr('fileLoaded');
                 },
@@ -431,11 +467,11 @@
     });
 
 
-    function getFileFromData(data, fileName) {
+    function getFileFromData(data, fileNameExportRegistrations) {
         var a = document.createElement('a');
         var url = window.URL.createObjectURL(data);
         a.href = url;
-        a.download = fileName;
+        a.download = fileNameExportRegistrations;
         document.body.append(a);
         a.click();
         a.remove();

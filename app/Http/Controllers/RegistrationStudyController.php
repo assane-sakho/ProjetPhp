@@ -16,15 +16,9 @@ class RegistrationStudyController extends Controller
     public function index()
     {
         if (session()->has('teacher')) {
-            $registrations = Registration::all();
-            $statuses = RegistrationStatus::where("id", '!=', 1)->get();
-            $trainings = Training::all();
 
-            return view('registrationsStudy.index', compact([
-                "registrations",
-                "statuses",
-                "trainings"
-            ]));
+            $data = RegistrationStudyHelper::getData();
+            return view('registrationsStudy.index', compact(["data"]));
         }
         return view('errors.404');
     }

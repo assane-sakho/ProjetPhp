@@ -9,8 +9,6 @@ use App\Helpers\RegistrationHelper;
 use App\Http\Controllers\Controller;
 
 use App\Registration;
-use App\Training;
-use App\ReportCard;
 
 class RegistrationController extends Controller
 {
@@ -47,27 +45,9 @@ class RegistrationController extends Controller
         $studentRegistration = Registration::find(session('student')->registration->id);
         $studentFolder = $studentRegistration->folder;
 
-        $stepInfo = RegistrationHelper::getStepsnfo()[$stepNumber];
+        $data = RegistrationHelper::getStepinfos()[$stepNumber];
 
-        $trainings = $stepInfo["trainings"] ?? null;
-        $student_training_id = $stepInfo["student_training_id"] ?? null;
-        $fileText = $stepInfo["fileText"] ?? null;
-        $inputName = $stepInfo["inputName"] ?? null;
-        $uploadTitle = $stepInfo["uploadTitle"] ?? null;
-        $acceptedFile = $stepInfo["acceptedFile"] ?? null;
-        $filesUploaded = $stepInfo["filesUploaded"] ?? null;
-        $viewName = $stepInfo["viewName"];
-
-        if ($filesUploaded != null) {
-            $filesUploaded =  array_filter($filesUploaded);
-        }
-
-        return view(
-            'registration.partials.' . $viewName,
-            compact([
-                "stepNumber", "trainings", "student_training_id", "fileText", "inputName", "uploadTitle", "acceptedFile", "filesUploaded",
-            ])
-        );
+        return view('registration.partials.' . $data['viewName'], compact(["data", "stepNumber"]));
     }
 
     public function saveStepData(Request $request)
