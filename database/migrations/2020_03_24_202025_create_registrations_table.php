@@ -15,16 +15,13 @@ class CreateRegistrationsTable extends Migration
     {
         Schema::create('registrations', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('student_id');
             $table->unsignedBigInteger('training_id')->nullable();
             $table->unsignedBigInteger('folder_id');
             $table->unsignedBigInteger('status_id')->default(1);
 
-            $table->foreign('student_id')->references('id')->on('students');
             $table->foreign('training_id')->references('id')->on('trainings');
             $table->foreign('folder_id')->references('id')->on('folders');
             $table->foreign('status_id')->references('id')->on('registration_statuses');
-
         });
     }
 

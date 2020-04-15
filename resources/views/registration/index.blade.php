@@ -114,7 +114,7 @@
             theme: 'default',
             transitionEffect: 'fade',
             contentCache: false,
-            showStepURLhash: false,
+            showStepURLhash: true,
             toolbarSettings: {
                 toolbarPosition: 'bottom',
                 toolbarExtraButtons: [btnFinish]

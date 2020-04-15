@@ -196,7 +196,7 @@
                     <input type="hidden" id="registrationId" name="registrationId">
                     <label for="registrationStatus">Statut :</label><br />
                     <select name="registrationStatus" id="registrationStatus" class="form-control">
-                        <option value="">-- Sélectionnez un statut --</option>
+                        <option>-- Sélectionnez un statut --</option>
                         @foreach($data['statuses'] as $status)
                         <option value="{{ $status->id }}">{{ $status->title }}</option>
                         @endforeach

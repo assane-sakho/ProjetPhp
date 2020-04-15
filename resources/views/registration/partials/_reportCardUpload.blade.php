@@ -24,23 +24,20 @@
                 </tr>
             @endfor
 
-            @if($i < 3 && !session('isRegistrationComplete'))
-                @php 
-                    $required= "";
-                    if($i < 1) 
-                        $required="required" ;
-                @endphp 
-            <tr>
-                <td class="{{ $data['inputName'] }}_title">{{ $data['fileText'] }} n° {{ $i +1 }}</td>
-                <td>
-                    <input class="input-{{ $data['inputName'] }} form-control" 
-                    accept="application/pdf"
-                    name="{{ $data['inputName'] }}_{{ $i }}"
-                    id="{{ $data['inputName'] }}_{{ $i }}" 
-                    type="file" 
-                    onchange="$(this).removeClass('bg-danger');" {{ $required }}>
-                </td>
-            </tr>
+            @if($i < 3 && !session('isRegistrationComplete')) 
+                @for($j = 0; $j < 3 - count($data['filesUploaded']); $j++) 
+                    @php 
+                        $required="" ; 
+                        if($j == 0) 
+                            $required="required" ; 
+                    @endphp
+                <tr>
+                    <td class="{{ $data['inputName'] }}_title">{{ $data['fileText'] }} n° {{ $j + $i +1 }}</td>
+                    <td colspan="2">
+                        <input class="input-{{ $data['inputName'] }} form-control" accept="application/pdf" name="{{ $data['inputName'] }}_{{ ($j + $i) }}" id="{{ $data['inputName'] }}_{{ ($j + $i) }}" type="file" onchange="$(this).removeClass('bg-danger');" {{ $required }}>
+                    </td>
+                </tr>
+                @endfor
             @endif
         </table>
         <div class="help-block with-errors"></div>
@@ -62,7 +59,7 @@
                 displayToastr('deleted');
                 var table = row.parent().parent();
                 row.remove();
-
+                $(".sw-container").css({"min-height" : "0px"})
                 var reportCardCount = table.find('embed').length;
                 if (reportCardCount == 1) {
                     $(".deleteFile").remove();
@@ -71,7 +68,7 @@
                     length: reportCardCount
                 }, (v, k) => k + 1)
                 var i = 0;
-                $(table).find('.{{ $data['inputName'] }}_title').each(function() {
+                $(table).find(".{{ $data['inputName'] }}_title").each(function() {
                     $(this).text($(this).text().slice(0, -1) + listOfIndex[i]);
                     i++;
                 });

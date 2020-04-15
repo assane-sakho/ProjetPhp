@@ -70,11 +70,13 @@ class StudentHelper
     {
         $address = StudentHelper::addStudentAddress($street, $city, $zip_code);
 
-        $student = StudentHelper::addStudent($lastname, $firstname, $birthdate, $cardId, $phoneNumber, $email, $password, $address->id);
-
         $folder = StudentHelper::addStudentFolder();
 
-        StudentHelper::addStudentRegistration($student->id, $folder->id);
+        $registration = StudentHelper::addStudentRegistration($folder->id);
+
+        $student = StudentHelper::addStudent($lastname, $firstname, $birthdate, $cardId, $phoneNumber, $email, $password, $address->id, $registration->id);
+
+     
 
         return $student;
     }
@@ -88,7 +90,7 @@ class StudentHelper
         ]);
     }
 
-    private static function addStudent($lastname, $firstname, $birthdate, $cardId, $phoneNumber, $email, $password, $address_id)
+    private static function addStudent($lastname, $firstname, $birthdate, $cardId, $phoneNumber, $email, $password, $address_id, $registration_id)
     {
         return Student::create([
             'lastname' => $lastname,
@@ -98,7 +100,8 @@ class StudentHelper
             'phone_number' => $phoneNumber,
             'email' => $email,
             'password' => $password,
-            'address_id' => $address_id
+            'address_id' => $address_id,
+            'registration_id' => $registration_id
         ]);
     }
 
@@ -107,10 +110,9 @@ class StudentHelper
         return Folder::create();
     }
 
-    private static function addStudentRegistration($student_id, $folder_id)
+    private static function addStudentRegistration($folder_id)
     {
-        Registration::create([
-            'student_id' => $student_id,
+        return Registration::create([
             'folder_id' => $folder_id
         ]);
     }

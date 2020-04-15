@@ -5,28 +5,29 @@ namespace App\Helpers;
 use App\ReportCard;
 use App\Training;
 
+use Illuminate\Support\Facades\Storage;
+
 class RegistrationHelper
 {
-    public static function uploadFile($folderFile, $fileToUpload)
+    public static function uploadFile($folderFile, $fileToUpload, $sourceDisk = 's3')
     {
         $student  = session('student');
         $studentFolder = $student->registration->folder;
-        $report_cards = $studentFolder->report_cards;
-        $report_cardsCount = count($report_cards);
-
-        $nextReportCard =  "report_card_" . $report_cardsCount;
+        $reportCards = $studentFolder->report_cards;
 
         $fileName = $folderFile . '.' . $fileToUpload->getClientOriginalExtension();
-        $oldFile = $studentFolder[$folderFile];
 
-        FileHelper::deleteFile($oldFile);
-        FileHelper::storeFile($fileToUpload, $fileName);
-
-        if ($folderFile == $nextReportCard && $report_cardsCount < 3 && !$studentFolder->report_cards->has($folderFile)) {
-            $studentFolder->report_cards->add(ReportCard::create(['name' => $fileName, 'folder_id' => $studentFolder->id]));
+        if (strpos($fileName, 'report_card_') !== false) {
+            $fileName = 'report_card_' . count($reportCards) . '.' . $fileToUpload->getClientOriginalExtension();
+            $reportCards->add(ReportCard::create(['name' => $fileName, 'folder_id' => $studentFolder->id]));
         } else {
+            $oldFile = $studentFolder[$folderFile];
+            FileHelper::deleteFile($oldFile, null, $sourceDisk);
             $studentFolder[$folderFile] = $fileName;
         }
+
+        FileHelper::storeFile($fileToUpload, $fileName, $sourceDisk);
+
         $studentFolder->save();
         StudentHelper::updateSessionVar();
     }
@@ -49,6 +50,34 @@ class RegistrationHelper
             'name' => $fileName,
             'folder_id' => $studentFolder->id
         ])->delete();
+
+        StudentHelper::updateSessionVar();
+    }
+
+    public static function updateRegistrationName($fileDeleted, $sourceDisk = 's3')
+    {
+        $student  = session('student');
+        $reportCards = $student->registration->folder->report_cards;
+        $studentFolderPath = $student->folderPath();
+        
+        $idx = (explode('.pdf', explode('report_card_', $fileDeleted)[1])[0]) + 1;
+
+        for ($i = $idx; $i < 3; $i++) {
+            $currentFileName = 'report_card_' . $i . '.pdf';
+            $newFileName = 'report_card_' . ($i -1) . '.pdf';
+
+            $reportCard = $reportCards->where("name", $currentFileName)->first();
+
+            if($reportCard != null)
+            {
+                $reportCard->name = $newFileName;
+                $reportCard->save();
+
+                $currentPath = $studentFolderPath . $currentFileName;
+                $newPath = $studentFolderPath . $newFileName;
+                Storage::disk($sourceDisk)->move($currentPath, $newPath);
+            }
+        }
         StudentHelper::updateSessionVar();
     }
 
@@ -89,7 +118,7 @@ class RegistrationHelper
                 "inputName" => "report_card",
                 "uploadTitle" => "votre relevé de note",
                 "acceptedFile" => $acceptedFile,
-                "filesUploaded" => array($studentFolder->report_cards->toArray()),
+                "filesUploaded" => $studentFolder->report_cards->toArray(),
                 "viewName" => "_reportCardUpload"
             ],
             4 => [

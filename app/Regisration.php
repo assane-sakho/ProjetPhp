@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Registration extends Model
 {
     public $timestamps = false;
-    protected $fillable = ['student_id', 'training_id', 'folder_id', 'status_id'];
+    protected $fillable = ['training_id', 'folder_id', 'status_id'];
 
    function folder()
    {
@@ -26,6 +26,6 @@ class Registration extends Model
 
    function student()
    {
-       return $this->belongsTo('App\Student');
+       return $this->hasOne('App\Student');
    }
 }

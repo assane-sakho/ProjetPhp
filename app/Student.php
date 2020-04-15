@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Student extends Model
 {
     public $timestamps = false;
-    protected $fillable = ['lastname', 'firstname', 'card_id', 'birthdate', 'phone_number', 'email', 'password', 'address_id'];
+    protected $fillable = ['lastname', 'firstname', 'card_id', 'birthdate', 'phone_number', 'email', 'password', 'address_id', 'registration_id'];
     protected $dates = ['birthdate'];
 
     function address()
@@ -17,7 +17,7 @@ class Student extends Model
 
     function registration()
     {
-        return $this->hasOne('App\Registration');
+        return $this->belongsTo('App\Registration');
     }
 
     function message()

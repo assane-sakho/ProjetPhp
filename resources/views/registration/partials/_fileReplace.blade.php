@@ -19,7 +19,7 @@
                 <tr>
                     <td>{{ $data['fileText'] }}</td>
                     <td>
-                        <input class="input-{{ $data['inputName'] }} form-control" accept="{{ $data['acceptedFile'] }}application/pdf" name="{{ $data['inputName'] }}" id="{{ $data['inputName'] }}" type="file" onchange="$(this).removeClass('bg-danger');" required disabled>
+                        <input class="input-{{ $data['inputName'] }} form-control" accept="{{ $data['acceptedFile'] }}" name="{{ $data['inputName'] }}" id="{{ $data['inputName'] }}" type="file" onchange="$(this).removeClass('bg-danger');" required disabled>
                     </td>
                 </tr>
             </table>

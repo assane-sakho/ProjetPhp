@@ -6,15 +6,15 @@ use Illuminate\Support\Facades\Storage;
 
 class FileHelper
 {
-    public static function storeFile($file, $fileName)
+    public static function storeFile($file, $fileName, $sourceDisk = 's3')
     {
         $student  = session('student');
         $studentFolderPath = $student->folderPath();
 
-        $file->storeAs($studentFolderPath, $fileName, 's3');
+        $file->storeAs($studentFolderPath, $fileName, $sourceDisk);
     }
 
-    public static function getFile($fileWanted, $index = null)
+    public static function getFile($fileWanted, $index = null, $sourceDisk = 's3')
     {
         $student  = session('student');
         $studentFolder = $student->registration->folder;
@@ -34,10 +34,10 @@ class FileHelper
             'Content-Disposition' => 'filename="' . $fileName . '"',
         ];
 
-        return response(Storage::disk('s3')->get($path))->withHeaders($headers);
+        return response(Storage::disk($sourceDisk)->get($path))->withHeaders($headers);
     }
 
-    public static function deleteFile($fileToDelete, $index = null)
+    public static function deleteFile($fileToDelete, $index = null, $sourceDisk = 's3')
     {
         $student  = session('student');
         $studentFolder = $student->registration->folder;
@@ -48,11 +48,13 @@ class FileHelper
             $fileName = $studentFolder->report_cards[$index]->name;
             RegistrationHelper::deleteReportCard($fileName);
         }
-
         $filePath = $student->folderPath() . $fileName;
-
-        Storage::disk('s3')->delete($filePath);
+        Storage::disk($sourceDisk)->delete($filePath);
         @unlink(storage_path('app/registrations/' . $fileName));
+
+        if ($fileToDelete == "report_card") {
+            RegistrationHelper::updateRegistrationName($fileName);
+        }
     }
 
     public static function getFileName($file_name,  $studentFullName)
@@ -79,18 +81,16 @@ class FileHelper
 
     public static function getFileArray()
     {
-        $student  = session('student');
-        $studentFolder = $student->registration->folder;
-
-        $report_cardCount = count($studentFolder->report_cards);
-
         $files = array(
             "cv",
             "cover_letter",
-            "vle_screenshot",
-            "report_card_" . $report_cardCount,
+            "vle_screenshot"
         );
 
+        for($i = 0; $i < 3; $i++)
+        {
+            array_push( $files, "report_card_" . $i);
+        }
         return $files;
     }
 }
