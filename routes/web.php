@@ -1,6 +1,5 @@
 <?php
 
-use App\Helpers\RegistrationHelper;
 use Illuminate\Support\Facades\Route;
 
 
