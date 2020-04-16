@@ -22,4 +22,11 @@ class TeacherController extends Controller
 
         return TeacherHelper::tryUpdateTeacher($email, $password);
     }
+    
+    public function delete(Request $request)
+    {
+        $id = $request->teacherId;
+
+        return TeacherHelper::deleteTeacher($id);
+    }
 }

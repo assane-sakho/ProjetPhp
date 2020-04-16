@@ -27,7 +27,7 @@ Route::get('/Profile', function () {
     } else if (session('teacher')) {
         return view('teacher.profile');
     }
-    return view('index');
+    return redirect('/');
 });
 
 
@@ -39,6 +39,7 @@ Route::post('/Student/Update', 'StudentController@update');
 /* Teacher */
 Route::post('/Teacher/Add', 'TeacherController@add');
 Route::post('/Teacher/Update', 'TeacherController@update');
+Route::post('/Teacher/Delete', 'TeacherController@delete');
 
 
 /* Registrations */

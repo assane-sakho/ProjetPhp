@@ -17,7 +17,7 @@ class RegistrationStudyController extends Controller
             $data = RegistrationStudyHelper::getData();
             return view('registrationsStudy.index', compact(["data"]));
         }
-        return view('errors.404');
+        return redirect('/');
     }
 
     public function updateStatus(Request $request)

@@ -92,4 +92,9 @@ class TeacherHelper
     {
         return $email == config('const.admin');
     }
+
+    public static function deleteTeacher($id)
+    {
+        Teacher::find($id)->delete();
+    }
 }

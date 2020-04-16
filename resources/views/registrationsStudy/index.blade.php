@@ -113,6 +113,7 @@
                             <tr>
                                 <td>#</td>
                                 <td>email</td>
+                                <td>Supprimer</td>
                             </tr>
                         </thead>
                         <tbody>
@@ -120,12 +121,13 @@
                             <tr>
                                 <td>{{ $teacher->id }}</td>
                                 <td>{{ $teacher->email }}</td>
+                                <td><button class="btn btn-danger removeTeacher" type="button">Supprimer</button></td>
                             </tr>
                             @endforeach
                         </tbody>
                     </table>
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     <hr>
                     @endif
                     <label for="teacherEmail">Email: </label>
@@ -221,7 +223,7 @@
 
         var teachersTable = $('#teachersTable').DataTable({
             info: false,
-            paging : false,
+            paging: false,
             buttons: [{
                     extend: 'csv',
                     text: 'CSV',
@@ -328,6 +330,25 @@
             $("#teacherEmail, #teacherPassword").val('');
         });
 
+        $(".removeTeacher").on('click', function() {
+            var tr = $(this).closest('tr');
+            var teacherId = tr.find("td:first").text();
+
+            $.ajax({
+                url: '/Teacher/Delete',
+                type: 'POST',
+                data: { teacherId : teacherId},
+                success: function(data) {
+                    teachersTable.row(tr).remove().draw();
+                    displayToastr('teacherRemoved');
+                },
+                error: function(xhr, status, error) {
+                    displayToastr('error');
+                }
+            });
+
+        });
+
         $('#downloadRegisrationModal').on('show.bs.modal', function(e) {
             $("#registration_status_d, #training_d").val('all').change();
         });
@@ -351,7 +372,11 @@
                 type: 'POST',
                 data: form.serialize(),
                 success: function(data) {
-                    teachersTable.row.add([data.teacherId, $("#teacherEmail").val()]).draw( false );
+                    teachersTable.row.add([
+                        data.teacherId, 
+                        $("#teacherEmail").val(),
+                        '<td><button class="btn btn-danger removeTeacher" type="button">Supprimer</button></td>'
+                        ]).draw(false);
                     form.find(":submit").prop('disabled', false);
                     displayToastr('updated');
                     $('#addTeacherModal').modal('toggle');
@@ -360,8 +385,7 @@
                     form.find(":submit").prop('disabled', false);
                     if (xhr.responseJSON.message == 'emailNotPossible') {
                         displayToastr('errorMsg', 'Cet email n\'est pas disponible !');
-                    }
-                    else if (xhr.responseJSON.message == 'emailAlreadyExist') {
+                    } else if (xhr.responseJSON.message == 'emailAlreadyExist') {
                         displayToastr('errorMsg', 'Un professeur ayant la même adresse mail <i class="fa fa-info-circle text-info"></i> existe déjà !');
                     } else {
                         displayToastr('error');

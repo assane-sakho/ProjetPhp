@@ -16,7 +16,7 @@ class RegistrationController extends Controller
     {
         if (session()->has('student'))
             return view('registration.index');
-        return view('errors.404');
+        return redirect('/');
     }
 
     public function getFile(Request $request)
@@ -27,7 +27,7 @@ class RegistrationController extends Controller
 
             return FileHelper::getFile($fileWanted, $index);
         }
-        return view('errors.404');
+        return redirect('/');
     }
 
     public function deleteFile(Request $request)

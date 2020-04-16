@@ -19,16 +19,16 @@
             <h4 class="mb-3">Vos informations</h4>
             <hr class="mb-4">
             <form action="" id="formEdit" method="POST">
-                <input type="hidden" name="userId" id="userId" value="{{ session('student')->id }}" class="form-control"><p/>
+                <input type="hidden" name="userId" id="userId" value="{{ session('student')->id }}" class="form-control"><br />
 
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="userLastname">Nom :</label> <i class="fa fa-info-circle text-info"></i>
-                        <input type="text" name="userLastname" id="userLastname" value="{{ session('student')->lastname }}" class="form-control" required><p/>
+                        <input type="text" name="userLastname" id="userLastname" value="{{ session('student')->lastname }}" class="form-control" required><br />
                     </div>
                     <div class="col-md-6 mb-3">
                         <label for="userFirstname">Prénom :</label> <i class="fa fa-info-circle text-info"></i>
-                        <input type="text" name="userFirstname" id="userFirstname" value="{{ session('student')->firstname }}" class="form-control" required><p/>
+                        <input type="text" name="userFirstname" id="userFirstname" value="{{ session('student')->firstname }}" class="form-control" required><br />
                     </div>
                 </div>
 
@@ -37,12 +37,12 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="userCardId">N° de carte d'identité :</label> <i class="fa fa-info-circle text-info"></i>
-                        <input type="text" name="userCardId" id="userCardId" value="{{ session('student')->card_id }}" class="form-control" required>
-                        
-                        <br/>
+                        <input type="text" name="userCardId" id="userCardId" value="{{ session('student')->card_id }}" maxlength="37" class="form-control" required>
+
+                        <br />
 
                         <label for="userBirthdate">Date de naissance</label>
-                        <input type="date" name="userBirthdate" id="userBirthdate" value="{{ session('student')->birthdate->format('Y-m-d') }}" class="form-control" required><p/>
+                        <input type="date" name="userBirthdate" id="userBirthdate" value="{{ session('student')->birthdate->format('Y-m-d') }}" class="form-control" required><br />
                     </div>
                 </div>
 
@@ -51,15 +51,15 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="userStreet">Rue :</label>
-                        <input type="text" name="userStreet" id="userStreet" value="{{ session('student')->address->street }}" class="form-control" required><p/>
+                        <input type="text" name="userStreet" id="userStreet" value="{{ session('student')->address->street }}" maxlength="50" class="form-control" required><br />
                     </div>
                     <div class="col-md-3 mb-3">
                         <label for="userCity">Ville :</label>
-                        <input type="text" name="userCity" id="userCity" value="{{ session('student')->address->city }}" class="form-control" required><p/>
+                        <input type="text" name="userCity" id="userCity" value="{{ session('student')->address->city }}" maxlength="30" class="form-control" required><br />
                     </div>
                     <div class="col-md-3 mb-3">
                         <label for="userZipCode">Code postal :</label>
-                        <input type="number" name="userZipCode" id="userZipCode" value="{{ session('student')->address->zip_code }}" class="form-control" required><p/>
+                        <input type="number" name="userZipCode" id="userZipCode" value="{{ session('student')->address->zip_code }}" maxlength="5" onKeyPress="if(this.value.length==5) return false;" class="form-control" required><br />
                     </div>
                 </div>
 
@@ -68,23 +68,23 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="userPhoneNumber">Téléphone :</label> <i class="fa fa-info-circle text-info"></i>
-                        <input type="number" name="userPhoneNumber" id="userPhoneNumber" value="{{ session('student')->phone_number }}" class="form-control"required><p/>
+                        <input type="text" name="userPhoneNumber" id="userPhoneNumber" value="{{ session('student')->phone_number }}" maxlength="14" class="form-control" required><br />
                     </div>
                 </div>
-                
+
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="userMail">Adresse mail :</label> <i class="fa fa-info-circle text-info"></i>
-                        <input type="mail" name="userMail" id="userMail" value="{{ session('student')->email }}" class="form-control" required><p/>
+                        <input type="mail" name="userMail" id="userMail" value="{{ session('student')->email }}" class="form-control" required><br />
                     </div>
                 </div>
-                
+
                 <hr class="mb-4">
 
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="userMail">Nouveau Mot de passe :</label>
-                        <input type="password" name="userPassword" id="userPassword" class="form-control"><p/>
+                        <input type="password" name="userPassword" id="userPassword" class="form-control" autocomplete="on"><br />
                     </div>
                 </div>
 
@@ -92,11 +92,11 @@
 
                 <button class="btn btn-danger btn-lg btn-block btnRegistration" type="submit" value="Modifier">Modifier</button>
             </form>
-            <br/>
+            <br />
             <p class="text-center">
                 <a href="/Registration" class="go_back"> <i class="arrow_back"></i>Retour au dépot de candidature</a>
             </p>
-        </div>  
+        </div>
     </div>
 </section>
 
@@ -104,41 +104,51 @@
 
 @section('scripts')
 <script>
-    $(document).ready(function(){
-        let registrationEditable = ('{{ session("student")->registration->status_id }}' == '1');
+    $(document).ready(function() {
+        // let registrationEditable = ('{{ session("student")->registration->status_id }}' == '1');
+        let registrationEditable = true;
         if (!registrationEditable) {
             $(".form-control").prop('disabled', true);
             $(".btnRegistration").remove();
         }
 
-        $("#formEdit").submit(function(e){
+        $("#formEdit").submit(function(e) {
             var form = $(this);
             e.preventDefault();
 
             $.ajax({
-                url:'/Student/Update',
-                type:'POST',
+                url: '/Student/Update',
+                type: 'POST',
                 data: form.serialize(),
                 success: function(data) {
                     form.find(":submit").prop('disabled', false);
                     displayToastr('studentRegistred');
                 },
-                error: function(xhr, status, error)  {
+                error: function(xhr, status, error) {
                     form.find(":submit").prop('disabled', false);
-                    if(xhr.responseJSON.message  == 'alreadyExist')
-                    {
+                    if (xhr.responseJSON.message == 'alreadyExist') {
                         displayToastr('errorMsg', 'Un étudiant ayant les mêmes informations <i class="fa fa-info-circle text-info"></i> existe déjà !');
-                    }
-                    else if(xhr.responseJSON.message  == 'emailNotPossible')
-                    {
+                    } else if (xhr.responseJSON.message == 'emailNotPossible') {
                         displayToastr('errorMsg', 'L\'adresse mail que vous avez renseigné n\'est pas dispoblible !');
-                    }
-                    else
-                    {
+                    } else {
                         displayToastr('error');
                     }
                 },
             });
+        });
+
+        $("#userPhoneNumber").on('keyup', function() {
+            let phoneNumber = $(this).val();
+
+            if (phoneNumber.length < 13) {
+                phoneNumber = phoneNumber.split('.').join(''); // Remove dash (-) if mistakenly entered.
+                let finalVal = phoneNumber.match(/.{0,2}/g).join('.');
+                $("#userPhoneNumber").val(finalVal);
+            }
+        });
+
+        $("#userPhoneNumber").on('keypress', function() {
+            return (event.charCode != 8 && event.charCode == 0 || (event.charCode >= 48 && event.charCode <= 57))
         });
     });
 </script>

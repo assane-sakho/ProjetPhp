@@ -36,6 +36,7 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
+        $('input[type="date"]').attr('max', moment().format('YYYY-MM-DD'));   
 
         var btnSubmitClicked;
         var loadingText = 'Chargement ';
