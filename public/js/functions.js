@@ -57,5 +57,8 @@ function displayToastr(type, message) {
         case "fileLoaded":
             toastr.success("Fichier chargé !", title);
             break;
+        case "teacherDeleted":
+            toastr.info("Professeur supprimé", title);
+            break;
     }
 }

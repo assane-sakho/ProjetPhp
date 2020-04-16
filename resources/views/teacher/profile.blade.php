@@ -20,7 +20,7 @@
             <hr class="mb-4">
             <form action="" id="formEdit" method="POST">
                 <input type="hidden" name="teacherId" id="teacherId" value="{{ session('teacher')->id }}" class="form-control">
-                <p />
+                <br/>
                 @php
                 if(session('teacher')->id == 1)
                     $disabled = "disabled";
@@ -31,7 +31,7 @@
                     <div class="col-md-6 mb-3">
                         <label for="teacherEmail">Adresse mail :</label> <i class="fa fa-info-circle text-info"></i>
                         <input type="mail" name="teacherEmail" id="teacherEmail" value="{{ session('teacher')->email }}" class="form-control" {{ $disabled}}>
-                        <p />
+                        <br/>
                     </div>
                 </div>
 
@@ -41,7 +41,7 @@
                     <div class="col-md-6 mb-3">
                         <label for="teacherPassword">Nouveau Mot de passe :</label>
                         <input type="password" name="teacherPassword" id="teacherPassword" class="form-control">
-                        <p />
+                        <br/>
                     </div>
                 </div>
 

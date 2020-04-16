@@ -106,7 +106,6 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    @if(count($data['teachers']) > 0)
                     Professeurs existants :
                     <table class="table table-bordered" id="teachersTable">
                         <thead>
@@ -129,12 +128,12 @@
                     <br />
                     <br />
                     <hr>
-                    @endif
                     <label for="teacherEmail">Email: </label>
                     <input class="form-control" type="email" name="teacherEmail" id="teacherEmail" required><br />
 
                     <label for="teacherPassword">Mot de passe: </label>
                     <input class="form-control" type="password" name="teacherPassword" id="teacherPassword" required>
+                    <div class="help-block with-errors"></div>
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-success" value="Ajouter">Ajouter</button>
@@ -218,7 +217,6 @@
 @section('scripts')
 <script>
     $(document).ready(function() {
-
         var fileNameExportTeachers = 'Listes des professeurs - ' + moment().format('DD-MMMM-YYYY');
 
         var teachersTable = $('#teachersTable').DataTable({
@@ -328,9 +326,10 @@
 
         $('#addTeacherModal').on('show.bs.modal', function(e) {
             $("#teacherEmail, #teacherPassword").val('');
+            $(document).find(":submit").prop('disabled', false);
         });
 
-        $(".removeTeacher").on('click', function() {
+        $(document).on('click', '.removeTeacher', function() {
             var tr = $(this).closest('tr');
             var teacherId = tr.find("td:first").text();
 
@@ -339,8 +338,9 @@
                 type: 'POST',
                 data: { teacherId : teacherId},
                 success: function(data) {
+                    $(document).find(":submit").prop('disabled', false);
                     teachersTable.row(tr).remove().draw();
-                    displayToastr('teacherRemoved');
+                    displayToastr('teacherDeleted');
                 },
                 error: function(xhr, status, error) {
                     displayToastr('error');

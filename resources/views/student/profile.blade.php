@@ -105,8 +105,7 @@
 @section('scripts')
 <script>
     $(document).ready(function() {
-        // let registrationEditable = ('{{ session("student")->registration->status_id }}' == '1');
-        let registrationEditable = true;
+        let registrationEditable = ('{{ session("student")->registration->status_id }}' == '1');
         if (!registrationEditable) {
             $(".form-control").prop('disabled', true);
             $(".btnRegistration").remove();

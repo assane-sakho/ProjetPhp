@@ -45,7 +45,7 @@
                                 <div class="spinner-border spinner-border-sm text-primary" role="status">
                                 </div>
                             </div>
-                            <p />
+                            <br/>
                             @if( $data['inputName'] == "vle_screenshot")
                             <img id="img-{{ $data['inputName'] }}" class="img-fluid" src="/Registration/GetFile?fileName={{ $data['inputName'] }}" alt="vle_screenshot">
                             @else
@@ -78,6 +78,7 @@
     }
     
     $(document).ready(function() {
+        $(".sw-container").css({"min-height" : "0px"});
         $(".cancelReplace-{{ $data['inputName'] }}").hide();
         $("#embed-{{ $data['inputName'] }}").on('load', function() {
             $("#loading-{{ $data['inputName'] }}").hide();

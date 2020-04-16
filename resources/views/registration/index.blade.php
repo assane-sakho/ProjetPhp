@@ -56,6 +56,11 @@
         </div>
     </div>
 </section>
+<style>
+    .sw-container {
+        min-height: 0px !important;
+    }
+</style>
 @endsection
 
 @section('scripts')
@@ -64,8 +69,7 @@
         var registration_statusId = '{{ session("student")->registration->status_id }}';
         let registrationEditable = "{{ !session('isRegistrationComplete') }}";
 
-        if(registration_statusId == 3)
-        {
+        if (registration_statusId == 3) {
             displayToastr('warning', 'Votre candidature a été signalée comme incomplète.<br/><br/>Veuillez compléter votre candidature avant de l\'envoyer de nouveau.');
         }
 
@@ -133,11 +137,13 @@
         });
 
         $("#smartwizard").on("leaveStep", function(e, anchorObject, stepNumber, stepDirection) {
+            
             var elmForm = $("#form-step-" + stepNumber);
 
             if (stepDirection === 'forward' && elmForm) {
                 elmForm.validator('validate');
                 var elmErr = elmForm.children('.has-error');
+
                 if (elmErr && elmErr.length > 0) {
                     $(elmErr).find("input").each(function() {
                         if (!this.value) {
@@ -145,7 +151,14 @@
                         }
                     });
                     return false;
+                } else if (stepNumber == 3) {
+                    if (elmForm.find('#report_card_0').length && $("#report_card_0").val() == '') {
+                        $("#report_card_0").addClass("bg-danger").addClass('has-error');
+                        $(".help-block").show();
+                        return false;
+                    }
                 }
+
                 if (registrationEditable) {
                     $.ajax({
                         url: '/Registration/SaveStepData',
@@ -163,10 +176,12 @@
                     });
                 }
             }
+            $(".sw-container").css({"min-height" : "0px"});
             return true;
         });
 
         $("#smartwizard").on("showStep", function(e, anchorObject, stepNumber, stepDirection) {
+            $(".sw-container").css({"min-height" : "0px"});
             if (stepNumber == 5 && registrationEditable) {
                 $('.btn-finish').removeClass('disabled');
 
