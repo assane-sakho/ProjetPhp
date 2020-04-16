@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Message;
 use App\Helpers\MessageHelper;
 
 class MessageController extends Controller

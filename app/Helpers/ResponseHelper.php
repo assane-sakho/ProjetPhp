@@ -9,8 +9,7 @@ class ResponseHelper
     public static function returnResponseSuccess($responseAttr = [])
     {
         $returnData = array(
-            'status' => 'success',
-            'nextLocation' => '/Registration',
+            'status' => 'success'
         );
         $returnCode = 200;
         $result = array_merge($returnData, $responseAttr);

@@ -6,15 +6,15 @@ use Illuminate\Support\Facades\Storage;
 
 class FileHelper
 {
-    public static function storeFile($file, $fileName, $sourceDisk = 's3')
+    public static function storeFile($file, $fileName)
     {
         $student  = session('student');
         $studentFolderPath = $student->folderPath();
 
-        $file->storeAs($studentFolderPath, $fileName, $sourceDisk);
+        $file->storeAs($studentFolderPath, $fileName, config('const.source_disk'));
     }
 
-    public static function getFile($fileWanted, $index = null, $sourceDisk = 's3')
+    public static function getFile($fileWanted, $index = null)
     {
         $student  = session('student');
         $studentFolder = $student->registration->folder;
@@ -34,10 +34,10 @@ class FileHelper
             'Content-Disposition' => 'filename="' . $fileName . '"',
         ];
 
-        return response(Storage::disk($sourceDisk)->get($path))->withHeaders($headers);
+        return response(Storage::disk(config('const.source_disk'))->get($path))->withHeaders($headers);
     }
 
-    public static function deleteFile($fileToDelete, $index = null, $sourceDisk = 's3')
+    public static function deleteFile($fileToDelete, $index = null)
     {
         $student  = session('student');
         $studentFolder = $student->registration->folder;
@@ -48,8 +48,10 @@ class FileHelper
             $fileName = $studentFolder->report_cards[$index]->name;
             RegistrationHelper::deleteReportCard($fileName);
         }
+
         $filePath = $student->folderPath() . $fileName;
-        Storage::disk($sourceDisk)->delete($filePath);
+
+        Storage::disk(config('const.source_disk'))->delete($filePath);
         @unlink(storage_path('app/registrations/' . $fileName));
 
         if ($fileToDelete == "report_card") {
@@ -87,10 +89,24 @@ class FileHelper
             "vle_screenshot"
         );
 
-        for($i = 0; $i < 3; $i++)
-        {
-            array_push( $files, "report_card_" . $i);
+        for ($i = 0; $i < 3; $i++) {
+            array_push($files, "report_card_" . $i);
         }
         return $files;
+    }
+
+    public static function moveFile($currentPath, $newPath)
+    {
+        Storage::disk(config('const.source_disk'))->move($currentPath, $newPath);
+    }
+
+    public static function getStudentFile($student)
+    {
+        return Storage::disk(config('const.source_disk'))->files($student->folderPath());
+    }
+
+    public static function getFileContent($file)
+    {
+        return Storage::disk(config('const.source_disk'))->get($file);
     }
 }

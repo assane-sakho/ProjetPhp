@@ -9,23 +9,23 @@ class Registration extends Model
     public $timestamps = false;
     protected $fillable = ['training_id', 'folder_id', 'status_id'];
 
-   function folder()
-   {
-       return $this->belongsTo('App\Folder');
-   }
+    function folder()
+    {
+        return $this->belongsTo('App\Folder');
+    }
 
-   function registration_status()
-   {
-       return $this->belongsTo('App\RegistrationStatus', 'status_id', 'id');
-   }
+    function registration_status()
+    {
+        return $this->belongsTo('App\RegistrationStatus', 'status_id', 'id');
+    }
 
-   function training()
-   {
-       return $this->belongsTo('App\Training');
-   }
+    function training()
+    {
+        return $this->belongsTo('App\Training');
+    }
 
-   function student()
-   {
-       return $this->hasOne('App\Student');
-   }
+    function student()
+    {
+        return $this->hasOne('App\Student');
+    }
 }

@@ -12,7 +12,7 @@ class TeacherSeeder extends Seeder
     public function run()
     {
         DB::table('teachers')->insert([
-            'email' => 'admin@parisnanterre.fr',
+            'email' => config('const.admin'),
             'password' => 'admin'
         ]);
     }

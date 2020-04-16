@@ -2,10 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Registration;
-use App\RegistrationStatus;
 use App\Student;
-use App\Training;
 
 use Illuminate\Http\Request;
 use App\Helpers\RegistrationStudyHelper;

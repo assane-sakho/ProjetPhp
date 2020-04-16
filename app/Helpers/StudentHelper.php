@@ -51,7 +51,7 @@ class StudentHelper
 
     public static function tryAddStudent($lastname, $firstname, $birthdate, $cardId, $phoneNumber, $email, $password, $street, $city, $zip_code)
     {
-        if ($email == 'admin@parisnanterre.fr') {
+        if (!StudentHelper::emailValid($email)) {
             return ResponseHelper::returnResponseError('emailNotPossible');
         } else if (!StudentHelper::alreadyExist($lastname, $firstname, $cardId, $phoneNumber, $email)) {
 
@@ -75,8 +75,6 @@ class StudentHelper
         $registration = StudentHelper::addStudentRegistration($folder->id);
 
         $student = StudentHelper::addStudent($lastname, $firstname, $birthdate, $cardId, $phoneNumber, $email, $password, $address->id, $registration->id);
-
-     
 
         return $student;
     }
@@ -119,7 +117,7 @@ class StudentHelper
 
     public static function tryUpdateStudent($lastname, $firstname, $birthdate, $cardId, $phoneNumber, $email, $password, $street, $city, $zip_code)
     {
-        if ($email == 'admin@parisnanterre.fr') {
+        if (!StudentHelper::emailValid($email)) {
             return ResponseHelper::returnResponseError('emailNotPossible');
         } else if (!StudentHelper::alreadyExist($lastname, $firstname, $cardId, $phoneNumber, $email)) {
 
@@ -167,5 +165,16 @@ class StudentHelper
         $address->zip_code = $zip_code;
         $address->save();
         return $address;
+    }
+
+    private static function emailValid($email)
+    {
+        $result = true;
+
+        if($email == config('const.admin') || TeacherHelper::alreadyExist($email)){
+            $result = false;
+        }
+
+        return $result;
     }
 }

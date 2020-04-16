@@ -5,11 +5,9 @@ namespace App\Helpers;
 use App\ReportCard;
 use App\Training;
 
-use Illuminate\Support\Facades\Storage;
-
 class RegistrationHelper
 {
-    public static function uploadFile($folderFile, $fileToUpload, $sourceDisk = 's3')
+    public static function uploadFile($folderFile, $fileToUpload)
     {
         $student  = session('student');
         $studentFolder = $student->registration->folder;
@@ -22,11 +20,11 @@ class RegistrationHelper
             $reportCards->add(ReportCard::create(['name' => $fileName, 'folder_id' => $studentFolder->id]));
         } else {
             $oldFile = $studentFolder[$folderFile];
-            FileHelper::deleteFile($oldFile, null, $sourceDisk);
+            FileHelper::deleteFile($oldFile, null);
             $studentFolder[$folderFile] = $fileName;
         }
 
-        FileHelper::storeFile($fileToUpload, $fileName, $sourceDisk);
+        FileHelper::storeFile($fileToUpload, $fileName);
 
         $studentFolder->save();
         StudentHelper::updateSessionVar();
@@ -54,7 +52,7 @@ class RegistrationHelper
         StudentHelper::updateSessionVar();
     }
 
-    public static function updateRegistrationName($fileDeleted, $sourceDisk = 's3')
+    public static function updateRegistrationName($fileDeleted)
     {
         $student  = session('student');
         $reportCards = $student->registration->folder->report_cards;
@@ -75,7 +73,8 @@ class RegistrationHelper
 
                 $currentPath = $studentFolderPath . $currentFileName;
                 $newPath = $studentFolderPath . $newFileName;
-                Storage::disk($sourceDisk)->move($currentPath, $newPath);
+
+                FileHelper::moveFile($currentPath, $newPath);
             }
         }
         StudentHelper::updateSessionVar();

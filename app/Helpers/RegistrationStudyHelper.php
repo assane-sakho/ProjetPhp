@@ -28,19 +28,18 @@ class RegistrationStudyHelper
     public static function downloadZip($fileName, $student = null)
     {
         $basePath = storage_path('app/registrations/');
-
         Storage::makeDirectory('registrations');
 
         $filePath = $basePath . $fileName;
 
         if ($student != null) {
             $zip = new Filesystem(new ZipArchiveAdapter($filePath));
-            $source_disk = 's3';
-            $files = Storage::disk($source_disk)->files($student->folderPath());
+
+            $files = FileHelper::getStudentFile($student);
 
             foreach ($files as $file) {
                 $currentFileName = FileHelper::getFileName($file,  $student->fullName());
-                $fileContent = Storage::disk($source_disk)->get($file);
+                $fileContent = FileHelper::getFileContent($file);
                 $zip->put($currentFileName, $fileContent);
             }
             $zip->getAdapter()->getArchive()->close();
@@ -58,6 +57,7 @@ class RegistrationStudyHelper
 
                 $zip->close();
             } else {
+                return ResponseHelper::returnResponseError();
             }
         }
 
@@ -104,7 +104,7 @@ class RegistrationStudyHelper
         $registrations = Registration::all();
         $statuses = RegistrationStatus::where("id", '!=', 1)->get();
         $trainings = Training::all();
-        $teachers = Teacher::where("email", "!=", "admin@parisnanterre.fr")->get();
+        $teachers = Teacher::where("email", "!=", config('const.admin'))->get();
 
         return [
             "registrations" => $registrations,

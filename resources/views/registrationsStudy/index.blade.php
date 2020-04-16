@@ -219,7 +219,7 @@
 
         var fileNameExportTeachers = 'Listes des professeurs - ' + moment().format('DD-MMMM-YYYY');
 
-        $('#teachersTable').DataTable({
+        var teachersTable = $('#teachersTable').DataTable({
             info: false,
             paging : false,
             buttons: [{
@@ -351,13 +351,17 @@
                 type: 'POST',
                 data: form.serialize(),
                 success: function(data) {
+                    teachersTable.row.add([data.teacherId, $("#teacherEmail").val()]).draw( false );
                     form.find(":submit").prop('disabled', false);
                     displayToastr('updated');
                     $('#addTeacherModal').modal('toggle');
                 },
                 error: function(xhr, status, error) {
                     form.find(":submit").prop('disabled', false);
-                    if (xhr.responseJSON.message == 'emailAlreadyExist') {
+                    if (xhr.responseJSON.message == 'emailNotPossible') {
+                        displayToastr('errorMsg', 'Cet email n\'est pas disponible !');
+                    }
+                    else if (xhr.responseJSON.message == 'emailAlreadyExist') {
                         displayToastr('errorMsg', 'Un professeur ayant la même adresse mail <i class="fa fa-info-circle text-info"></i> existe déjà !');
                     } else {
                         displayToastr('error');

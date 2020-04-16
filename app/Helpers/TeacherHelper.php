@@ -35,11 +35,14 @@ class TeacherHelper
 
     public static function tryAddTeacher($email, $password)
     {
-        if (!TeacherHelper::alreadyExist($email)) {
+        if(TeacherHelper::isAdminEmail($email)) {
+            return ResponseHelper::returnResponseError('emailNotPossible');
+        }
+        else if (!TeacherHelper::alreadyExist($email)) {
            
-            TeacherHelper::addTeacher($email, $password);
+            $teacher = TeacherHelper::addTeacher($email, $password);
 
-            return ResponseHelper::returnResponseSuccess();
+            return ResponseHelper::returnResponseSuccess(['teacherId' => $teacher->id]);
 
         } else {
             return ResponseHelper::returnResponseError('emailAlreadyExist');
@@ -48,7 +51,7 @@ class TeacherHelper
 
     public static function addTeacher($email, $password)
     {
-        Teacher::create([
+        return Teacher::create([
             "email" => $email,
             "password" => $password,
         ]);
@@ -83,5 +86,10 @@ class TeacherHelper
     {
         $teacher = Teacher::find(session('teacher')->id);
         session()->put('teacher', $teacher);
+    }
+
+    public static function isAdminEmail($email)
+    {
+        return $email == config('const.admin');
     }
 }
