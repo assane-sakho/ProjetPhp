@@ -31,7 +31,7 @@ class StudentHelper
         session()->put('student', $student);
     }
 
-    private static function alreadyExist($lastname, $firstname, $cardId, $phoneNumber, $email)
+    public static function alreadyExist($email, $lastname = null, $firstname = null, $cardId = null, $phoneNumber = null)
     {
         $userId =  session('student')->id ?? '';
 
@@ -51,11 +51,11 @@ class StudentHelper
 
     public static function tryAddStudent($lastname, $firstname, $birthdate, $cardId, $phoneNumber, $email, $password, $street, $city, $zip_code)
     {
-        if (!StudentHelper::emailValid($email)) {
+        if (!self::emailValid($email)) {
             return ResponseHelper::returnResponseError('emailNotPossible');
-        } else if (!StudentHelper::alreadyExist($lastname, $firstname, $cardId, $phoneNumber, $email)) {
+        } else if (!self::alreadyExist($email, $lastname, $firstname, $cardId, $phoneNumber)) {
 
-            $student = StudentHelper::createStudent($lastname, $firstname, $birthdate, $cardId, $phoneNumber, $email, $password, $street, $city, $zip_code);
+            $student = self::createStudent($lastname, $firstname, $birthdate, $cardId, $phoneNumber, $email, $password, $street, $city, $zip_code);
 
             session()->put('student', $student);
 
@@ -68,13 +68,13 @@ class StudentHelper
 
     private static function createStudent($lastname, $firstname, $birthdate, $cardId, $phoneNumber, $email, $password, $street, $city, $zip_code)
     {
-        $address = StudentHelper::addStudentAddress($street, $city, $zip_code);
+        $address = self::addStudentAddress($street, $city, $zip_code);
 
-        $folder = StudentHelper::addStudentFolder();
+        $folder = self::addStudentFolder();
 
-        $registration = StudentHelper::addStudentRegistration($folder->id);
+        $registration = self::addStudentRegistration($folder->id);
 
-        $student = StudentHelper::addStudent($lastname, $firstname, $birthdate, $cardId, $phoneNumber, $email, $password, $address->id, $registration->id);
+        $student = self::addStudent($lastname, $firstname, $birthdate, $cardId, $phoneNumber, $email, $password, $address->id, $registration->id);
 
         return $student;
     }
@@ -117,12 +117,12 @@ class StudentHelper
 
     public static function tryUpdateStudent($lastname, $firstname, $birthdate, $cardId, $phoneNumber, $email, $password, $street, $city, $zip_code)
     {
-        if (!StudentHelper::emailValid($email)) {
+        if (!self::emailValid($email)) {
             return ResponseHelper::returnResponseError('emailNotPossible');
-        } else if (!StudentHelper::alreadyExist($lastname, $firstname, $cardId, $phoneNumber, $email)) {
+        } else if (!self::alreadyExist($email, $lastname, $firstname, $cardId, $phoneNumber)) {
 
-            StudentHelper::updateStudent($lastname, $firstname, $birthdate, $cardId, $phoneNumber, $email, $password, $street, $city, $zip_code);
-            StudentHelper::updateSessionVar();
+            self::updateStudent($lastname, $firstname, $birthdate, $cardId, $phoneNumber, $email, $password, $street, $city, $zip_code);
+            self::updateSessionVar();
 
             return ResponseHelper::returnResponseSuccess();
         } else {
@@ -133,9 +133,9 @@ class StudentHelper
 
     private static function updateStudent($lastname, $firstname, $birthdate, $cardId, $phoneNumber, $email, $password, $street, $city, $zip_code)
     {
-        StudentHelper::updateStudentAddress($street, $city, $zip_code);
+        self::updateStudentAddress($street, $city, $zip_code);
 
-        StudentHelper::updateStudentInfo($lastname, $firstname, $birthdate, $cardId, $phoneNumber, $email, $password);
+        self::updateStudentInfo($lastname, $firstname, $birthdate, $cardId, $phoneNumber, $email, $password);
     }
 
     private static function updateStudentInfo($lastname, $firstname, $birthdate, $cardId, $phoneNumber, $email, $password)

@@ -92,11 +92,11 @@ class RegistrationStudyHelper
         foreach ($registrations as $registration) {
             $student = $registration->student;
             $fileName = 'Candidature ' . $student->registration->training->name . ' - ' . $student->fullName() . '.zip';
-            RegistrationStudyHelper::downloadZip($fileName, $student);
+            self::downloadZip($fileName, $student);
         }
         $fileName = 'Candidatures ' .  $today . '.zip';
         @unlink(storage_path('app/registrations/' . $fileName));
-        return RegistrationStudyHelper::downloadZip($fileName);
+        return self::downloadZip($fileName);
     }
 
     public static function getData()

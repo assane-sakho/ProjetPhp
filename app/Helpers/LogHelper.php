@@ -16,12 +16,12 @@ class LogHelper
             $teacher = $teacherExistResult[1];
 
             if ($teacherExist == false) {
-                return LogHelper::userNotConnected();
+                return self::userNotConnected();
             } else {
-                return LogHelper::connectTeacher($teacher);
+                return self::connectTeacher($teacher);
             }
         } else {
-            return LogHelper::connectStudent($student);
+            return self::connectStudent($student);
         }
     }
 

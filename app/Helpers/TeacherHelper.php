@@ -35,12 +35,12 @@ class TeacherHelper
 
     public static function tryAddTeacher($email, $password)
     {
-        if(TeacherHelper::isAdminEmail($email)) {
+        if(!self::emailValid($email)){
             return ResponseHelper::returnResponseError('emailNotPossible');
         }
-        else if (!TeacherHelper::alreadyExist($email)) {
+        else if (!self::alreadyExist($email)) {
            
-            $teacher = TeacherHelper::addTeacher($email, $password);
+            $teacher = self::addTeacher($email, $password);
 
             return ResponseHelper::returnResponseSuccess(['teacherId' => $teacher->id]);
 
@@ -59,9 +59,9 @@ class TeacherHelper
 
     public static function tryUpdateTeacher($email, $password)
     {
-        if (!TeacherHelper::alreadyExist($email)) {
+        if (!self::alreadyExist($email)) {
 
-            TeacherHelper::updateTeacher($email, $password);
+            self::updateTeacher($email, $password);
 
             return ResponseHelper::returnResponseSuccess();
 
@@ -79,7 +79,7 @@ class TeacherHelper
             $teacher->password = $email;
         }
         $teacher->save();
-        TeacherHelper::updateTeacherSessionVar();
+        self::updateTeacherSessionVar();
     }
 
     public static function updateTeacherSessionVar()
@@ -88,13 +88,19 @@ class TeacherHelper
         session()->put('teacher', $teacher);
     }
 
-    public static function isAdminEmail($email)
-    {
-        return $email == config('const.admin');
-    }
-
     public static function deleteTeacher($id)
     {
         Teacher::find($id)->delete();
+    }
+
+    private static function emailValid($email)
+    {
+        $result = true;
+
+        if($email == config('const.admin') || StudentHelper::alreadyExist($email)){
+            $result = false;
+        }
+
+        return $result;
     }
 }

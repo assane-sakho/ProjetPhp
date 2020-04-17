@@ -100,7 +100,7 @@
         <div class="modal-content">
             <form action="" id="formAddTeacher" method="POST">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Ajouter des professeurs</h5>
+                    <h5 class="modal-title" id="addTeacherModalLabel">Ajouter des professeurs</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -132,7 +132,7 @@
                     <input class="form-control" type="email" name="teacherEmail" id="teacherEmail" required><br />
 
                     <label for="teacherPassword">Mot de passe: </label>
-                    <input class="form-control" type="password" name="teacherPassword" id="teacherPassword" required>
+                    <input class="form-control" type="password" name="teacherPassword" id="teacherPassword" required autocomplete="">
                     <div class="help-block with-errors"></div>
                 </div>
                 <div class="modal-footer">
@@ -149,7 +149,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Modifier le statut</h5>
+                <h5 class="modal-title" id="downloadRegisrationModalLabel">Modifier le statut</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -188,7 +188,7 @@
         <div class="modal-content">
             <form id="formEditStatus" action="" method="POST">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Modifier le statut</h5>
+                    <h5 class="modal-title" id="editStatusModalLabel">Modifier le statut</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -308,6 +308,27 @@
             orders: []
         });
 
+        
+        $(document).on('click', '.removeTeacher', function() {
+            var tr = $(this).closest('tr');
+            var teacherId = tr.find("td:first").text();
+
+            $.ajax({
+                url: '/Teacher/Delete',
+                type: 'POST',
+                data: { teacherId : teacherId},
+                success: function(data) {
+                    $(document).find(":submit").prop('disabled', false);
+                    teachersTable.row(tr).remove().draw();
+                    displayToastr('teacherDeleted');
+                },
+                error: function(xhr, status, error) {
+                    displayToastr('error');
+                }
+            });
+
+        });
+
         $("#trainingFilter").on('change', function() {
             registrationsTable
                 .columns([3])
@@ -327,26 +348,6 @@
         $('#addTeacherModal').on('show.bs.modal', function(e) {
             $("#teacherEmail, #teacherPassword").val('');
             $(document).find(":submit").prop('disabled', false);
-        });
-
-        $(document).on('click', '.removeTeacher', function() {
-            var tr = $(this).closest('tr');
-            var teacherId = tr.find("td:first").text();
-
-            $.ajax({
-                url: '/Teacher/Delete',
-                type: 'POST',
-                data: { teacherId : teacherId},
-                success: function(data) {
-                    $(document).find(":submit").prop('disabled', false);
-                    teachersTable.row(tr).remove().draw();
-                    displayToastr('teacherDeleted');
-                },
-                error: function(xhr, status, error) {
-                    displayToastr('error');
-                }
-            });
-
         });
 
         $('#downloadRegisrationModal').on('show.bs.modal', function(e) {
@@ -378,7 +379,7 @@
                         '<td><button class="btn btn-danger removeTeacher" type="button">Supprimer</button></td>'
                         ]).draw(false);
                     form.find(":submit").prop('disabled', false);
-                    displayToastr('updated');
+                    displayToastr('teacherAdded');
                     $('#addTeacherModal').modal('toggle');
                 },
                 error: function(xhr, status, error) {
