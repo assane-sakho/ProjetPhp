@@ -18,6 +18,10 @@ class CreateTeachersTable extends Migration
             $table->string('email');
             $table->string('password');
         });
+
+        $seeder = new TeacherSeeder();
+        $seeder->run();
+ 
     }
 
     /**

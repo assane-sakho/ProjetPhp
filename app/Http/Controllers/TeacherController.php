@@ -2,84 +2,31 @@
 
 namespace App\Http\Controllers;
 
-use App\Teacher;
 use Illuminate\Http\Request;
+use App\Helpers\TeacherHelper;
 
 class TeacherController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function add(Request $request)
     {
-        //
+        $email = $request->teacherEmail;
+        $password = $request->teacherPassword;
+
+        return TeacherHelper::tryAddTeacher($email, $password);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function update(Request $request)
     {
-        //
-    }
+        $email = $request->teacherEmail ?? session('teacher')->email;
+        $password = $request->teacherPassword;
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
+        return TeacherHelper::tryUpdateTeacher($email, $password);
     }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Teacher  $teacher
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Teacher $teacher)
+    
+    public function delete(Request $request)
     {
-        //
-    }
+        $id = $request->teacherId;
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Teacher  $teacher
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Teacher $teacher)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Teacher  $teacher
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Teacher $teacher)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Teacher  $teacher
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Teacher $teacher)
-    {
-        //
+        return TeacherHelper::deleteTeacher($id);
     }
 }

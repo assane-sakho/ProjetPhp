@@ -17,6 +17,9 @@ class CreateRegistrationStatusesTable extends Migration
             $table->id();
             $table->string('title');
         });
+
+        $seeder = new RegistrationsStatusesSeeder();
+        $seeder->run();
     }
 
     /**

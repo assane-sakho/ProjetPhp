@@ -23,8 +23,10 @@ class CreateStudentsTable extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->unsignedBigInteger('address_id');
+            $table->unsignedBigInteger('registration_id');
 
             $table->foreign('address_id')->references('id')->on('addresses');
+            $table->foreign('registration_id')->references('id')->on('registrations');
         });
     }
 
