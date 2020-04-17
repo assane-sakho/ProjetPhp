@@ -6,23 +6,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta name="csrf-token" content="{!! csrf_token() !!}">
     <title>PHP Project</title>
-    <link rel="icon" href="{{ secure_asset('img/favicon.png') }}"  type="image/png">
+    <link rel="icon" href="{{ asset('img/favicon.png') }}"  type="image/png">
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="{{ secure_asset('css/bootstrap.min.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}"/>
     <!-- animate CSS -->
-    <link rel="stylesheet" href="{{ secure_asset('css/animate.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('css/animate.css') }}"/>
     <!-- font awesome CSS -->
-    <link rel="stylesheet" href="{{ secure_asset('vendors/elegant_Icon/elegent_icon.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('vendors/elegant_Icon/elegent_icon.css') }}"/>
     <!-- owl carousel CSS -->
-    <link rel="stylesheet" href="{{ secure_asset('vendors/owl_carousel/css/owl.carousel.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('vendors/owl_carousel/css/owl.carousel.css') }}"/>
     <!-- flaticon CSS -->
-    <link rel="stylesheet" href="{{ secure_asset('css/flaticon.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('css/flaticon.css') }}"/>
     <!-- style CSS -->
-    <link rel="stylesheet" href="{{ secure_asset('css/style.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}"/>
     <!-- Toastr CSS -->
-    <link rel="stylesheet" href="{{ secure_asset('vendors/toastr/css/toastr.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('vendors/toastr/css/toastr.css') }}"/>
     <!-- Smart wizard CSS -->
-    <link rel="stylesheet" href="{{ secure_asset('vendors/smart_wizard/css/smart_wizard.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('vendors/smart_wizard/css/smart_wizard.css') }}"/>
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
     <!-- Font awesome CSS -->
