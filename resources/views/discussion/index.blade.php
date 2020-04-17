@@ -181,10 +181,9 @@
             if (responseContent != null) {
                 var message =
                     '<div class="media w-50 mb-3">' +
-                    '	<img src="https://res.cloudinary.com/mhmd/image/upload/v1564960395/avatar_usae7z.svg" alt="user" width="50" class="rounded-circle">' +
                     '   <div class="media-body ml-3">' +
-                    '     <div class="bg-light rounded py-2 px-3 mb-2">' +
-                    '       <p class="text-small mb-0 text-muted">' + responseContent + '</p>' +
+                    '     <div class="rounded py-2 px-3 mb-2" style="background-color:#C1B9B8">' +
+                    '       <p class="text-small mb-0 text-white">' + responseContent + '</p>' +
                     '     </div>' +
                     '        <p class="small text-muted">' + moment(responseDate).format('DD MMMM | HH:mm') + '</p>' +
                     '   </div>' +
