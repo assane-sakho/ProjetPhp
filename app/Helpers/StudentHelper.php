@@ -7,6 +7,8 @@ use App\Address;
 use App\Folder;
 use App\Registration;
 
+use Illuminate\Support\Facades\Hash;
+
 class StudentHelper
 {
     public static function checkIfStudentExist($email, $password)
@@ -14,11 +16,10 @@ class StudentHelper
         $result = true;
 
         $student = Student::where([
-            'email' => $email,
-            'password' => $password
+            'email' => $email
         ])->first();
 
-        if ($student == null) {
+        if ($student == null || !Hash::check($password, $student->password)) {
             $result = false;
         }
         return array($result, $student);

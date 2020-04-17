@@ -10,6 +10,10 @@ class Student extends Model
     protected $fillable = ['lastname', 'firstname', 'card_id', 'birthdate', 'phone_number', 'email', 'password', 'address_id', 'registration_id'];
     protected $dates = ['birthdate'];
 
+    public function setPasswordAttribute($value) {
+        $this->attributes['password'] = bcrypt($value);
+    }
+    
     function address()
     {
         return $this->belongsTo('App\Address');

@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use App\Teacher;
+use Illuminate\Support\Facades\Hash;
 
 class TeacherHelper
 {
@@ -11,11 +12,10 @@ class TeacherHelper
         $result = true;
 
         $teacher = Teacher::where([
-            'email' => $email,
-            'password' => $password
+            'email' => $email
         ])->first();
 
-        if ($teacher == null) {
+        if ($teacher == null || !Hash::check($password, $teacher->password)) {
             $result = false;
         }
         return array($result, $teacher);
@@ -76,7 +76,7 @@ class TeacherHelper
 
         $teacher->email = $email;
         if ($password) {
-            $teacher->password = $email;
+            $teacher->password = $password;
         }
         $teacher->save();
         self::updateTeacherSessionVar();

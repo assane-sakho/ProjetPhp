@@ -13,7 +13,7 @@ class TeacherSeeder extends Seeder
     {
         DB::table('teachers')->insert([
             'email' => config('const.admin'),
-            'password' => 'admin'
+            'password' => bcrypt('admin')
         ]);
     }
 }
