@@ -44,7 +44,7 @@
                             </div>
                             <div class="logo">
                                <a href="{{ $homeHref }}">
-                                    <img class="img-responsive" src="{{ asset('img/nanterreLogo.png') }}" alt="#">
+                                    <img class="img-responsive" src="{{ secure_asset('img/nanterreLogo.png') }}" alt="#">
                                 </a>
                             </div>
                             <nav class="navbar_bar">
