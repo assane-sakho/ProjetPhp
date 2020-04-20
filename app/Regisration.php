@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Registration extends Model
 {
     public $timestamps = false;
-    protected $fillable = ['training_id', 'folder_id', 'status_id', 'apprenticeship'];
+    protected $fillable = ['training_id', 'folder_id', 'status_id', 'classicTraining', 'apprenticeshipTraining'];
 
     function folder()
     {

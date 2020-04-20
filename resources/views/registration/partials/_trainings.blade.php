@@ -27,11 +27,11 @@
         </select>
         <br />
         <div class="form-check">
-            <input type="checkbox" class="form-check-input" id="classicTraining" name="classicTraining" {{ $data['classicChecked']  }}>
+            <input type="checkbox" class="form-check-input" id="classicTraining" name="classicTraining" {{ $data['classicChecked']  }} {{ $disabled }}>
             <label class="form-check-label" for="classicTraining">Classique</label>
         </div>
         <div class="form-check">
-            <input type="checkbox" class="form-check-input" id="apprenticeshipTraining" name="apprenticeshipTraining" {{ $data['apprenticeshipChecked']  }}>
+            <input type="checkbox" class="form-check-input" id="apprenticeshipTraining" name="apprenticeshipTraining" {{ $data['apprenticeshipChecked']  }} {{ $disabled }}>
             <label class="form-check-label" for="apprenticeshipTraining">Apprentissage</label>
         </div>
         <div class="help-block with-errors"></div>
