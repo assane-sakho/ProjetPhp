@@ -68,21 +68,27 @@ class RegistrationStudyHelper
         return response()->download($filePath, $fileName, $headers);
     }
 
-    public static function getRegistrationsToDownload($registration_status, $training_d)
+    public static function getRegistrationsToDownload($registration_status, $training_d, $trainingType)
     {
         if ($registration_status == "all") {
             $registrations = Registration::where("status_id", '!=', "1");
         } else {
-            $registrations = Registration::where("status_id", $registration_status);
+            $registrations = Registration::where("status_id",  $registration_status);
         }
 
         if ($training_d != "all") {
-            $registrations = $registrations->where("training_id", $training_d)->get();
+            $registrations = $registrations->where("training_id", $training_d);
         } else {
-            $registrations = $registrations->get();
+            $registrations = $registrations;
         }
 
-        return $registrations;
+        if ($trainingType == "classic") {
+            $registrations = $registrations->where("classicTraining", "1");
+        } else if ($trainingType == "apprenticeship") {
+            $registrations = $registrations->where("apprenticeshipTraining", "1");
+        }
+
+        return $registrations->get();
     }
 
     public static function downloadAllRegistration($registrations)

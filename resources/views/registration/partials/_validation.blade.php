@@ -50,6 +50,14 @@
                 <th>Filière choisis</th>
                 <td>{{ session('student')->registration->training->name }}</td>
             </tr>
+            <tr>
+                <th>Pour la formation classique</th>
+                <td>{{ session('student')->registration->classicTraining == '1' ? 'Oui' : 'Non' }}</td>
+            </tr>
+            <tr>
+                <th>Pour la formation par apprentissage</th>
+                <td>{{ session('student')->registration->apprenticeshipTraining == '1' ? 'Oui' : 'Non' }}</td>
+            </tr>
             <tr rowspan="2">
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
@@ -67,7 +75,7 @@
                 <td>
                     @for ($i = 0; $i < count(session('student')->registration->folder->report_cards); $i++)
                         <embed src="/Registration/GetFile?fileName=report_card&number={{$i}}" style="width:150px; height:200px;" frameborder="0">
-                        @endfor
+                    @endfor
                 </td>
             </tr>
             <tr>

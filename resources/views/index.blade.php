@@ -11,7 +11,7 @@
             <h4 class="text-white">Paris Nanterre</h4>
             <div class="text-center">
               <br />
-              <button class="btn btn-primary btn-lg" type="button" style="width: 25%;" id="btnSignIn">Deposer une candidature</button>&nbsp;
+              <button class="btn btn-primary btn-lg" type="button" style="width: 25%;" id="btnSignIn">Déposer une candidature</button>&nbsp;
               <button class="btn btn-success btn-lg" type="button" style="width: 25%;" id="btnLogin">Se connecter</button>
             </div>
           </div>

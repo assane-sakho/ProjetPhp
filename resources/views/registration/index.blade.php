@@ -151,14 +151,30 @@
                         }
                     });
                     return false;
-                } else if (stepNumber == 3) {
+                } 
+                else if(stepNumber == 0)
+                {
+                    if ($("#training").val() == '') {
+                        $("#training").addClass('has-error').addClass('border-danger');
+                        $(".help-block").show();
+                        return false;
+                    }
+
+                    if($(":checkbox:checked").length == 0)
+                    {
+                        $(".form-check-label").addClass('text-danger');
+                        $("#errorTraining").show();
+                        return false;
+                    }
+                }
+                else if (stepNumber == 3) {
                     if (elmForm.find('#report_card_0').length && $("#report_card_0").val() == '') {
                         $("#report_card_0").addClass("bg-danger").addClass('has-error');
                         $(".help-block").show();
                         return false;
                     }
                 }
-
+               
                 if (registrationEditable) {
                     $.ajax({
                         url: '/Registration/SaveStepData',

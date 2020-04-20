@@ -64,9 +64,9 @@ class FileHelper
         $realName = [
             "cv" => "CV",
             "cover_letter" => "Lettre de motivation",
-            "report_card_0" => "Relevé de notes n°0",
-            "report_card_1" => "Relevé de notes n°1",
-            "report_card_2" => "Relevé de notes n°2",
+            "report_card_0" => "Relevé de notes n°1",
+            "report_card_1" => "Relevé de notes n°2",
+            "report_card_2" => "Relevé de notes n°3",
             "vle_screenshot" => "Imprime écran ENT"
         ];
 

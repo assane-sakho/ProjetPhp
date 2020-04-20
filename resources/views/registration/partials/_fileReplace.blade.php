@@ -2,7 +2,7 @@
 <h5>Déposez {{ $data['uploadTitle'] }}</h5>
 <div id="form-step-{{ $stepNumber }}" role="form" data-toggle="validator">
     <div class="form-group col-md-10">
-        <p>Vous avez déjà enregistré <b><u data-toggle="modal" data-target="#displayFilesModal-{{ $data['inputName'] }}">{{ count($data['filesUploaded']) }} document(s)</u></b>.
+        <p>Vous avez déjà enregistré <b><u data-toggle="modal" data-target="#displayFilesModal-{{ $data['inputName'] }}">{{ count($data['filesUploaded']) }} document</u></b>.
         </p>
         @if(!session('isRegistrationComplete'))
         <p class=" warningReplace-{{ $data['inputName'] }}"><b class="text-danger">Attention</b> : Remplacer le document actuel effaçera le précédent.
