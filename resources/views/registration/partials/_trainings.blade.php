@@ -6,7 +6,7 @@
             $disabled = session('isRegistrationComplete') ? "disabled" : "";
         @endphp
         <select class="input-training form-control" name="training" id="training" required {{ $disabled }}> 
-            <option value="">-- Sélectionnez une option</option>
+            <option value="">-- Sélectionnez une option --</option>
             @php
                 $selected;
                 foreach ($data['trainings'] as $training)

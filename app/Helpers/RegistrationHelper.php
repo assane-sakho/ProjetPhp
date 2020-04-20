@@ -17,7 +17,9 @@ class RegistrationHelper
 
         if (strpos($fileName, 'report_card_') !== false) {
             $fileName = 'report_card_' . count($reportCards) . '.' . $fileToUpload->getClientOriginalExtension();
-            $reportCards->add(ReportCard::create(['name' => $fileName, 'folder_id' => $studentFolder->id]));
+            if (count($reportCards) < 3 && ReportCard::where("name", $fileName)->count() == 0) {
+                $reportCards->add(ReportCard::create(['name' => $fileName, 'folder_id' => $studentFolder->id]));
+            }
         } else {
             $oldFile = $studentFolder[$folderFile];
             FileHelper::deleteFile($oldFile, null);
@@ -57,17 +59,16 @@ class RegistrationHelper
         $student  = session('student');
         $reportCards = $student->registration->folder->report_cards;
         $studentFolderPath = $student->folderPath();
-        
+
         $idx = (explode('.pdf', explode('report_card_', $fileDeleted)[1])[0]) + 1;
 
         for ($i = $idx; $i < 3; $i++) {
             $currentFileName = 'report_card_' . $i . '.pdf';
-            $newFileName = 'report_card_' . ($i -1) . '.pdf';
+            $newFileName = 'report_card_' . ($i - 1) . '.pdf';
 
             $reportCard = $reportCards->where("name", $currentFileName)->first();
 
-            if($reportCard != null)
-            {
+            if ($reportCard != null) {
                 $reportCard->name = $newFileName;
                 $reportCard->save();
 

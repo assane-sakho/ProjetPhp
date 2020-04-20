@@ -21,7 +21,7 @@
                 @if(session('teacher')->id == 1)
                 <p>
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addTeacherModal">
-                        Ajouter des professeurs
+                        Ajouter un professeur
                     </button>
                 </p><br />
                 @endif
@@ -100,7 +100,7 @@
         <div class="modal-content">
             <form action="" id="formAddTeacher" method="POST">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addTeacherModalLabel">Ajouter des professeurs</h5>
+                    <h5 class="modal-title" id="addTeacherModalLabel">Ajouter un professeur</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -149,7 +149,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="downloadRegisrationModalLabel">Modifier le statut</h5>
+                <h5 class="modal-title" id="downloadRegisrationModalLabel">Télécharger les candidatures</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
