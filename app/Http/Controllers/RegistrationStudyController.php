@@ -41,8 +41,9 @@ class RegistrationStudyController extends Controller
     {
         $registration_status = $request->registration_status_d;
         $training_d = $request->training_d;
+        $trainingType = $request->trainingType;
 
-        $registrations = RegistrationStudyHelper::getRegistrationsToDownload($registration_status, $training_d);
+        $registrations = RegistrationStudyHelper::getRegistrationsToDownload($registration_status, $training_d, $trainingType);
 
         if ($registrations->count() == 0) {
             return ResponseHelper::returnResponseError('noRegistration');

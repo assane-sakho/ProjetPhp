@@ -54,18 +54,22 @@
                                         @endforeach
                                     </select>
                                 </td>
+                                <td>Classique</td>
+                                <td>Apprentissage</td>
                                 <td>Modifier le statut</td>
                                 <td>Télécharger les docs.</td>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($data['registrations'] as $registration)
-                            <tr>
+                            <tr id="registration_{{ $registration->id }}">
                                 <td>{{ $registration->id }}</td>
                                 <td>{{ $registration->student->lastname }}</td>
                                 <td>{{ $registration->student->firstname  }}</td>
                                 <td>{{ $registration->training->name ?? 'Non renseigné' }}</td>
                                 <td>{{ $registration->registration_status->title  }}</td>
+                                <td><i class="fas fa-{{ $registration->classicTraining == '1' ? 'check text-success' : 'times text-danger'}}"></i></td>
+                                <td><i class="fas fa-{{ $registration->apprenticeshipTraining == '1' ? 'check text-success' : 'times text-danger'  }}"></i></td>
                                 <td class="not-export-col">
                                     <div class="text-center">
                                         @if($registration->registration_status->id != 1)
@@ -172,8 +176,15 @@
                         @endforeach
                     </select>
                     <br />
+                    <label for="trainingType">Choix du type de candidature :</label><br />
+                    <select name="trainingType" id="trainingType" class="form-control">
+                        <option value="all">Tout les types</option>
+                        <option value="classic">Classique</option>
+                        <option value="apprenticeship">Apprentissage</option>
+                    </select>
                     <br />
-                    <button class="btn btn-success" id="downloadAllRegistration" value="Télécharger" type="submit">Télécharger</button>
+                    <br /> 
+                    <div class="help-block with-errors"></div> <button class="btn btn-success" id="downloadAllRegistration" value="Télécharger" type="submit">Télécharger</button>
                 </form>
             </div>
             <div class="modal-footer">
@@ -308,7 +319,7 @@
             orders: []
         });
 
-        
+
         $(document).on('click', '.removeTeacher', function() {
             var tr = $(this).closest('tr');
             var teacherId = tr.find("td:first").text();
@@ -316,7 +327,9 @@
             $.ajax({
                 url: '/Teacher/Delete',
                 type: 'POST',
-                data: { teacherId : teacherId},
+                data: {
+                    teacherId: teacherId
+                },
                 success: function(data) {
                     $(document).find(":submit").prop('disabled', false);
                     teachersTable.row(tr).remove().draw();
@@ -357,7 +370,7 @@
         $('#editStatusModal').on('show.bs.modal', function(e) {
             var registrationId = $(e.relatedTarget).data('id');
             $("#registrationId").val(registrationId);
-            var rowIdx = $("tr:contains(" + registrationId + ")").index();
+            var rowIdx = $("#registrationsTable").find("#registration_" + registrationId).index();
             var statusTitle = registrationsTable.row(rowIdx).data()[4];
             $("#registrationStatus option").each(function() {
                 this.selected = (this.text == statusTitle);
@@ -374,10 +387,10 @@
                 data: form.serialize(),
                 success: function(data) {
                     teachersTable.row.add([
-                        data.teacherId, 
+                        data.teacherId,
                         $("#teacherEmail").val(),
                         '<td><button class="btn btn-danger removeTeacher" type="button">Supprimer</button></td>'
-                        ]).draw(false);
+                    ]).draw(false);
                     form.find(":submit").prop('disabled', false);
                     displayToastr('teacherAdded');
                     $('#addTeacherModal').modal('toggle');
@@ -398,7 +411,7 @@
         $("#formEditStatus").submit(function(e) {
             var registrationId = $("#registrationId").val();
             var statusTitle = $("#registrationStatus option:selected").text();
-            var rowIdx = $("tr:contains(" + registrationId + ")").index();
+            var rowIdx =  $("#registrationsTable").find("#registration_"+ registrationId).index();
             var form = $(this);
             e.preventDefault();
 

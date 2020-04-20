@@ -17,7 +17,7 @@ class RegistrationHelper
 
         if (strpos($fileName, 'report_card_') !== false) {
             $fileName = 'report_card_' . count($reportCards) . '.' . $fileToUpload->getClientOriginalExtension();
-            if (count($reportCards) < 3 && ReportCard::where("name", $fileName)->count() == 0) {
+            if (count($reportCards) < 3 && ReportCard::where(["name"=> $fileName, 'folder_id' => $studentFolder->id])->count() == 0) {
                 $reportCards->add(ReportCard::create(['name' => $fileName, 'folder_id' => $studentFolder->id]));
             }
         } else {
@@ -32,12 +32,14 @@ class RegistrationHelper
         StudentHelper::updateSessionVar();
     }
 
-    public static function updateTraining($training_id)
+    public static function updateTraining($training_id, $classicTraining, $apprenticeship)
     {
         $student  = session('student');
         $studentRegistration =  $student->registration;
 
         $studentRegistration->training_id = $training_id;
+        $studentRegistration->classicTraining = $classicTraining;
+        $studentRegistration->apprenticeshipTraining = $apprenticeship;
         $studentRegistration->save();
     }
 
@@ -95,6 +97,8 @@ class RegistrationHelper
             0 => [
                 "trainings" => Training::all(),
                 "student_training_id" => $studentRegistration->training_id,
+                "classicChecked" =>  $studentRegistration->classicTraining == true ? "checked" : "",
+                "apprenticeshipChecked" =>  $studentRegistration->apprenticeshipTraining == true ? "checked" : "",
                 "viewName" => "_trainings"
             ],
             1 => [

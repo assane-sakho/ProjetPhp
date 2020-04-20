@@ -61,7 +61,11 @@ class RegistrationController extends Controller
         }
 
         if ($request->has('training')) {
-            RegistrationHelper::updateTraining($request["training"]);
+            $training = $request->training;
+            $classicTraining = $request->classicTraining == 'on' ? 1 : 0;
+            $apprenticeshipTraining = $request->apprenticeshipTraining == 'on' ? 1 : 0;
+
+            RegistrationHelper::updateTraining($training, $classicTraining, $apprenticeshipTraining);
         }
     }
 

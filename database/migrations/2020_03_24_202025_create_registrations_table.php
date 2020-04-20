@@ -15,6 +15,8 @@ class CreateRegistrationsTable extends Migration
     {
         Schema::create('registrations', function (Blueprint $table) {
             $table->id();
+            $table->boolean('classicTraining')->default(1);
+            $table->boolean('apprenticeshipTraining')->default(0);
             $table->unsignedBigInteger('training_id')->nullable();
             $table->unsignedBigInteger('folder_id');
             $table->unsignedBigInteger('status_id')->default(1);
