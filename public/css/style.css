@@ -4970,3 +4970,7 @@ a:focus, .button:focus, button:focus, .btn:focus {
   color :red;
 }
 /*# sourceMappingURL=style.css.map */
+
+.hidden {
+  display: none;
+}

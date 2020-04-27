@@ -14,9 +14,16 @@ class FileHelper
         $file->storeAs($studentFolderPath, $fileName, config('const.source_disk'));
     }
 
-    public static function getFile($fileWanted, $index = null)
+    public static function getFile($fileWanted, $index = null, $studentId = null)
     {
-        $student  = session('student');
+        if($studentId != null)
+        {
+            $student = StudentHelper::getStudent($studentId);
+        }
+        else
+        {
+            $student  = session('student');
+        }
         $studentFolder = $student->registration->folder;
         $studentFolderPath = $student->folderPath();
 

@@ -9,6 +9,7 @@ class Student extends Model
     public $timestamps = false;
     protected $fillable = ['lastname', 'firstname', 'card_id', 'birthdate', 'phone_number', 'email', 'password', 'address_id', 'registration_id'];
     protected $dates = ['birthdate'];
+    protected $hidden = ['password'];
 
     public function setPasswordAttribute($value) {
         $this->attributes['password'] = bcrypt($value);

@@ -21,11 +21,12 @@ class RegistrationController extends Controller
 
     public function getFile(Request $request)
     {
-        if (session()->has('student')) {
+        if (session()->has('student') || session()->has('teacher') ) {
             $fileWanted = $request->fileName;
             $index = $request->number;
+            $studentId = $request->studentId;
 
-            return FileHelper::getFile($fileWanted, $index);
+            return FileHelper::getFile($fileWanted, $index, $studentId);
         }
         return redirect('/');
     }

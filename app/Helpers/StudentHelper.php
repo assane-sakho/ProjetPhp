@@ -178,4 +178,30 @@ class StudentHelper
 
         return $result;
     }
+
+    public static function getStudent($id)
+    {
+        return Student::find($id);
+    }
+
+    public static function getStudentInfo($id)
+    {
+        $student = Student::find($id);
+        $address = $student->address;
+        $registration = $student->registration;
+        $registration_status = $registration->registration_status;
+        $training = $registration->training;
+        $folder = $registration->folder;
+        $report_cards = $folder->report_cards;
+
+        return ResponseHelper::returnResponseSuccess([
+            'student' => $student,
+            'address' => $address,
+            'registration' => $registration,
+            'registration_status' => $registration_status,
+            'training' => $training,
+            'folder' => $folder,
+            'report_cards' => $report_cards
+        ]);
+    }
 }
