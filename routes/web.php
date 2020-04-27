@@ -34,6 +34,7 @@ Route::get('/Profile', function () {
 /* Students */
 Route::post('/Student/Add', 'StudentController@add');
 Route::post('/Student/Update', 'StudentController@update');
+Route::post('/Student/GetStudentInfo', 'StudentController@getInfo');
 
 
 /* Teacher */

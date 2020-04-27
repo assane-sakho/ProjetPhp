@@ -41,4 +41,10 @@ class StudentController extends Controller
 
         return StudentHelper::tryUpdateStudent($lastname, $firstname, $birthdate, $cardId, $phoneNumber, $email, $password, $street, $city, $zip_code);
     }
+
+    public function getInfo(Request $request)
+    {
+        $studentId = $request->studentId;
+        return StudentHelper::getStudentInfo($studentId);
+    }
 }

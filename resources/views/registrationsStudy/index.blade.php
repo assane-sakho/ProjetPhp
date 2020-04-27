@@ -56,6 +56,7 @@
                                 </td>
                                 <td>Classique</td>
                                 <td>Apprentissage</td>
+                                <td>Voir +</td>
                                 <td>Modifier le statut</td>
                                 <td>Télécharger les docs.</td>
                             </tr>
@@ -70,6 +71,11 @@
                                 <td>{{ $registration->registration_status->title  }}</td>
                                 <td><i class="fas fa-{{ $registration->classicTraining == '1' ? 'check text-success' : 'times text-danger'}}"></i></td>
                                 <td><i class="fas fa-{{ $registration->apprenticeshipTraining == '1' ? 'check text-success' : 'times text-danger'  }}"></i></td>
+                                <td class="not-export-col">
+                                    <div class="text-center">
+                                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#seeMoreModal" data-id="{{ $registration->id }}">Voir +</button>
+                                    </div>
+                                </td>
                                 <td class="not-export-col">
                                     <div class="text-center">
                                         @if($registration->registration_status->id != 1)
@@ -183,7 +189,7 @@
                         <option value="apprenticeship">Apprentissage</option>
                     </select>
                     <br />
-                    <br /> 
+                    <br />
                     <div class="help-block with-errors"></div> <button class="btn btn-success" id="downloadAllRegistration" value="Télécharger" type="submit">Télécharger</button>
                 </form>
             </div>
@@ -223,11 +229,112 @@
     </div>
 </div>
 
+<div class="modal fade" id="seeMoreModal" tabindex="-1" role="dialog" aria-labelledby="seeMoreModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="seeMoreModalLabel">Informations de <span id="seeMore-studentName"></span></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="spinner-border" role="status" id="seeMore-loader">
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <table class="table table-bordered hidden" id="seeMore-table">
+                    <tr>
+                        <th>Statut de la candidature</th>
+                        <td colspan="3" id="student-registration_status" class="text-info studentInfo"></td>
+                    </tr>
+                    <tr rowspan="2">
+                        <td>&nbsp;</td>
+                        <td colspan="3">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <th>N° de carte d'identité</th>
+                        <td colspan="3" id="student-card_id" class="studentInfo"></td>
+                    </tr>
+                    <tr>
+                        <th>Date de naissance</th>
+                        <td colspan="3" id="student-birthdate" class="studentInfo"></td>
+                    </tr>
+                    <tr>
+                        <th>Adresse mail</th>
+                        <td colspan="3" id="student-email" class="studentInfo"></td>
+                    <tr>
+                        <th>Téléphone</th>
+                        <td colspan="3" id="student-phone_number" class="studentInfo"></td>
+                    </tr>
+                    <tr>
+                        <th>Adresse</th>
+                        <td colspan="3" id="student-address" class="studentInfo"></td>
+                    </tr>
+                    <tr rowspan="2">
+                        <td>&nbsp;</td>
+                        <td colspan="3">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <th>Filière choisis</th>
+                        <td colspan="3" id="student-training" class="studentInfo"></td>
+                        <td colspan="3" id="training-none">Non renseigné</td>
+                    </tr>
+                    <tr>
+                        <th>Pour la formation classique</th>
+                        <td colspan="3" id="student-classicTraining" class="studentInfo"></td>
+                    </tr>
+                    <tr>
+                        <th>Pour la formation par apprentissage</th>
+                        <td colspan="3" id="student-apprenticeshipTraining" class="studentInfo"></td>
+                    </tr>
+                    <tr rowspan="2">
+                        <td>&nbsp;</td>
+                        <td colspan="3">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <th>CV</th>
+                        <td colspan="3" class="hidden" id="student-cv">
+                            <embed src="" style="width:150px; height:200px;" frameborder="0">
+                        </td>
+                        <td colspan="3" id="cv-none">Non renseigné</td>
+                    </tr>
+                    <tr>
+                        <th>Lettre de motivation</th>
+                        <td colspan="3" class="hidden" id="student-cover_letter">
+                            <embed src="" style="width:150px; height:200px;" frameborder="0">
+                        </td>
+                        <td colspan="3" id="cover_letter-none">Non renseigné</td>
+                    </tr>
+                    <tr>
+                        <th>Relevés de notes de l’année précédente</th>
+                        @for($i = 0; $i < 3; $i++) <td id="student-report_card_{{ $i }}" class="hidden">
+                            <embed src="" style="width:150px; height:200px;" frameborder="0">
+                            </td>
+                            <td id="report_card_{{ $i }}-none">Non renseigné</td>
+                            @endfor
+                    </tr>
+                    <tr>
+                        <th>Imprime écran de l’ENT de l’année en cours</th>
+                        <td colspan="3" class="hidden" id="student-vle_screenshot">
+                            <img class="img-fluid" src="" alt="">
+                        </td>
+                        <td colspan="3" id="vle_screenshot-none">Non renseigné</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @section('scripts')
 <script>
     $(document).ready(function() {
+
         var fileNameExportTeachers = 'Listes des professeurs - ' + moment().format('DD-MMMM-YYYY');
 
         var teachersTable = $('#teachersTable').DataTable({
@@ -367,6 +474,71 @@
             $("#registration_status_d, #training_d").val('all').change();
         });
 
+        $('#seeMoreModal').on('show.bs.modal', function(e) {
+            $('#seeMore-loader').show();
+            $("#seeMore-table").hide();
+            $("embed, #student-vle_screenshot").attr('src', '')
+
+            var studentId = $(e.relatedTarget).data('id');
+            var rowIdx = $("#registrationsTable").find("#registration_" + studentId).index();
+            var studentName = registrationsTable.row(rowIdx).data()[1] + ' ' + registrationsTable.row(rowIdx).data()[2];
+            $("#seeMore-studentName").text(studentName);
+
+            $.ajax({
+                url: '/Student/GetStudentInfo',
+                type: 'POST',
+                data: {
+                    studentId: studentId
+                },
+                success: function(data) {
+
+                    var student = data.student;
+                    var address = data.address;
+                    var registration = data.registration;
+                    var registration_status = data.registration_status;
+                    var training = data.training;
+                    var folder = data.folder;
+                    var report_cards = data.report_cards;
+
+                    setTableValue('registration_status', registration_status.title);
+                    setTableValue('card_id', student.card_id);
+                    setTableValue('birthdate', moment(student.birthdate).format('DD-MM-YYYY'));
+                    setTableValue('email', student.email);
+                    setTableValue('phone_number', student.phone_number);
+                    setTableValue('address', address.street + ', ' + address.zip_code + ' ' + address.city);
+                    
+                    if (training) {
+                        setTableValue('training', training.name);
+                    }
+
+                    $("#student-classicTraining").text(registration.classicTraining == 1 ? 'Oui' : 'Non');
+                    $("#student-apprenticeshipTraining").text(registration.apprenticeshipTraining == 1 ? 'Oui' : 'Non');
+
+                    setTableValue('cv', folder.cv, 'pdf', studentId);
+                    setTableValue('cover_letter', folder.cover_letter, 'pdf', studentId);
+                    setTableValue('vle_screenshot', folder.vle_screenshot, 'img', studentId);
+
+                    for (let i = 0; i < 3; i++) {
+                        setTableValue('report_card_' + i, null, 'pdf', studentId);
+                    }
+
+                    $(report_cards).each(function(idx) {
+                        var report_card = report_cards[idx];
+                        var fileName = report_card.name;
+                        var name = fileName.split('.pdf')[0];
+                        setTableValue(name, fileName, 'pdf', studentId);
+                    });
+                    $('#seeMore-loader').hide();
+                    $("#seeMore-table").show();
+                },
+                error: function() {
+                    displayToastr('error');
+                },
+            });
+
+        });
+
+
         $('#editStatusModal').on('show.bs.modal', function(e) {
             var registrationId = $(e.relatedTarget).data('id');
             $("#registrationId").val(registrationId);
@@ -411,7 +583,7 @@
         $("#formEditStatus").submit(function(e) {
             var registrationId = $("#registrationId").val();
             var statusTitle = $("#registrationStatus option:selected").text();
-            var rowIdx =  $("#registrationsTable").find("#registration_"+ registrationId).index();
+            var rowIdx = $("#registrationsTable").find("#registration_" + registrationId).index();
             var form = $(this);
             e.preventDefault();
 
@@ -518,6 +690,36 @@
         a.click();
         a.remove();
         window.URL.revokeObjectURL(url);
+    }
+
+    function setTableValue(tdId, value, typeDoc, studentId) {
+        var td = $("#student-" + tdId);
+
+        if (value != null) {
+            if (typeDoc) {
+                var doc = td.children().first();
+                if (typeDoc == 'pdf') {
+                    var src = '';
+                    if (value.indexOf('report_card') != -1) {
+                        var idx = value.split('_')[2].split('.pdf')[0];
+                        src = '/Registration/GetFile?fileName=report_card&number=' + idx + '&studentId=' + studentId;
+                    } else {
+                        src = '/Registration/GetFile?fileName=' + tdId + '&studentId=' + studentId;
+                    }
+                    doc.attr('src', src);
+                } else {
+                    doc.attr('src', '/Registration/GetFile?fileName=' + tdId + '&studentId=' + studentId);
+                }
+
+            } else {
+                td.text(value);
+            }
+            td.removeClass('hidden');
+            $("#" + tdId + "-none").addClass('hidden');
+        } else {
+            td.addClass('hidden');
+            $("#" + tdId + "-none").removeClass('hidden');
+        }
     }
 </script>
 @endsection
