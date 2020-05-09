@@ -138,12 +138,13 @@
                     <br />
                     <br />
                     <hr>
-                    <label for="teacherEmail">Email: </label>
-                    <input class="form-control" type="email" name="teacherEmail" id="teacherEmail" required><br />
+                    <br>
+                    <button type="button" class="btn btn-primary btn-circle btn-sm" id="addMoreEmail"><i class="fa fa-plus"></i></button>
+                    <br>
+                    <br>
+                    <div id="addTeachersInputDiv">
 
-                    <label for="teacherPassword">Mot de passe: </label>
-                    <input class="form-control" type="password" name="teacherPassword" id="teacherPassword" required autocomplete="">
-                    <div class="help-block with-errors"></div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-success" value="Ajouter">Ajouter</button>
@@ -466,8 +467,10 @@
         });
 
         $('#addTeacherModal').on('show.bs.modal', function(e) {
-            $("#teacherEmail, #teacherPassword").val('');
             $(document).find(":submit").prop('disabled', false);
+
+            $("#addTeachersInputDiv").empty();
+            addInputEmail();
         });
 
         $('#downloadRegisrationModal').on('show.bs.modal', function(e) {
@@ -506,7 +509,7 @@
                     setTableValue('email', student.email);
                     setTableValue('phone_number', student.phone_number);
                     setTableValue('address', address.street + ', ' + address.zip_code + ' ' + address.city);
-                    
+
                     if (training) {
                         setTableValue('training', training.name);
                     }
@@ -538,7 +541,6 @@
 
         });
 
-
         $('#editStatusModal').on('show.bs.modal', function(e) {
             var registrationId = $(e.relatedTarget).data('id');
             $("#registrationId").val(registrationId);
@@ -553,30 +555,24 @@
             var form = $(this);
             e.preventDefault();
 
-            $.ajax({
-                url: '/Teacher/Add',
-                type: 'POST',
-                data: form.serialize(),
-                success: function(data) {
-                    teachersTable.row.add([
-                        data.teacherId,
-                        $("#teacherEmail").val(),
-                        '<td><button class="btn btn-danger removeTeacher" type="button">Supprimer</button></td>'
-                    ]).draw(false);
-                    form.find(":submit").prop('disabled', false);
-                    displayToastr('teacherAdded');
-                    $('#addTeacherModal').modal('toggle');
-                },
-                error: function(xhr, status, error) {
-                    form.find(":submit").prop('disabled', false);
-                    if (xhr.responseJSON.message == 'emailNotPossible') {
-                        displayToastr('errorMsg', 'Cet email n\'est pas disponible !');
-                    } else if (xhr.responseJSON.message == 'emailAlreadyExist') {
-                        displayToastr('errorMsg', 'Un professeur ayant la même adresse mail <i class="fa fa-info-circle text-info"></i> existe déjà !');
+            var hasFail = false;
+
+            $('.addTeacherDiv').each(function(index, value) {
+                var email = $(this).find('.teacherEmail').val();
+                var password = $(this).find('.teacherPassword').val();
+
+                var inputDivCount = $('.addTeacherDiv').length;
+
+                tryAddTeacher(email, password, teachersTable).then(() => {
+                    if (index === $('.addTeacherDiv').length - 1 && !hasFail) {
+                        $('#addTeacherModal').modal('toggle');
                     } else {
-                        displayToastr('error');
+                        $(this).remove();
                     }
-                },
+                }, () => {
+                    hasFail = true;
+                    $(this).addClass('border border-warning');
+                });;
             });
         });
 
@@ -637,7 +633,7 @@
                     displayToastr('error');
                 },
             });
-        })
+        });
 
         $("#formDownloadAllRegistrations").submit(function(e) {
             var form = $(this);
@@ -677,9 +673,12 @@
                 }
             });
 
-        })
-    });
+        });
 
+        $("#addMoreEmail").click(function() {
+            addInputEmail();
+        });
+    });
 
     function getFileFromData(data, fileNameExportRegistrations) {
         var a = document.createElement('a');
@@ -721,5 +720,71 @@
             $("#" + tdId + "-none").removeClass('hidden');
         }
     }
+
+    function tryAddTeacher(email, password, teachersTable) {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: '/Teacher/Add',
+                type: 'POST',
+                data: {
+                    teacherEmail: email,
+                    teacherPassword: password,
+                },
+                success: function(data) {
+                    teachersTable.row.add([data.teacherId, email, '<td><button class="btn btn-danger removeTeacher" type="button">Supprimer</button></td>']).draw(false);
+                    $('#formAddTeacher').find(":submit").prop('disabled', false);
+                    displayToastr('teacherAdded');
+                    resolve();
+                },
+                error: function(xhr, status, error) {
+                    $('#formAddTeacher').find(":submit").prop('disabled', false);
+                    if (xhr.responseJSON.message == 'emailNotPossible') {
+                        displayToastr('errorMsg', 'Cet email n\'est pas disponible !');
+                    } else if (xhr.responseJSON.message == 'emailAlreadyExist') {
+                        displayToastr('errorMsg', 'Un professeur ayant la même adresse mail <i class="fa fa-info-circle text-info"></i> existe déjà !');
+                    } else {
+                        displayToastr('error');
+                    }
+                    reject();
+                },
+            });
+        });
+    }
+
+    function randString() {
+        var possible = '';
+        possible += 'abcdefghijklmnopqrstuvwxyz';
+        possible += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        possible += '0123456789';
+        possible += '![]{}()%&*$#^<>~@|';
+        var text = '';
+        for (var i = 0; i < 12; i++) {
+            text += possible.charAt(Math.floor(Math.random() * possible.length));
+        }
+        return text;
+    }
+
+    function addInputEmail() {
+
+        var inputDiv =
+            $('<div class="mt-3 border border-dark addTeacherDiv">' +
+                '    <button type="button" class="btn btn-danger removeEmailInput" onclick="$(this).parent().remove();"><i class="fa fa-times"></i></button>' +
+                '    <br>' +
+                '    <div class="input-group">' +
+                '        <label for="teacherEmail" class="col-md-2">Email: </label><br />&nbsp;&nbsp;' +
+                '        <input class="form-control teacherEmail col-md-8" type="email" required><br>' +
+                '    </div>' +
+                '    <div class="input-group">' +
+                '        <label for="teacherPassword" class="col-md-2">Mot de passe: </label><br />&nbsp;&nbsp;' +
+                '        <input class="form-control teacherPassword col-md-8" type="text" required>&nbsp;&nbsp;' +
+                '        <button type="button" class="btn btn-secondary reload" onclick="$(this).parent().find(\'.teacherPassword\').val(randString())"><i class="fas fa-sync-alt" aria-hidden="true"></i></button>' +
+                '    </div>' +
+                '</div>');
+
+        $(inputDiv).find('.teacherPassword').val(randString());
+        $("#addTeachersInputDiv").append(inputDiv);
+    }
+
 </script>
+
 @endsection
