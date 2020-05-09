@@ -38,7 +38,7 @@ class TeacherHelper
         if(!self::emailValid($email)){
             return ResponseHelper::returnResponseError('emailNotPossible');
         }
-        else if (!self::alreadyExist($email)) {
+        else if (!self::alreadyExist($email) && !StudentHelper::alreadyExist($email)) {
            
             $teacher = self::addTeacher($email, $password);
 
