@@ -65,7 +65,7 @@
                                         <a href="/Discussion">Messagerie</a>
                                     </li>
                                     <li>
-                                       <a id="logout" href="">Déconnexion</a>
+                                       <a id="logout" href="#LogOut">Déconnexion</a>
                                      </li>
                                     @php
                                         }

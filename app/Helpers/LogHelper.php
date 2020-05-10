@@ -50,9 +50,11 @@ class LogHelper
 
     public static function disconnectUser()
     {
-        session()->forget('student');
-        session()->forget('isRegistrationComplete');
-
-        session()->forget('teacher');
+        if (session()->has('student')) {
+            session()->forget('student');
+            session()->forget('isRegistrationComplete');
+        } else {
+            session()->forget('teacher');
+        }
     }
 }
