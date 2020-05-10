@@ -57,6 +57,7 @@ Route::get('/RegistrationsStudy', 'RegistrationStudyController@index');
 Route::post('/RegistrationsStudy/DownloadRegistration', 'RegistrationStudyController@downloadRegistration');
 Route::post('/RegistrationsStudy/DownloadAllRegistrations', 'RegistrationStudyController@downloadAllRegistrations');
 Route::post('/RegistrationsStudy/UpdateStatus', 'RegistrationStudyController@updateStatus');
+Route::get('/RegistrationStudy/GetRegistrations', 'RegistrationStudyController@getRegistrations');
 
 
 /* Message */

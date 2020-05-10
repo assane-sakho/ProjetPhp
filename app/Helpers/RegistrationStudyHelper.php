@@ -119,4 +119,59 @@ class RegistrationStudyHelper
             "teachers" => $teachers,
         ];
     }
+
+    public static function getRegistrationsDataTables($draw, $searchValue, $start, $length, $orderColumn, $orderDir, $training_id, $status_id)
+    {
+        $orders = array(
+            "0" => "id",
+            "1" => "students.lastname",
+            "2" => "students.firstname",
+            "5" => "classicTraining",
+            "6" => "apprenticeshipTraining",
+        );
+
+        $registrations = Registration::select([
+            'registrations.*',
+            'students.lastname as student_lastname',
+            'students.firstname as student_firstname',
+            'trainings.name as training_name',
+            'registration_statuses.title as registration_status',
+            'registration_statuses.id as registration_status_id',
+        ])->join('students', 'students.registration_id', '=', 'registrations.id')
+            ->leftjoin('trainings', 'trainings.id', '=', 'registrations.training_id')
+            ->join('registration_statuses', 'registration_statuses.id', '=', 'registrations.status_id');
+
+        $totalRecords = count($registrations->get());
+
+        if ($searchValue != null) {
+            $registrations = $registrations->where('trainings.name', 'LIKE', '%' . $searchValue . '%')
+                ->orWhere('trainings.name', 'LIKE', '%' . $searchValue . '%')
+                ->orWhere('students.lastname', 'LIKE', '%' . $searchValue . '%')
+                ->orWhere('students.firstname', 'LIKE', '%' . $searchValue . '%')
+                ->orWhere('registration_statuses.title', 'LIKE', '%' . $searchValue . '%');
+        }
+
+        if ($training_id != null) {
+            $registrations = $registrations->where('training_id', $training_id);
+        }
+
+        if ($status_id != null) {
+            $registrations = $registrations->where('status_id', $status_id);
+        }
+
+        $registrations =
+            $registrations->orderBy($orders[$orderColumn], $orderDir)
+            ->paginate($start)
+            ->take($length);
+
+        $totalRecordwithFilter = count($registrations);
+        $response = array(
+            "draw" => $draw,
+            "iTotalRecords" => $totalRecords,
+            "iTotalDisplayRecords" => $totalRecordwithFilter,
+            "aaData" => $registrations
+        );
+
+        return json_encode($response);
+    }
 }

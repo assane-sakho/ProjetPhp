@@ -38,19 +38,23 @@
                                 <td>#</td>
                                 <td>Nom</td>
                                 <td>Prénom</td>
-                                <td>
+                                <td>Niveau</td>
+                                <td>Statut</td>
+                                <td>Classique</td>
+                                <td>Apprentissage</td>
+                                <td class=" col-md-8">
                                     <select class="form-control" id="trainingFilter">
                                         <option value="">Niveau</option>
                                         @foreach($data['trainings'] as $training)
-                                        <option value="{{ $training->name }}">{{ $training->name }}</option>
+                                        <option value="{{ $training->id }}">{{ $training->name }}</option>
                                         @endforeach
                                     </select>
                                 </td>
-                                <td>
+                                <td class=" col-md-8">
                                     <select class="form-control" id="statusFilter">
                                         <option value="">Statut</option>
                                         @foreach($data['statuses'] as $status)
-                                        <option value="{{ $status->title }}">{{ $status->title }}</option>
+                                        <option value="{{ $status->id }}">{{ $status->title }}</option>
                                         @endforeach
                                     </select>
                                 </td>
@@ -61,42 +65,6 @@
                                 <td>Télécharger les docs.</td>
                             </tr>
                         </thead>
-                        <tbody>
-                            @foreach($data['registrations'] as $registration)
-                            <tr id="registration_{{ $registration->id }}">
-                                <td>{{ $registration->id }}</td>
-                                <td>{{ $registration->student->lastname }}</td>
-                                <td>{{ $registration->student->firstname  }}</td>
-                                <td>{{ $registration->training->name ?? 'Non renseigné' }}</td>
-                                <td>{{ $registration->registration_status->title  }}</td>
-                                <td><i class="fas fa-{{ $registration->classicTraining == '1' ? 'check text-success' : 'times text-danger'}}"></i></td>
-                                <td><i class="fas fa-{{ $registration->apprenticeshipTraining == '1' ? 'check text-success' : 'times text-danger'  }}"></i></td>
-                                <td class="not-export-col">
-                                    <div class="text-center">
-                                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#seeMoreModal" data-id="{{ $registration->id }}">Voir +</button>
-                                    </div>
-                                </td>
-                                <td class="not-export-col">
-                                    <div class="text-center">
-                                        @if($registration->registration_status->id != 1)
-                                        <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#editStatusModal" data-id="{{ $registration->id }}">Modifier</button>
-                                        @else
-                                        <i class="fas fa-hourglass"></i>
-                                        @endif
-                                    </div>
-                                </td>
-                                <td class="not-export-col">
-                                    <div class="text-center">
-                                        @if($registration->registration_status->id != 1)
-                                        <button type="submit" value="Téléchager" class="btn btn-success downloadRegistration" data-id="{{ $registration->student->id }}">Télécharger</button>
-                                        @else
-                                        <i class="fas fa-hourglass"></i>
-                                        @endif
-                                    </div>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
                     </table>
                 </form>
             </div>
@@ -329,12 +297,13 @@
         </div>
     </div>
 </div>
-
+<input type="hidden" id="registrations" value="{{ $data['registrations'] }}">
 @endsection
 
 @section('scripts')
 <script>
     $(document).ready(function() {
+        var registrations = $("#registrations").val();
 
         var fileNameExportTeachers = 'Listes des professeurs - ' + moment().format('DD-MMMM-YYYY');
 
@@ -389,7 +358,7 @@
                     className: 'btn btn-info',
                     title: fileNameExportRegistrations,
                     exportOptions: {
-                        columns: ':visible:not(.not-export-col)'
+                        columns: ':not(.not-export-col)'
                     }
                 },
                 {
@@ -398,7 +367,7 @@
                     className: 'btn btn-info',
                     title: fileNameExportRegistrations,
                     exportOptions: {
-                        columns: ':visible:not(.not-export-col)'
+                        columns: ':not(.not-export-col)'
                     }
                 },
                 {
@@ -407,7 +376,7 @@
                     className: 'btn btn-info',
                     title: fileNameExportRegistrations,
                     exportOptions: {
-                        columns: ':visible:not(.not-export-col)'
+                        columns: ':not(.not-export-col)'
                     }
                 },
                 {
@@ -416,15 +385,156 @@
                     className: 'btn btn-info',
                     title: fileNameExportRegistrations,
                     exportOptions: {
-                        columns: ':visible:not(.not-export-col)'
+                        columns: ':not(.not-export-col)'
                     }
                 },
             ],
             columnDefs: [{
-                "targets": [3, 4],
-                "orderable": false
-            }],
-            orders: []
+                    "targets": [7, 8, 9, 10, 11, 12, 13],
+                    "orderable": false,
+                    "className": 'not-export-col'
+                },
+                {
+                    "targets": [3, 4, 5, 6],
+                    "visible": false
+                }
+            ],
+            orders: [0, 1, 2, 3, 4, 5, 6],
+            'createdRow': function(row, data, dataIndex) {
+                $(row).attr('id', 'registration_' + data['id']);
+            },
+            'columns': [{
+                    data: 'id',
+                },
+                {
+                    data: 'student_lastname'
+                },
+                {
+                    data: 'student_firstname'
+                },
+                {
+                    data: 'training_name',
+                    "render": function(data, type, row, meta) {
+                        if (data == null) {
+                            return "Non renseigné"
+                        } else {
+                            return data
+                        }
+                    },
+                },
+                {
+                    data: 'registration_status'
+                },
+                {
+                    data: 'classicTraining',
+                    "render": function(data, type, row, meta) {
+                        var result = '';
+                        if (row['classicTraining'] == 1) {
+                            result += 'Oui';
+                        } else {
+                            result += 'Non';
+                        }
+                        return result;
+                    },
+                },
+                {
+                    data: 'apprenticeshipTraining',
+                    "render": function(data, type, row, meta) {
+                        var result = '';
+                        if (row['apprenticeshipTraining'] == 1) {
+                            result += 'Oui';
+                        } else {
+                            result += 'Non';
+                        }
+                        return result;
+                    },
+                },
+                {
+                    data: 'training_name',
+                    "render": function(data, type, row, meta) {
+                        if (data == null) {
+                            return "Non renseigné"
+                        } else {
+                            return data
+                        }
+                    },
+                },
+                {
+                    data: 'registration_status'
+
+                },
+                {
+                    data: 'classicTraining',
+                    "render": function(data, type, row, meta) {
+                        var result = '<i class="fas fa-';
+                        if (row['classicTraining'] == 1) {
+                            result += 'check text-success';
+                        } else {
+                            result += 'times text-danger';
+                        }
+                        result += '"></i>';
+                        return result;
+                    },
+                },
+                {
+                    data: 'apprenticeshipTraining',
+                    "render": function(data, type, row, meta) {
+                        var result = '<i class="fas fa-';
+                        if (row['apprenticeshipTraining'] == 1) {
+                            result += 'check text-success';
+                        } else {
+                            result += 'times text-danger';
+                        }
+                        result += '"></i>';
+                        return result;
+                    },
+                },
+                {
+                    data: null,
+                    "render": function(data, type, row, meta) {
+                        return '<div class="text-center"><button type="button" class="btn btn-info" data-toggle="modal" data-target="#seeMoreModal" data-id="' + row['id'] + '">Voir +</button></div>'
+                    }
+                },
+                {
+                    data: null,
+                    "render": function(data, type, row, meta) {
+                        var result = '<div class="text-center">';
+                        if (row['registration_status_id'] != 1) {
+                            result += '<button type="button" class="btn btn-warning" data-toggle="modal" data-target="#editStatusModal" data-id="' + row['id'] + '">Modifier</button>';
+                        } else {
+                            result += '<i class="fas fa-hourglass"></i>';
+                        }
+                        result += '</div>';
+                        return result;
+                    }
+                },
+                {
+                    data: null,
+                    "render": function(data, type, row, meta) {
+                        var result = '<div class="text-center">';
+                        if (row['registration_status_id'] != 1) {
+                            result += '<button type="submit" value="Téléchager" class="btn btn-success downloadRegistration" data-id="' + row['id'] + '">Télécharger</button>';
+                        } else {
+                            result += '<i class="fas fa-hourglass"></i>';
+                        }
+                        result += '</div>';
+                        return result;
+                    }
+                }
+            ],
+            "serverSide": true,
+            'ajax': {
+                'url': 'RegistrationStudy/GetRegistrations',
+                'data': function(data) {
+                    // Read values
+                    var training = $('#trainingFilter').val();
+                    var status = $('#statusFilter').val();
+
+                    data.training_id = training;
+                    data.status_id = status;
+                }
+            },
+            "processing": true
         });
 
 
@@ -451,19 +561,11 @@
         });
 
         $("#trainingFilter").on('change', function() {
-            registrationsTable
-                .columns([3])
-                .search(this.value)
-                .draw();
+            registrationsTable.draw();
         });
 
         $("#statusFilter").on('change', function() {
-            var regex = this.value ? '^' + this.value + '$' : '';
-
-            registrationsTable
-                .columns([4])
-                .search(regex, true, false)
-                .draw();
+            registrationsTable.draw();
         });
 
         $('#addTeacherModal').on('show.bs.modal', function(e) {
@@ -484,7 +586,7 @@
 
             var studentId = $(e.relatedTarget).data('id');
             var rowIdx = $("#registrationsTable").find("#registration_" + studentId).index();
-            var studentName = registrationsTable.row(rowIdx).data()[1] + ' ' + registrationsTable.row(rowIdx).data()[2];
+            var studentName = registrationsTable.row(rowIdx).data()['student_lastname'] + ' ' + registrationsTable.row(rowIdx).data()['student_firstname'];
             $("#seeMore-studentName").text(studentName);
 
             $.ajax({
@@ -545,10 +647,8 @@
             var registrationId = $(e.relatedTarget).data('id');
             $("#registrationId").val(registrationId);
             var rowIdx = $("#registrationsTable").find("#registration_" + registrationId).index();
-            var statusTitle = registrationsTable.row(rowIdx).data()[4];
-            $("#registrationStatus option").each(function() {
-                this.selected = (this.text == statusTitle);
-            });
+            var statusId = registrationsTable.row(rowIdx).data()['registration_status_id'];
+            $("#registrationStatus").val(statusId);
         });
 
         $("#formAddTeacher").submit(function(e) {
@@ -784,7 +884,6 @@
         $(inputDiv).find('.teacherPassword').val(randString());
         $("#addTeachersInputDiv").append(inputDiv);
     }
-
 </script>
 
 @endsection

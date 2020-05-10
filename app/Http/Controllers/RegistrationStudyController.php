@@ -20,6 +20,25 @@ class RegistrationStudyController extends Controller
         return redirect('/');
     }
 
+    public function getRegistrations(Request $request)
+    {
+        if (session()->has('teacher')) {
+
+            $draw = $request->draw;
+            $searchValue = $request->search['value'];
+            $start = $request->start;
+            $length = $request->length;
+            $orderColumn = $request->order[0]['column'];
+            $orderDir = $request->order[0]['dir'];
+
+            $training_id = $request->training_id;
+            $status_id = $request->status_id;
+
+            return RegistrationStudyHelper::getRegistrationsDataTables($draw, $searchValue, $start, $length, $orderColumn, $orderDir, $training_id, $status_id);
+        }
+        return redirect('/');
+    }
+
     public function updateStatus(Request $request)
     {
         $registrationId = $request->registrationId;
