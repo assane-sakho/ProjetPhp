@@ -7,6 +7,9 @@ use App\Helpers\TeacherHelper;
 
 class TeacherController extends Controller
 {
+    /**
+     * Add a teacher
+     */
     public function add(Request $request)
     {
         $email = $request->teacherEmail;
@@ -15,6 +18,9 @@ class TeacherController extends Controller
         return TeacherHelper::tryAddTeacher($email, $password);
     }
 
+    /**
+     * Update a teacher
+     */
     public function update(Request $request)
     {
         $email = $request->teacherEmail ?? session('teacher')->email;
@@ -22,7 +28,10 @@ class TeacherController extends Controller
 
         return TeacherHelper::tryUpdateTeacher($email, $password);
     }
-    
+
+    /**
+     * Delete a teacher
+     */
     public function delete(Request $request)
     {
         $id = $request->teacherId;

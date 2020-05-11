@@ -14,12 +14,15 @@ class RegistrationStudyController extends Controller
     {
         if (session()->has('teacher')) {
 
-            $data = RegistrationStudyHelper::getData();
+            $data = RegistrationStudyHelper::getAllRegistrationsData();
             return view('registrationsStudy.index', compact(["data"]));
         }
         return redirect('/');
     }
 
+    /**
+     *  Get the registrations data for the live searching datatable
+     */
     public function getRegistrations(Request $request)
     {
         if (session()->has('teacher')) {
@@ -39,6 +42,9 @@ class RegistrationStudyController extends Controller
         return redirect('/');
     }
 
+    /**
+     *  Update a registration status
+     */
     public function updateStatus(Request $request)
     {
         $registrationId = $request->registrationId;
@@ -46,6 +52,9 @@ class RegistrationStudyController extends Controller
         RegistrationStudyHelper::updateStatus($registrationId, $registrationStatusId);
     }
 
+    /**
+     *  Download a registration
+     */
     function downloadRegistration(Request $request)
     {
         $studentId = $request->student_id;
@@ -53,9 +62,13 @@ class RegistrationStudyController extends Controller
 
         $fileName = 'Candidature ' . $student->registration->training->name . ' - ' . $student->fullName() . '.zip';
 
+        RegistrationStudyHelper::recreateRegistrationDir();
         return RegistrationStudyHelper::downloadZip($fileName, $student);
     }
 
+    /**
+     *  Download multiple registrations
+     */
     function downloadAllRegistrations(Request $request)
     {
         $registration_status = $request->registration_status_d;

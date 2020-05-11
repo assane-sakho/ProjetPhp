@@ -7,17 +7,26 @@ use App\Training;
 
 class RegistrationHelper
 {
+    /**
+     * Append a file to the student registration
+     * 
+     * @var folderFile
+     * @var fileToUpload
+     */
     public static function uploadFile($folderFile, $fileToUpload)
     {
+        StudentHelper::updateSessionVar();
         $student  = session('student');
         $studentFolder = $student->registration->folder;
         $reportCards = $studentFolder->report_cards;
 
-        $fileName = $folderFile . '.' . $fileToUpload->getClientOriginalExtension();
+        $fileName = $folderFile . '.pdf';
 
         if (strpos($fileName, 'report_card_') !== false) {
-            $fileName = 'report_card_' . count($reportCards) . '.' . $fileToUpload->getClientOriginalExtension();
-            if (count($reportCards) < 3 && ReportCard::where(["name"=> $fileName, 'folder_id' => $studentFolder->id])->count() == 0) {
+            $reportCardsCanBeAdded = count($reportCards) < 3;
+            $reportCartDontExist = ReportCard::where(["name" => $fileName, 'folder_id' => $studentFolder->id])->count() == 0;
+
+            if ($reportCardsCanBeAdded && $reportCartDontExist) {
                 $reportCards->add(ReportCard::create(['name' => $fileName, 'folder_id' => $studentFolder->id]));
             }
         } else {
@@ -25,13 +34,19 @@ class RegistrationHelper
             FileHelper::deleteFile($oldFile, null);
             $studentFolder[$folderFile] = $fileName;
         }
-
         FileHelper::storeFile($fileToUpload, $fileName);
 
         $studentFolder->save();
         StudentHelper::updateSessionVar();
     }
 
+    /**
+     * Update the training of a registration in database
+     * 
+     * @var training_id
+     * @var classicTraining
+     * @var apprenticeship
+     */
     public static function updateTraining($training_id, $classicTraining, $apprenticeship)
     {
         $student  = session('student');
@@ -43,6 +58,11 @@ class RegistrationHelper
         $studentRegistration->save();
     }
 
+    /**
+     * Remove a report card
+     * 
+     * @var fileName
+     */
     public static function deleteReportCard($fileName)
     {
         $student  = session('student');
@@ -56,7 +76,12 @@ class RegistrationHelper
         StudentHelper::updateSessionVar();
     }
 
-    public static function updateRegistrationName($fileDeleted)
+    /**
+     * Update a report card filename
+     * 
+     * @var fileDeleted
+     */
+    public static function updateReportCardsName($fileDeleted)
     {
         $student  = session('student');
         $reportCards = $student->registration->folder->report_cards;
@@ -83,8 +108,12 @@ class RegistrationHelper
         StudentHelper::updateSessionVar();
     }
 
+    /**
+     * Get the informations of a registration
+     */
     public static function getStepinfos()
     {
+        StudentHelper::updateSessionVar();
         $viewNameUpload = "_fileUpload";
         $viewNameReplace = "_fileReplace";
         $acceptedFile = "application/pdf";

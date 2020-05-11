@@ -11,6 +11,13 @@ use Illuminate\Support\Facades\Hash;
 
 class StudentHelper
 {
+    /**
+     * Return the student corresponding to the email and password.
+     *
+     * @var email
+     * @var password
+     * @return array(result, teacher)
+     */
     public static function checkIfStudentExist($email, $password)
     {
         $result = true;
@@ -32,6 +39,16 @@ class StudentHelper
         session()->put('student', $student);
     }
 
+    /**
+     * Return true if an existing teacher corresponding to the email exist.
+     *
+     * @var email
+     * @var lastname
+     * @var firstname
+     * @var cardId
+     * @var phoneNumber
+     * @return boolean
+     */
     public static function alreadyExist($email, $lastname = null, $firstname = null, $cardId = null, $phoneNumber = null)
     {
         $userId =  session('student')->id ?? '';
@@ -50,6 +67,21 @@ class StudentHelper
         return ($intersect->count() >= 1);
     }
 
+    /**
+     * Try to add a student in database if no one exist with the same informations.
+     *
+     * @var email
+     * @var lastname
+     * @var firstname
+     * @var cardId
+     * @var phoneNumber
+     * @var email
+     * @var password
+     * @var street
+     * @var city
+     * @var zip_code
+     * @return jsonResponse
+     */
     public static function tryAddStudent($lastname, $firstname, $birthdate, $cardId, $phoneNumber, $email, $password, $street, $city, $zip_code)
     {
         if (!self::emailValid($email)) {
@@ -67,6 +99,16 @@ class StudentHelper
         }
     }
 
+    /**
+     * Create a student.
+     *
+     * @var email
+     * @var lastname
+     * @var firstname
+     * @var cardId
+     * @var phoneNumber
+     * @return student
+     */
     private static function createStudent($lastname, $firstname, $birthdate, $cardId, $phoneNumber, $email, $password, $street, $city, $zip_code)
     {
         $address = self::addStudentAddress($street, $city, $zip_code);
@@ -80,6 +122,14 @@ class StudentHelper
         return $student;
     }
 
+    /**
+     * Add a student address in database.
+     *
+     * @var street
+     * @var city
+     * @var zip_code
+     * @return address
+     */
     private static function addStudentAddress($street, $city, $zip_code)
     {
         return Address::create([
@@ -89,6 +139,21 @@ class StudentHelper
         ]);
     }
 
+    /**
+     * Add a student in database.
+     *
+     * @var lastname
+     * @var firstname
+     * @var birthdate
+     * @var cardId
+     * @var birthdate
+     * @var phoneNumber
+     * @var email
+     * @var password
+     * @var address_id
+     * @var registration_id
+     * @return student
+     */
     private static function addStudent($lastname, $firstname, $birthdate, $cardId, $phoneNumber, $email, $password, $address_id, $registration_id)
     {
         return Student::create([
@@ -104,11 +169,22 @@ class StudentHelper
         ]);
     }
 
+    /**
+     * Add a student folder in database.
+     *
+     * @return folder
+     */
     private static function addStudentFolder()
     {
         return Folder::create();
     }
 
+    /**
+     * Add a student registration in database.
+     * 
+     * @var folder_id
+     * @return registration
+     */
     private static function addStudentRegistration($folder_id)
     {
         return Registration::create([
@@ -116,6 +192,21 @@ class StudentHelper
         ]);
     }
 
+    /**
+     * Try to update a student in database if no one exist with the same informations.
+     *
+     * @var email
+     * @var lastname
+     * @var firstname
+     * @var cardId
+     * @var phoneNumber
+     * @var email
+     * @var password
+     * @var street
+     * @var city
+     * @var zip_code
+     * @return jsonResponse
+     */
     public static function tryUpdateStudent($lastname, $firstname, $birthdate, $cardId, $phoneNumber, $email, $password, $street, $city, $zip_code)
     {
         if (!self::emailValid($email)) {
@@ -132,6 +223,21 @@ class StudentHelper
         }
     }
 
+    /**
+     * Update a student.
+     *
+     * @var lastname
+     * @var firstname
+     * @var birthdate
+     * @var cardId
+     * @var birthdate
+     * @var phoneNumber
+     * @var email
+     * @var password
+     * @var address_id
+     * @var registration_id
+     * @return student
+     */
     private static function updateStudent($lastname, $firstname, $birthdate, $cardId, $phoneNumber, $email, $password, $street, $city, $zip_code)
     {
         self::updateStudentAddress($street, $city, $zip_code);
@@ -139,6 +245,21 @@ class StudentHelper
         self::updateStudentInfo($lastname, $firstname, $birthdate, $cardId, $phoneNumber, $email, $password);
     }
 
+    /**
+     * Update a student info in database.
+     *
+     * @var lastname
+     * @var firstname
+     * @var birthdate
+     * @var cardId
+     * @var birthdate
+     * @var phoneNumber
+     * @var email
+     * @var password
+     * @var address_id
+     * @var registration_id
+     * @return student
+     */
     private static function updateStudentInfo($lastname, $firstname, $birthdate, $cardId, $phoneNumber, $email, $password)
     {
         $student = session('student');
@@ -158,6 +279,14 @@ class StudentHelper
         return $student;
     }
 
+    /**
+     * Update a student address in database.
+     *
+     * @var street
+     * @var city
+     * @var zip_code
+     * @return address
+     */
     private static function updateStudentAddress($street, $city, $zip_code)
     {
         $address = session('student')->address;
@@ -168,22 +297,40 @@ class StudentHelper
         return $address;
     }
 
+    /**
+     * Return true if the email is valid.
+     *
+     * @var email
+     * @return boolean
+     */
     private static function emailValid($email)
     {
         $result = true;
 
-        if($email == config('const.admin') || TeacherHelper::alreadyExist($email)){
+        if ($email == config('const.admin') || TeacherHelper::alreadyExist($email)) {
             $result = false;
         }
 
         return $result;
     }
 
+    /**
+     * Return the student corresponding to the id
+     *
+     * @var id
+     * @return student
+     */
     public static function getStudent($id)
     {
         return Student::find($id);
     }
 
+    /**
+     * Return the informations of the student corresponding to the id
+     *
+     * @var id
+     * @return jsonResponse
+     */
     public static function getStudentInfo($id)
     {
         $student = Student::find($id);

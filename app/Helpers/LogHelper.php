@@ -4,6 +4,11 @@ namespace App\Helpers;
 
 class LogHelper
 {
+    /**
+     * Try to connect the user
+     * @var email
+     * @var password
+     */
     public static function tryConnectUser($email, $password)
     {
         $studentExistResult = StudentHelper::checkIfStudentExist($email, $password);
@@ -25,6 +30,10 @@ class LogHelper
         }
     }
 
+    /**
+     * Connect the student
+     * @var student
+     */
     public static function connectStudent($student)
     {
         $registrationStatusId = $student->registration->status_id;
@@ -36,6 +45,10 @@ class LogHelper
         return ResponseHelper::returnResponseSuccess(['name' => $student->fullName(), 'nextLocation' => '/Registration']);
     }
 
+    /**
+     * Connect the teacher
+     * @var teacher
+     */
     public static function connectTeacher($teacher)
     {
         session()->put('teacher', $teacher);
@@ -43,11 +56,18 @@ class LogHelper
         return ResponseHelper::returnResponseSuccess(['name' => 'Professeur', 'nextLocation' => '/RegistrationsStudy']);
     }
 
+    /**
+     * Return userNotConnected error
+     * @var teacher
+     */
     public static function userNotConnected()
     {
         return ResponseHelper::returnResponseError('userNotFound');
     }
 
+    /**
+     * Disconnect the user
+     */
     public static function disconnectUser()
     {
         if (session()->has('student')) {

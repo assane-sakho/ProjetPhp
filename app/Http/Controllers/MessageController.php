@@ -21,20 +21,29 @@ class MessageController extends Controller
         return view('discussion.index', compact(["data"]));
     }
 
+    /**
+     * Add a message
+     */
     public function add(Request $request)
     {
         $messageContent = $request->content;
         return MessageHelper::addStudentMessage($messageContent);
     }
 
+    /**
+     * Add a response to a message
+     */
     public function addTeacherResponse(Request $request)
     {
         $studentId = $request->student_id;
         $responseContent =  $request->content;
-    
+
         return MessageHelper::addTeacherResponse($studentId, $responseContent);
     }
 
+    /**
+     * Get the messages of a student
+     */
     public function getStudentMessage(Request $request)
     {
         if (session()->has('teacher')) {

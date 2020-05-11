@@ -63,7 +63,6 @@
                 $("#form, #content").remove();
                 $(".col-md-12").first().append('<b>En attente de la réponse d\'un professeur.</b>');
             }
-
             var studentMessages = '{!! $data["studentMessages"] ?? "null" !!}';
             setConversation(JSON.parse(studentMessages), 'asStudent');
         } else {
