@@ -19,7 +19,7 @@ $i = 0;
                 @endfor
 
                 @if($i < 3 && !session('isRegistrationComplete')) @for($j=0; $j < 3 - count($data['filesUploaded']); $j++) @php $required="" ; if($j==0 && $i==0) $required="required" ; @endphp <tr>
-                    <td class="{{ $data['inputName'] }}_title">{{ $data['fileText'] }} n° {{ $j + $i +1 }}</td>
+                    <td>{{ $data['fileText'] }} n° {{ $j + $i +1 }}</td>
                     <td colspan="2">
                         <input class="input-{{ $data['inputName'] }} form-control" accept="application/pdf" name="{{ $data['inputName'] }}_{{ ($j + $i) }}" id="{{ $data['inputName'] }}_{{ ($j + $i) }}" type="file" onchange="$(this).removeClass('bg-danger'); $('.help-block').hide();" {{ $required }}>
                     </td>
@@ -63,8 +63,26 @@ $i = 0;
                             $(".deleteFile").remove();
                         }
 
-                        $('td:first-child').each(function(d, x) {
-                            $(this).text("Relevé de note n° " + (d));
+                        var idx = $('#form-step-{{ $stepNumber }}').find('embed').length + $('#form-step-{{ $stepNumber }}').find('input').length;
+                        var tr = $('<tr></tr>').append('<td>Relevé de note n° ' + (idx + 1) + '</td>' +
+                            '<td colspan="2">' +
+                            '<input class="input-{{ $data["inputName"] }} form-control" ' +
+                            'accept="application/pdf" ' +
+                            'name="{{ $data["inputName"] }}_' + idx + '" ' +
+                            'id="{{ $data["inputName"] }}_' + idx + '" ' +
+                            'type="file" onchange="$(this).removeClass(\'bg-danger\'); $(\'.help-block\').hide();" ' +
+                            '</td>');
+                        table.append(tr);
+
+                        $('#form-step-{{ $stepNumber }} td:first-child').each(function(idx) {
+                            $(this).text("Relevé de note n° " + (idx + 1));
+                            var inputFile = $(this).parent().find('input');
+                            if (inputFile.length != 0) {
+                                inputFile
+                                .attr('name', '{{ $data["inputName"] }}_' + idx)
+                                .attr('id', '{{ $data["inputName"] }}_' + idx);
+                            }
+                            idx++;
                         });
                     },
                     error: function(xhr, status, error) {

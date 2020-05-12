@@ -169,13 +169,12 @@
                         $(".help-block").show();
                         return false;
                     }
-                    let k = 0;
                     $('.input-report_card').each(function() {
                         if ($(this).get(0).files.length == 0) {
                             $(this).remove();
                         }
                     });
-                    k = $("#form-step-3").find('embed').length;
+                    let k = elmForm.find('embed').length;
                     $('.input-report_card').each(function() {
                         $(this).attr('name', 'report_card_' + k);
                         k++;
