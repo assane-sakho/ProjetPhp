@@ -6,6 +6,7 @@ class LogHelper
 {
     /**
      * Try to connect the user
+     * 
      * @var email
      * @var password
      */

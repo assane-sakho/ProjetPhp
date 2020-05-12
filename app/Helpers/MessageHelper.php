@@ -8,10 +8,13 @@ use Carbon\Carbon;
 
 class MessageHelper
 {
+    /**
+     * Get the messages of a student
+     */
     public static function getStudentMessageInfo()
     {
         $studentId = session('student')->id;
-        
+
         $studentMessages = Message::where("student_id", $studentId)->get();
 
         $formAction = "/Discussion/AddNewMessage";
@@ -91,7 +94,7 @@ class MessageHelper
         return $message;
     }
 
-     /**
+    /**
      * Get the message of a student
      * 
      * @var studentId

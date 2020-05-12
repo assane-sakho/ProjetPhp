@@ -141,7 +141,7 @@ class TeacherHelper
     }
 
     /**
-     * Return true if a existing teacher already have the email.
+     * Return true if the email is valid.
      *
      * @var email
      * @var password

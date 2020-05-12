@@ -18,19 +18,9 @@ use  Carbon;
 class RegistrationStudyHelper
 {
 
-    /**
-     * Get student files
-     * @var student
-     */
-    public static function updateStatus($registrationId, $registrationStatusId)
-    {
-        $registration = Registration::find($registrationId);
-        $registration->status_id = $registrationStatusId;
-        $registration->save();
-    }
 
     /**
-     * Download a directory as .zip
+     * Compress and download a student registration
      */
     public static function downloadZip($fileName, $student = null)
     {
@@ -107,11 +97,11 @@ class RegistrationStudyHelper
     }
 
     /**
-     * Download all the registrations
+     * Download multiple registrations
      * 
      * @var registrations
      */
-    public static function downloadAllRegistration($registrations)
+    public static function downloadMultipleRegistrations($registrations)
     {
         Storage::makeDirectory('registrations');
 
@@ -207,6 +197,11 @@ class RegistrationStudyHelper
         return json_encode($response);
     }
 
+    /**
+     *  Delete & recreate the regisration directory
+     * 
+     * @var registrations
+     */
     public static function recreateRegistrationDir()
     {
         Storage::deleteDirectory('registrations');

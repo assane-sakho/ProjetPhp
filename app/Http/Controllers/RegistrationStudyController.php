@@ -6,6 +6,7 @@ use App\Student;
 
 use Illuminate\Http\Request;
 use App\Helpers\RegistrationStudyHelper;
+use App\Helpers\RegistrationHelper;
 use App\Helpers\ResponseHelper;
 
 class RegistrationStudyController extends Controller
@@ -49,11 +50,12 @@ class RegistrationStudyController extends Controller
     {
         $registrationId = $request->registrationId;
         $registrationStatusId = $request->registrationStatus;
-        RegistrationStudyHelper::updateStatus($registrationId, $registrationStatusId);
+
+        RegistrationHelper::updateStatus($registrationId, $registrationStatusId);
     }
 
     /**
-     *  Download a registration
+     *  Download the student registration
      */
     function downloadRegistration(Request $request)
     {
@@ -69,7 +71,7 @@ class RegistrationStudyController extends Controller
     /**
      *  Download multiple registrations
      */
-    function downloadAllRegistrations(Request $request)
+    function downloadMultipleRegistrations(Request $request)
     {
         $registration_status = $request->registration_status_d;
         $training_d = $request->training_d;
@@ -80,6 +82,6 @@ class RegistrationStudyController extends Controller
         if ($registrations->count() == 0) {
             return ResponseHelper::returnResponseError('noRegistration');
         }
-        return RegistrationStudyHelper::downloadAllRegistration($registrations);
+        return RegistrationStudyHelper::downloadMultipleRegistrations($registrations);
     }
 }

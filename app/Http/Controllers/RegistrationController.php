@@ -87,10 +87,6 @@ class RegistrationController extends Controller
      */
     public function complete()
     {
-        $studentRegistration = session('student')->registration;
-        $studentRegistration->status_id = 2;
-        $studentRegistration->save();
-        session()->put('student', $studentRegistration->student);
-        session()->put('isRegistrationComplete', true);
+        RegistrationHelper::completeRegistration();
     }
 }

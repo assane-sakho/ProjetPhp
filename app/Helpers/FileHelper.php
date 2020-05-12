@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Storage;
 class FileHelper
 {
     /**
-     * Store a file
+     * Store a file in the path of the connected student 
      *
      * @var file
      * @var fileName
@@ -21,7 +21,7 @@ class FileHelper
     }
 
     /**
-     * Get a file
+     * Retrieve a file
      *
      * @var fileWanted
      * @var index
@@ -83,7 +83,7 @@ class FileHelper
     }
 
     /**
-     * Get the real name of a file
+     * Get the real filename of a file
      *
      * @var file_name
      * @var studentFullName

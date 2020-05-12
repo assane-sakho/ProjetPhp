@@ -24,7 +24,7 @@
     <!-- Smart wizard CSS -->
     <link rel="stylesheet" href="{{ asset('vendors/smart_wizard/css/smart_wizard.css') }}"/>
     <!-- DataTables CSS -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css">
     <!-- Font awesome CSS -->
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 </head>

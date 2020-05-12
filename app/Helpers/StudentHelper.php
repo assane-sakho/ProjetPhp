@@ -32,12 +32,16 @@ class StudentHelper
         return array($result, $student);
     }
 
+    /**
+     * Update sessions variables of the student
+     */
     public static function updateSessionVar()
     {
         $id = session('student')->id;
         $student = Student::find($id);
         session()->put('student', $student);
     }
+
 
     /**
      * Return true if an existing teacher corresponding to the email exist.

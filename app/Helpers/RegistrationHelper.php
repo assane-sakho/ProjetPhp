@@ -4,11 +4,12 @@ namespace App\Helpers;
 
 use App\ReportCard;
 use App\Training;
+use App\Registration;
 
 class RegistrationHelper
 {
     /**
-     * Append a file to the student registration
+     * Append a file to the connected student registration
      * 
      * @var folderFile
      * @var fileToUpload
@@ -41,7 +42,7 @@ class RegistrationHelper
     }
 
     /**
-     * Update the training of a registration in database
+     * Update the registration training of a registration in database
      * 
      * @var training_id
      * @var classicTraining
@@ -59,7 +60,7 @@ class RegistrationHelper
     }
 
     /**
-     * Remove a report card
+     * Remove a report card owned by the connected student
      * 
      * @var fileName
      */
@@ -77,7 +78,7 @@ class RegistrationHelper
     }
 
     /**
-     * Update a report card filename
+     * Update the report cards filenames of the connected student
      * 
      * @var fileDeleted
      */
@@ -109,7 +110,7 @@ class RegistrationHelper
     }
 
     /**
-     * Get the informations of a registration
+     * Get the registration informations of the connected student
      */
     public static function getStepinfos()
     {
@@ -173,5 +174,32 @@ class RegistrationHelper
             }
         }
         return $uploadsInfos;
+    }
+
+    /**
+     * Update the status of a registration
+     * 
+     * @var registrationId
+     * @var registrationStatusId
+     */
+    public static function updateStatus($registrationId, $registrationStatusId)
+    {
+        $registration = Registration::find($registrationId);
+        $registration->status_id = $registrationStatusId;
+        $registration->save();
+    }
+
+    /**
+     * Complete the registration of the connected student
+     * 
+     * @var registrationId
+     * @var registrationStatusId
+     */
+    public static function completeRegistration()
+    {
+        self::updateStatus(session('student')->registration->id, 2);
+
+        session()->put('isRegistrationComplete', true);
+        StudentHelper::updateSessionVar();
     }
 }
