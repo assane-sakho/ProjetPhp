@@ -38,19 +38,23 @@
                                 <td>#</td>
                                 <td>Nom</td>
                                 <td>Prénom</td>
-                                <td>
+                                <td>Niveau</td>
+                                <td>Statut</td>
+                                <td>Classique</td>
+                                <td>Apprentissage</td>
+                                <td class=" col-md-8">
                                     <select class="form-control" id="trainingFilter">
                                         <option value="">Niveau</option>
                                         @foreach($data['trainings'] as $training)
-                                        <option value="{{ $training->name }}">{{ $training->name }}</option>
+                                        <option value="{{ $training->id }}">{{ $training->name }}</option>
                                         @endforeach
                                     </select>
                                 </td>
-                                <td>
+                                <td class=" col-md-8">
                                     <select class="form-control" id="statusFilter">
                                         <option value="">Statut</option>
                                         @foreach($data['statuses'] as $status)
-                                        <option value="{{ $status->title }}">{{ $status->title }}</option>
+                                        <option value="{{ $status->id }}">{{ $status->title }}</option>
                                         @endforeach
                                     </select>
                                 </td>
@@ -61,42 +65,6 @@
                                 <td>Télécharger les docs.</td>
                             </tr>
                         </thead>
-                        <tbody>
-                            @foreach($data['registrations'] as $registration)
-                            <tr id="registration_{{ $registration->id }}">
-                                <td>{{ $registration->id }}</td>
-                                <td>{{ $registration->student->lastname }}</td>
-                                <td>{{ $registration->student->firstname  }}</td>
-                                <td>{{ $registration->training->name ?? 'Non renseigné' }}</td>
-                                <td>{{ $registration->registration_status->title  }}</td>
-                                <td><i class="fas fa-{{ $registration->classicTraining == '1' ? 'check text-success' : 'times text-danger'}}"></i></td>
-                                <td><i class="fas fa-{{ $registration->apprenticeshipTraining == '1' ? 'check text-success' : 'times text-danger'  }}"></i></td>
-                                <td class="not-export-col">
-                                    <div class="text-center">
-                                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#seeMoreModal" data-id="{{ $registration->id }}">Voir +</button>
-                                    </div>
-                                </td>
-                                <td class="not-export-col">
-                                    <div class="text-center">
-                                        @if($registration->registration_status->id != 1)
-                                        <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#editStatusModal" data-id="{{ $registration->id }}">Modifier</button>
-                                        @else
-                                        <i class="fas fa-hourglass"></i>
-                                        @endif
-                                    </div>
-                                </td>
-                                <td class="not-export-col">
-                                    <div class="text-center">
-                                        @if($registration->registration_status->id != 1)
-                                        <button type="submit" value="Téléchager" class="btn btn-success downloadRegistration" data-id="{{ $registration->student->id }}">Télécharger</button>
-                                        @else
-                                        <i class="fas fa-hourglass"></i>
-                                        @endif
-                                    </div>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
                     </table>
                 </form>
             </div>
@@ -138,12 +106,13 @@
                     <br />
                     <br />
                     <hr>
-                    <label for="teacherEmail">Email: </label>
-                    <input class="form-control" type="email" name="teacherEmail" id="teacherEmail" required><br />
+                    <br>
+                    <button type="button" class="btn btn-primary btn-circle btn-sm" id="addMoreEmail"><i class="fa fa-plus"></i></button>
+                    <br>
+                    <br>
+                    <div id="addTeachersInputDiv">
 
-                    <label for="teacherPassword">Mot de passe: </label>
-                    <input class="form-control" type="password" name="teacherPassword" id="teacherPassword" required autocomplete="">
-                    <div class="help-block with-errors"></div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-success" value="Ajouter">Ajouter</button>
@@ -165,7 +134,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form id="formDownloadAllRegistrations" action="" method="post">
+                <form id="formDownloadMultipleRegistrations" action="" method="post">
                     <label for="registration_status_d">Choix des niveaux :</label><br />
                     <select class="form-control" id="training_d" name="training_d">
                         <option value="all">Tout les niveaux</option>
@@ -190,7 +159,7 @@
                     </select>
                     <br />
                     <br />
-                    <div class="help-block with-errors"></div> <button class="btn btn-success" id="downloadAllRegistration" value="Télécharger" type="submit">Télécharger</button>
+                    <div class="help-block with-errors"></div> <button class="btn btn-success" id="downloadMultipleRegistration" value="Télécharger" type="submit">Télécharger</button>
                 </form>
             </div>
             <div class="modal-footer">
@@ -328,12 +297,13 @@
         </div>
     </div>
 </div>
-
+<input type="hidden" id="registrations" value="{{ $data['registrations'] }}">
 @endsection
 
 @section('scripts')
 <script>
     $(document).ready(function() {
+        var registrations = $("#registrations").val();
 
         var fileNameExportTeachers = 'Listes des professeurs - ' + moment().format('DD-MMMM-YYYY');
 
@@ -388,7 +358,7 @@
                     className: 'btn btn-info',
                     title: fileNameExportRegistrations,
                     exportOptions: {
-                        columns: ':visible:not(.not-export-col)'
+                        columns: ':not(.not-export-col)'
                     }
                 },
                 {
@@ -397,7 +367,7 @@
                     className: 'btn btn-info',
                     title: fileNameExportRegistrations,
                     exportOptions: {
-                        columns: ':visible:not(.not-export-col)'
+                        columns: ':not(.not-export-col)'
                     }
                 },
                 {
@@ -406,7 +376,7 @@
                     className: 'btn btn-info',
                     title: fileNameExportRegistrations,
                     exportOptions: {
-                        columns: ':visible:not(.not-export-col)'
+                        columns: ':not(.not-export-col)'
                     }
                 },
                 {
@@ -415,15 +385,156 @@
                     className: 'btn btn-info',
                     title: fileNameExportRegistrations,
                     exportOptions: {
-                        columns: ':visible:not(.not-export-col)'
+                        columns: ':not(.not-export-col)'
                     }
                 },
             ],
             columnDefs: [{
-                "targets": [3, 4],
-                "orderable": false
-            }],
-            orders: []
+                    "targets": [7, 8, 9, 10, 11, 12, 13],
+                    "orderable": false,
+                    "className": 'not-export-col'
+                },
+                {
+                    "targets": [3, 4, 5, 6],
+                    "visible": false
+                }
+            ],
+            orders: [0, 1, 2, 3, 4, 5, 6],
+            'createdRow': function(row, data, dataIndex) {
+                $(row).attr('id', 'registration_' + data['id']);
+            },
+            'columns': [{
+                    data: 'id',
+                },
+                {
+                    data: 'student_lastname'
+                },
+                {
+                    data: 'student_firstname'
+                },
+                {
+                    data: 'training_name',
+                    "render": function(data, type, row, meta) {
+                        if (data == null) {
+                            return "Non renseigné"
+                        } else {
+                            return data
+                        }
+                    },
+                },
+                {
+                    data: 'registration_status'
+                },
+                {
+                    data: 'classicTraining',
+                    "render": function(data, type, row, meta) {
+                        var result = '';
+                        if (row['classicTraining'] == 1) {
+                            result += 'Oui';
+                        } else {
+                            result += 'Non';
+                        }
+                        return result;
+                    },
+                },
+                {
+                    data: 'apprenticeshipTraining',
+                    "render": function(data, type, row, meta) {
+                        var result = '';
+                        if (row['apprenticeshipTraining'] == 1) {
+                            result += 'Oui';
+                        } else {
+                            result += 'Non';
+                        }
+                        return result;
+                    },
+                },
+                {
+                    data: 'training_name',
+                    "render": function(data, type, row, meta) {
+                        if (data == null) {
+                            return "Non renseigné"
+                        } else {
+                            return data
+                        }
+                    },
+                },
+                {
+                    data: 'registration_status'
+
+                },
+                {
+                    data: 'classicTraining',
+                    "render": function(data, type, row, meta) {
+                        var result = '<i class="fas fa-';
+                        if (row['classicTraining'] == 1) {
+                            result += 'check text-success';
+                        } else {
+                            result += 'times text-danger';
+                        }
+                        result += '"></i>';
+                        return result;
+                    },
+                },
+                {
+                    data: 'apprenticeshipTraining',
+                    "render": function(data, type, row, meta) {
+                        var result = '<i class="fas fa-';
+                        if (row['apprenticeshipTraining'] == 1) {
+                            result += 'check text-success';
+                        } else {
+                            result += 'times text-danger';
+                        }
+                        result += '"></i>';
+                        return result;
+                    },
+                },
+                {
+                    data: null,
+                    "render": function(data, type, row, meta) {
+                        return '<div class="text-center"><button type="button" class="btn btn-info" data-toggle="modal" data-target="#seeMoreModal" data-id="' + row['id'] + '">Voir +</button></div>'
+                    }
+                },
+                {
+                    data: null,
+                    "render": function(data, type, row, meta) {
+                        var result = '<div class="text-center">';
+                        if (row['registration_status_id'] != 1) {
+                            result += '<button type="button" class="btn btn-warning" data-toggle="modal" data-target="#editStatusModal" data-id="' + row['id'] + '">Modifier</button>';
+                        } else {
+                            result += '<i class="fas fa-hourglass"></i>';
+                        }
+                        result += '</div>';
+                        return result;
+                    }
+                },
+                {
+                    data: null,
+                    "render": function(data, type, row, meta) {
+                        var result = '<div class="text-center">';
+                        if (row['registration_status_id'] != 1) {
+                            result += '<button type="submit" value="Téléchager" class="btn btn-success downloadRegistration" data-id="' + row['id'] + '">Télécharger</button>';
+                        } else {
+                            result += '<i class="fas fa-hourglass"></i>';
+                        }
+                        result += '</div>';
+                        return result;
+                    }
+                }
+            ],
+            "serverSide": true,
+            'ajax': {
+                'url': 'RegistrationStudy/GetRegistrations',
+                'data': function(data) {
+                    // Read values
+                    var training = $('#trainingFilter').val();
+                    var status = $('#statusFilter').val();
+
+                    data.training_id = training;
+                    data.status_id = status;
+                }
+            },
+            "processing": true
         });
 
 
@@ -450,24 +561,18 @@
         });
 
         $("#trainingFilter").on('change', function() {
-            registrationsTable
-                .columns([3])
-                .search(this.value)
-                .draw();
+            registrationsTable.draw();
         });
 
         $("#statusFilter").on('change', function() {
-            var regex = this.value ? '^' + this.value + '$' : '';
-
-            registrationsTable
-                .columns([4])
-                .search(regex, true, false)
-                .draw();
+            registrationsTable.draw();
         });
 
         $('#addTeacherModal').on('show.bs.modal', function(e) {
-            $("#teacherEmail, #teacherPassword").val('');
             $(document).find(":submit").prop('disabled', false);
+
+            $("#addTeachersInputDiv").empty();
+            addInputEmail();
         });
 
         $('#downloadRegisrationModal').on('show.bs.modal', function(e) {
@@ -481,7 +586,7 @@
 
             var studentId = $(e.relatedTarget).data('id');
             var rowIdx = $("#registrationsTable").find("#registration_" + studentId).index();
-            var studentName = registrationsTable.row(rowIdx).data()[1] + ' ' + registrationsTable.row(rowIdx).data()[2];
+            var studentName = registrationsTable.row(rowIdx).data()['student_lastname'] + ' ' + registrationsTable.row(rowIdx).data()['student_firstname'];
             $("#seeMore-studentName").text(studentName);
 
             $.ajax({
@@ -506,7 +611,7 @@
                     setTableValue('email', student.email);
                     setTableValue('phone_number', student.phone_number);
                     setTableValue('address', address.street + ', ' + address.zip_code + ' ' + address.city);
-                    
+
                     if (training) {
                         setTableValue('training', training.name);
                     }
@@ -538,45 +643,36 @@
 
         });
 
-
         $('#editStatusModal').on('show.bs.modal', function(e) {
             var registrationId = $(e.relatedTarget).data('id');
             $("#registrationId").val(registrationId);
             var rowIdx = $("#registrationsTable").find("#registration_" + registrationId).index();
-            var statusTitle = registrationsTable.row(rowIdx).data()[4];
-            $("#registrationStatus option").each(function() {
-                this.selected = (this.text == statusTitle);
-            });
+            var statusId = registrationsTable.row(rowIdx).data()['registration_status_id'];
+            $("#registrationStatus").val(statusId);
         });
 
         $("#formAddTeacher").submit(function(e) {
             var form = $(this);
             e.preventDefault();
 
-            $.ajax({
-                url: '/Teacher/Add',
-                type: 'POST',
-                data: form.serialize(),
-                success: function(data) {
-                    teachersTable.row.add([
-                        data.teacherId,
-                        $("#teacherEmail").val(),
-                        '<td><button class="btn btn-danger removeTeacher" type="button">Supprimer</button></td>'
-                    ]).draw(false);
-                    form.find(":submit").prop('disabled', false);
-                    displayToastr('teacherAdded');
-                    $('#addTeacherModal').modal('toggle');
-                },
-                error: function(xhr, status, error) {
-                    form.find(":submit").prop('disabled', false);
-                    if (xhr.responseJSON.message == 'emailNotPossible') {
-                        displayToastr('errorMsg', 'Cet email n\'est pas disponible !');
-                    } else if (xhr.responseJSON.message == 'emailAlreadyExist') {
-                        displayToastr('errorMsg', 'Un professeur ayant la même adresse mail <i class="fa fa-info-circle text-info"></i> existe déjà !');
+            var hasFail = false;
+
+            $('.addTeacherDiv').each(function(index, value) {
+                var email = $(this).find('.teacherEmail').val();
+                var password = $(this).find('.teacherPassword').val();
+
+                var inputDivCount = $('.addTeacherDiv').length;
+
+                tryAddTeacher(email, password, teachersTable).then(() => {
+                    if (index === $('.addTeacherDiv').length - 1 && !hasFail) {
+                        $('#addTeacherModal').modal('toggle');
                     } else {
-                        displayToastr('error');
+                        $(this).remove();
                     }
-                },
+                }, () => {
+                    hasFail = true;
+                    $(this).addClass('border border-warning');
+                });;
             });
         });
 
@@ -637,17 +733,17 @@
                     displayToastr('error');
                 },
             });
-        })
+        });
 
-        $("#formDownloadAllRegistrations").submit(function(e) {
+        $("#formDownloadMultipleRegistrations").submit(function(e) {
             var form = $(this);
             e.preventDefault();
 
             var xhr = new XMLHttpRequest();
             $.ajax({
-                url: '/RegistrationsStudy/DownloadAllRegistrations',
+                url: '/RegistrationsStudy/downloadMultipleRegistrations',
                 type: 'POST',
-                data: $("#formDownloadAllRegistrations").serialize(),
+                data: $("#formDownloadMultipleRegistrations").serialize(),
                 xhr: function() {
                     xhr.onreadystatechange = function() {
                         if (xhr.readyState == 2) {
@@ -677,9 +773,12 @@
                 }
             });
 
-        })
-    });
+        });
 
+        $("#addMoreEmail").click(function() {
+            addInputEmail();
+        });
+    });
 
     function getFileFromData(data, fileNameExportRegistrations) {
         var a = document.createElement('a');
@@ -721,5 +820,70 @@
             $("#" + tdId + "-none").removeClass('hidden');
         }
     }
+
+    function tryAddTeacher(email, password, teachersTable) {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: '/Teacher/Add',
+                type: 'POST',
+                data: {
+                    teacherEmail: email,
+                    teacherPassword: password,
+                },
+                success: function(data) {
+                    teachersTable.row.add([data.teacherId, email, '<td><button class="btn btn-danger removeTeacher" type="button">Supprimer</button></td>']).draw(false);
+                    $('#formAddTeacher').find(":submit").prop('disabled', false);
+                    displayToastr('teacherAdded');
+                    resolve();
+                },
+                error: function(xhr, status, error) {
+                    $('#formAddTeacher').find(":submit").prop('disabled', false);
+                    if (xhr.responseJSON.message == 'emailNotPossible') {
+                        displayToastr('errorMsg', 'Cet email n\'est pas disponible !');
+                    } else if (xhr.responseJSON.message == 'emailAlreadyExist') {
+                        displayToastr('errorMsg', 'Un professeur ayant la même adresse mail <i class="fa fa-info-circle text-info"></i> existe déjà !');
+                    } else {
+                        displayToastr('error');
+                    }
+                    reject();
+                },
+            });
+        });
+    }
+
+    function randString() {
+        var possible = '';
+        possible += 'abcdefghijklmnopqrstuvwxyz';
+        possible += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        possible += '0123456789';
+        possible += '![]{}()%&*$#^<>~@|';
+        var text = '';
+        for (var i = 0; i < 12; i++) {
+            text += possible.charAt(Math.floor(Math.random() * possible.length));
+        }
+        return text;
+    }
+
+    function addInputEmail() {
+
+        var inputDiv =
+            $('<div class="mt-3 border border-dark addTeacherDiv">' +
+                '    <button type="button" class="btn btn-danger removeEmailInput" onclick="$(this).parent().remove();"><i class="fa fa-times"></i></button>' +
+                '    <br>' +
+                '    <div class="input-group">' +
+                '        <label for="teacherEmail" class="col-md-2">Email: </label><br />&nbsp;&nbsp;' +
+                '        <input class="form-control teacherEmail col-md-8" type="email" required><br>' +
+                '    </div>' +
+                '    <div class="input-group">' +
+                '        <label for="teacherPassword" class="col-md-2">Mot de passe: </label><br />&nbsp;&nbsp;' +
+                '        <input class="form-control teacherPassword col-md-8" type="text" required>&nbsp;&nbsp;' +
+                '        <button type="button" class="btn btn-secondary reload" onclick="$(this).parent().find(\'.teacherPassword\').val(randString())"><i class="fas fa-sync-alt" aria-hidden="true"></i></button>' +
+                '    </div>' +
+                '</div>');
+
+        $(inputDiv).find('.teacherPassword').val(randString());
+        $("#addTeachersInputDiv").append(inputDiv);
+    }
 </script>
+
 @endsection

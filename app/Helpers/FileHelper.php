@@ -6,6 +6,12 @@ use Illuminate\Support\Facades\Storage;
 
 class FileHelper
 {
+    /**
+     * Store a file in the path of the connected student 
+     *
+     * @var file
+     * @var fileName
+     */
     public static function storeFile($file, $fileName)
     {
         $student  = session('student');
@@ -14,14 +20,18 @@ class FileHelper
         $file->storeAs($studentFolderPath, $fileName, config('const.source_disk'));
     }
 
+    /**
+     * Retrieve a file
+     *
+     * @var fileWanted
+     * @var index
+     * @var studentId
+     */
     public static function getFile($fileWanted, $index = null, $studentId = null)
     {
-        if($studentId != null)
-        {
+        if ($studentId != null) {
             $student = StudentHelper::getStudent($studentId);
-        }
-        else
-        {
+        } else {
             $student  = session('student');
         }
         $studentFolder = $student->registration->folder;
@@ -44,6 +54,12 @@ class FileHelper
         return response(Storage::disk(config('const.source_disk'))->get($path))->withHeaders($headers);
     }
 
+    /**
+     * Delete a file
+     *
+     * @var fileToDelete
+     * @var index
+     */
     public static function deleteFile($fileToDelete, $index = null)
     {
         $student  = session('student');
@@ -62,10 +78,16 @@ class FileHelper
         @unlink(storage_path('app/registrations/' . $fileName));
 
         if ($fileToDelete == "report_card") {
-            RegistrationHelper::updateRegistrationName($fileName);
+            RegistrationHelper::updateReportCardsName($fileName);
         }
     }
 
+    /**
+     * Get the real filename of a file
+     *
+     * @var file_name
+     * @var studentFullName
+     */
     public static function getFileName($file_name,  $studentFullName)
     {
         $realName = [
@@ -88,6 +110,9 @@ class FileHelper
         return $currentFileName;
     }
 
+    /**
+     * Get the files names
+     */
     public static function getFileArray()
     {
         $files = array(
@@ -102,16 +127,29 @@ class FileHelper
         return $files;
     }
 
+    /**
+     * Move a file from his path to his new path
+     * @var currentPath
+     * @var newPath
+     */
     public static function moveFile($currentPath, $newPath)
     {
         Storage::disk(config('const.source_disk'))->move($currentPath, $newPath);
     }
 
-    public static function getStudentFile($student)
+    /**
+     * Get student files
+     * @var student
+     */
+    public static function getStudentFiles($student)
     {
         return Storage::disk(config('const.source_disk'))->files($student->folderPath());
     }
 
+    /**
+     * Get the content of a file
+     * @var student
+     */
     public static function getFileContent($file)
     {
         return Storage::disk(config('const.source_disk'))->get($file);

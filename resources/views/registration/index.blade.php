@@ -137,7 +137,7 @@
         });
 
         $("#smartwizard").on("leaveStep", function(e, anchorObject, stepNumber, stepDirection) {
-            
+
             var elmForm = $("#form-step-" + stepNumber);
 
             if (stepDirection === 'forward' && elmForm) {
@@ -151,30 +151,36 @@
                         }
                     });
                     return false;
-                } 
-                else if(stepNumber == 0)
-                {
+                } else if (stepNumber == 0) {
                     if ($("#training").val() == '') {
                         $("#training").addClass('has-error').addClass('border-danger');
                         $(".help-block").show();
                         return false;
                     }
 
-                    if($(":checkbox:checked").length == 0)
-                    {
+                    if ($(":checkbox:checked").length == 0) {
                         $(".form-check-label").addClass('text-danger');
                         $("#errorTraining").show();
                         return false;
                     }
-                }
-                else if (stepNumber == 3) {
+                } else if (stepNumber == 3) {
                     if (elmForm.find('#report_card_0').length && $("#report_card_0").val() == '') {
                         $("#report_card_0").addClass("bg-danger").addClass('has-error');
                         $(".help-block").show();
                         return false;
                     }
+                    $('.input-report_card').each(function() {
+                        if ($(this).get(0).files.length == 0) {
+                            $(this).remove();
+                        }
+                    });
+                    let k = elmForm.find('embed').length;
+                    $('.input-report_card').each(function() {
+                        $(this).attr('name', 'report_card_' + k);
+                        k++;
+                    });
                 }
-               
+
                 if (registrationEditable) {
                     $.ajax({
                         url: '/Registration/SaveStepData',
@@ -192,12 +198,16 @@
                     });
                 }
             }
-            $(".sw-container").css({"min-height" : "0px"});
+            $(".sw-container").css({
+                "min-height": "0px"
+            });
             return true;
         });
 
         $("#smartwizard").on("showStep", function(e, anchorObject, stepNumber, stepDirection) {
-            $(".sw-container").css({"min-height" : "0px"});
+            $(".sw-container").css({
+                "min-height": "0px"
+            });
             if (stepNumber == 5 && registrationEditable) {
                 $('.btn-finish').removeClass('disabled');
 
