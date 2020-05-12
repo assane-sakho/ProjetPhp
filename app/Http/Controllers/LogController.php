@@ -8,6 +8,9 @@ use Illuminate\Http\Request;
 
 class LogController extends Controller
 {
+    /**
+     * Connect a user
+     */
     public function logIn(Request $request)
     {
         $email = $request->userLoginMail;
@@ -16,6 +19,9 @@ class LogController extends Controller
         return LogHelper::tryConnectUser($email, $password);
     }
 
+    /**
+     * Disconnect a user
+     */
     public function logOut()
     {
         LogHelper::disconnectUser();

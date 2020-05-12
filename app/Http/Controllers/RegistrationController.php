@@ -19,9 +19,12 @@ class RegistrationController extends Controller
         return redirect('/');
     }
 
+    /**
+     * Get a file
+     */
     public function getFile(Request $request)
     {
-        if (session()->has('student') || session()->has('teacher') ) {
+        if (session()->has('student') || session()->has('teacher')) {
             $fileWanted = $request->fileName;
             $index = $request->number;
             $studentId = $request->studentId;
@@ -31,6 +34,9 @@ class RegistrationController extends Controller
         return redirect('/');
     }
 
+    /**
+     * Delete a file
+     */
     public function deleteFile(Request $request)
     {
         $fileToDelete = $request->fileName;
@@ -39,6 +45,9 @@ class RegistrationController extends Controller
         FileHelper::deleteFile($fileToDelete, $index);
     }
 
+    /**
+     * Get the data of a step
+     */
     public function getStepData(Request $request)
     {
         $stepNumber = $request->step_number;
@@ -51,6 +60,9 @@ class RegistrationController extends Controller
         return view('registration.partials.' . $data['viewName'], compact(["data", "stepNumber"]));
     }
 
+    /**
+     * Save the data of a step
+     */
     public function saveStepData(Request $request)
     {
         $folderFiles = FileHelper::getFileArray();
@@ -70,12 +82,11 @@ class RegistrationController extends Controller
         }
     }
 
+    /**
+     * Complete a registration
+     */
     public function complete()
     {
-        $studentRegistration = session('student')->registration;
-        $studentRegistration->status_id = 2;
-        $studentRegistration->save();
-        session()->put('student', $studentRegistration->student);
-        session()->put('isRegistrationComplete', true);
+        RegistrationHelper::completeRegistration();
     }
 }

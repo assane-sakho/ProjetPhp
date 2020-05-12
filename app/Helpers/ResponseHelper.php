@@ -6,6 +6,10 @@ use Response;
 
 class ResponseHelper
 {
+    /**
+     * Return a json response with code 200
+     * @var responseAttr
+     */
     public static function returnResponseSuccess($responseAttr = [])
     {
         $returnData = array(
@@ -16,6 +20,10 @@ class ResponseHelper
         return Response::json($result, $returnCode);
     }
 
+    /**
+     * Return a json error with a message
+     * @var responseAttr
+     */
     public static function returnResponseError($message = "")
     {
         $returnData = array(

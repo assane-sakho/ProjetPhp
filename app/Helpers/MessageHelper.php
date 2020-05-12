@@ -8,10 +8,13 @@ use Carbon\Carbon;
 
 class MessageHelper
 {
+    /**
+     * Get the messages of a student
+     */
     public static function getStudentMessageInfo()
     {
         $studentId = session('student')->id;
-        
+
         $studentMessages = Message::where("student_id", $studentId)->get();
 
         $formAction = "/Discussion/AddNewMessage";
@@ -32,6 +35,9 @@ class MessageHelper
         ];
     }
 
+    /**
+     * Get the messages of a teacher
+     */
     public static function getTeacherMessageInfo()
     {
         $uniqueStudentIdMessage = Message::get('student_id')->unique('student_id')->pluck('student_id')->toArray();;
@@ -49,6 +55,11 @@ class MessageHelper
         ];
     }
 
+    /**
+     * Create a message in database
+     * 
+     * @var messageContent
+     */
     public static function addStudentMessage($messageContent)
     {
         return Message::create([
@@ -58,6 +69,12 @@ class MessageHelper
         ]);
     }
 
+    /**
+     * Add a response to a message in database
+     * 
+     * @var studentId
+     * @var responseContent
+     */
     public static function addTeacherResponse($studentId, $responseContent)
     {
         $message = Message::where([
@@ -77,8 +94,13 @@ class MessageHelper
         return $message;
     }
 
+    /**
+     * Get the message of a student
+     * 
+     * @var studentId
+     */
     public static function getStudentMessage($studentId)
     {
-       return  Message::where("student_id", $studentId)->get();
+        return  Student::find($studentId)->messages;
     }
 }

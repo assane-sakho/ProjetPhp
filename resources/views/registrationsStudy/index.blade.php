@@ -134,7 +134,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form id="formDownloadAllRegistrations" action="" method="post">
+                <form id="formDownloadMultipleRegistrations" action="" method="post">
                     <label for="registration_status_d">Choix des niveaux :</label><br />
                     <select class="form-control" id="training_d" name="training_d">
                         <option value="all">Tout les niveaux</option>
@@ -159,7 +159,7 @@
                     </select>
                     <br />
                     <br />
-                    <div class="help-block with-errors"></div> <button class="btn btn-success" id="downloadAllRegistration" value="Télécharger" type="submit">Télécharger</button>
+                    <div class="help-block with-errors"></div> <button class="btn btn-success" id="downloadMultipleRegistration" value="Télécharger" type="submit">Télécharger</button>
                 </form>
             </div>
             <div class="modal-footer">
@@ -735,15 +735,15 @@
             });
         });
 
-        $("#formDownloadAllRegistrations").submit(function(e) {
+        $("#formDownloadMultipleRegistrations").submit(function(e) {
             var form = $(this);
             e.preventDefault();
 
             var xhr = new XMLHttpRequest();
             $.ajax({
-                url: '/RegistrationsStudy/DownloadAllRegistrations',
+                url: '/RegistrationsStudy/downloadMultipleRegistrations',
                 type: 'POST',
-                data: $("#formDownloadAllRegistrations").serialize(),
+                data: $("#formDownloadMultipleRegistrations").serialize(),
                 xhr: function() {
                     xhr.onreadystatechange = function() {
                         if (xhr.readyState == 2) {

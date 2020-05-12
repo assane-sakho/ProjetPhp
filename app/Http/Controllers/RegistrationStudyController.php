@@ -6,6 +6,7 @@ use App\Student;
 
 use Illuminate\Http\Request;
 use App\Helpers\RegistrationStudyHelper;
+use App\Helpers\RegistrationHelper;
 use App\Helpers\ResponseHelper;
 
 class RegistrationStudyController extends Controller
@@ -14,12 +15,15 @@ class RegistrationStudyController extends Controller
     {
         if (session()->has('teacher')) {
 
-            $data = RegistrationStudyHelper::getData();
+            $data = RegistrationStudyHelper::getAllRegistrationsData();
             return view('registrationsStudy.index', compact(["data"]));
         }
         return redirect('/');
     }
 
+    /**
+     *  Get the registrations data for the live searching datatable
+     */
     public function getRegistrations(Request $request)
     {
         if (session()->has('teacher')) {
@@ -39,13 +43,20 @@ class RegistrationStudyController extends Controller
         return redirect('/');
     }
 
+    /**
+     *  Update a registration status
+     */
     public function updateStatus(Request $request)
     {
         $registrationId = $request->registrationId;
         $registrationStatusId = $request->registrationStatus;
-        RegistrationStudyHelper::updateStatus($registrationId, $registrationStatusId);
+
+        RegistrationHelper::updateStatus($registrationId, $registrationStatusId);
     }
 
+    /**
+     *  Download the student registration
+     */
     function downloadRegistration(Request $request)
     {
         $studentId = $request->student_id;
@@ -53,10 +64,14 @@ class RegistrationStudyController extends Controller
 
         $fileName = 'Candidature ' . $student->registration->training->name . ' - ' . $student->fullName() . '.zip';
 
+        RegistrationStudyHelper::recreateRegistrationDir();
         return RegistrationStudyHelper::downloadZip($fileName, $student);
     }
 
-    function downloadAllRegistrations(Request $request)
+    /**
+     *  Download multiple registrations
+     */
+    function downloadMultipleRegistrations(Request $request)
     {
         $registration_status = $request->registration_status_d;
         $training_d = $request->training_d;
@@ -67,6 +82,6 @@ class RegistrationStudyController extends Controller
         if ($registrations->count() == 0) {
             return ResponseHelper::returnResponseError('noRegistration');
         }
-        return RegistrationStudyHelper::downloadAllRegistration($registrations);
+        return RegistrationStudyHelper::downloadMultipleRegistrations($registrations);
     }
 }

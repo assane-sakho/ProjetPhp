@@ -18,24 +18,22 @@ use  Carbon;
 class RegistrationStudyHelper
 {
 
-    public static function updateStatus($registrationId, $registrationStatusId)
-    {
-        $registration = Registration::find($registrationId);
-        $registration->status_id = $registrationStatusId;
-        $registration->save();
-    }
 
+    /**
+     * Compress and download a student registration
+     */
     public static function downloadZip($fileName, $student = null)
     {
         $basePath = storage_path('app/registrations/');
-        Storage::makeDirectory('registrations');
 
         $filePath = $basePath . $fileName;
 
         if ($student != null) {
+
+
             $zip = new Filesystem(new ZipArchiveAdapter($filePath));
 
-            $files = FileHelper::getStudentFile($student);
+            $files = FileHelper::getStudentFiles($student);
 
             foreach ($files as $file) {
                 $currentFileName = FileHelper::getFileName($file,  $student->fullName());
@@ -68,6 +66,13 @@ class RegistrationStudyHelper
         return response()->download($filePath, $fileName, $headers);
     }
 
+    /**
+     * Retrieve the registrations to download according to the status, the training and the training type
+     * 
+     * @var registrations_status
+     * @var training_d
+     * @var trainingType
+     */
     public static function getRegistrationsToDownload($registration_status, $training_d, $trainingType)
     {
         if ($registration_status == "all") {
@@ -91,8 +96,15 @@ class RegistrationStudyHelper
         return $registrations->get();
     }
 
-    public static function downloadAllRegistration($registrations)
+    /**
+     * Download multiple registrations
+     * 
+     * @var registrations
+     */
+    public static function downloadMultipleRegistrations($registrations)
     {
+        Storage::makeDirectory('registrations');
+
         $today = Carbon\Carbon::now()->format('Y-m-d');
 
         foreach ($registrations as $registration) {
@@ -105,7 +117,12 @@ class RegistrationStudyHelper
         return self::downloadZip($fileName);
     }
 
-    public static function getData()
+    /**
+     * Get the registrations datas
+     * 
+     * @var registrations
+     */
+    public static function getAllRegistrationsData()
     {
         $registrations = Registration::all();
         $statuses = RegistrationStatus::where("id", '!=', 1)->get();
@@ -120,6 +137,11 @@ class RegistrationStudyHelper
         ];
     }
 
+    /**
+     *  Get the registrations data for the live searching datatable
+     * 
+     * @var registrations
+     */
     public static function getRegistrationsDataTables($draw, $searchValue, $start, $length, $orderColumn, $orderDir, $training_id, $status_id)
     {
         $orders = array(
@@ -173,5 +195,16 @@ class RegistrationStudyHelper
         );
 
         return json_encode($response);
+    }
+
+    /**
+     *  Delete & recreate the regisration directory
+     * 
+     * @var registrations
+     */
+    public static function recreateRegistrationDir()
+    {
+        Storage::deleteDirectory('registrations');
+        Storage::makeDirectory('registrations');
     }
 }

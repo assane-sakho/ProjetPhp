@@ -59,7 +59,7 @@ $(document).ready(function() {
             "sInfoThousands": ",",
             "sLengthMenu": "Afficher _MENU_ éléments",
             "sLoadingRecords": "Chargement...",
-            "sProcessing": "Traitement...",
+            "sProcessing": "Traitement en cours . . .",
             "sSearch": "Rechercher :",
             "sZeroRecords": "Aucun élément correspondant trouvé",
             "oPaginate": {
