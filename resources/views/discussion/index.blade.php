@@ -103,6 +103,8 @@
 
         $("#studentMessage").change(function() {
             getStudentMessages();
+            $(':submit').prop('disabled', false);
+            $('#content').val('');
         });
 
         function getStudentMessages(studentId) {

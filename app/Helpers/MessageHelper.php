@@ -9,21 +9,22 @@ use Carbon\Carbon;
 class MessageHelper
 {
     /**
-     * Get the messages of a student
+     * Get the messages of the connected student
      */
     public static function getStudentMessageInfo()
     {
-        $studentId = session('student')->id;
+        StudentHelper::updateSessionVar();
+        $student = session('student');
 
-        $studentMessages = Message::where("student_id", $studentId)->get();
+        $studentMessages = $student->messages;
+        $lastMessage = $studentMessages->last();
 
         $formAction = "/Discussion/AddNewMessage";
         $labelText = 'Laisser un message à un professeur';
         $btnText = 'Envoyer';
         $canSend = 'true';
 
-        $lastMessage = Message::whereNull(["responseContent", "responseDate"])->get()->sortByDesc('id')->first();
-        if ($lastMessage != null) {
+        if ($lastMessage->responseContent == null) {
             $canSend = 'false';
         }
         return [
@@ -81,7 +82,7 @@ class MessageHelper
             "student_id" => $studentId,
             "responseContent" => null,
             "responseDate" => null,
-        ])->get()->sortByDesc('id')->first();
+        ])->get()->last();
 
         if ($message == null) {
             return ResponseHelper::returnResponseError('noMessageFound');
