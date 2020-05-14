@@ -24,7 +24,7 @@ class MessageHelper
         $btnText = 'Envoyer';
         $canSend = 'true';
 
-        if ($lastMessage->responseContent == null) {
+        if ($lastMessage !=null && $lastMessage->responseContent == null) {
             $canSend = 'false';
         }
 

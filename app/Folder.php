@@ -18,7 +18,7 @@ class Folder extends Model
      *
      * @var array
      */
-    protected $fillable = ['cv', 'cover_letter', 'vle_screenshot'];
+    protected $fillable = ['cv', 'cover_letter', 'vle_screenshot', 'registration_form'];
 
     /**
      * The has many to Relationship

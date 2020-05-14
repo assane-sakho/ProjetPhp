@@ -28,7 +28,8 @@
                             <li><a href="#step-3" data-content-url="/Registration/GetStepData">Étape 3<br /><small>Dépôt - Lettre de motivation</small></a></li>
                             <li><a href="#step-4" data-content-url="/Registration/GetStepData">Étape 4<br /><small>Dépôt - Relevés de notes</small></a></li>
                             <li><a href="#step-5" data-content-url="/Registration/GetStepData">Étape 5<br /><small>Dépot - Imprime écran ENT</small></a></li>
-                            <li><a href="#step-6" data-content-url="/Registration/GetStepData">Étape 6<br /><small> {{ !session('isRegistrationComplete')  ? "Validation" : "Récapitulatif" }}</small></a></li>
+                            <li><a href="#step-6" data-content-url="/Registration/GetStepData">Étape 6<br /><small>Dépot - Formulaire d'inscription</small></a></li>
+                            <li><a href="#step-7" data-content-url="/Registration/GetStepData">Étape 7<br /><small> {{ !session('isRegistrationComplete')  ? "Validation" : "Récapitulatif" }}</small></a></li>
                         </ul>
                         <div>
                             <div id="step-1">
@@ -46,7 +47,10 @@
                             <div id="step-5">
 
                             </div>
-                            <div id="step-6" class="">
+                            <div id="step-6">
+
+                            </div>
+                            <div id="step-7">
 
                             </div>
                         </div>
@@ -208,7 +212,7 @@
             $(".sw-container").css({
                 "min-height": "0px"
             });
-            if (stepNumber == 5 && registrationEditable) {
+            if (stepNumber == 6 && registrationEditable) {
                 $('.btn-finish').removeClass('disabled');
 
             } else {

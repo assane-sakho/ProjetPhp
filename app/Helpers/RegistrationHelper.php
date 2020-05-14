@@ -21,7 +21,7 @@ class RegistrationHelper
         $studentFolder = $student->registration->folder;
         $reportCards = $studentFolder->report_cards;
 
-        $fileName = $folderFile . '.pdf';
+        $fileName = $folderFile . "." . $fileToUpload->getClientOriginalExtension();
 
         if (strpos($fileName, 'report_card_') !== false) {
             $reportCardsCanBeAdded = count($reportCards) < 3;
@@ -160,10 +160,18 @@ class RegistrationHelper
                 "inputName" => "vle_screenshot",
                 "uploadTitle" => "votre imprime écran de l'ENT de l'année en cours",
                 "filesUploaded" => array($studentFolder->vle_screenshot),
-                "acceptedFile" => "image/x-png, image/jpeg",
+                "acceptedFile" => "image/png, image/jpeg",
                 "viewName" => $studentFolder->vle_screenshot == null  ? $viewNameUpload : $viewNameReplace
             ],
             5 => [
+                "fileText" => "Formulaire d'inscription",
+                "inputName" => "registration_form",
+                "uploadTitle" => "votre formulaire d'inscription",
+                "acceptedFile" => $acceptedFile,
+                "filesUploaded" => array($studentFolder->registration_form),
+                "viewName" => $studentFolder->registration_form == null  ? $viewNameUpload : $viewNameReplace
+            ],
+            6 => [
                 "viewName" => "_validation"
             ]
         ];

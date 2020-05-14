@@ -96,7 +96,8 @@ class FileHelper
             "report_card_0" => "Relevé de notes n°1",
             "report_card_1" => "Relevé de notes n°2",
             "report_card_2" => "Relevé de notes n°3",
-            "vle_screenshot" => "Imprime écran ENT"
+            "vle_screenshot" => "Imprime écran ENT",
+            "registration_form" => "Formulaire d'inscription"
         ];
 
         $tmpList = explode('/', $file_name);
@@ -118,7 +119,8 @@ class FileHelper
         $files = array(
             "cv",
             "cover_letter",
-            "vle_screenshot"
+            "vle_screenshot",
+            "registration_form"
         );
 
         for ($i = 0; $i < 3; $i++) {

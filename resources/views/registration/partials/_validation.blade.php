@@ -64,23 +64,32 @@
             </tr>
             <tr>
                 <th>CV</th>
-                <td><embed src="/Registration/GetFile?fileName=cv" style="width:150px; height:200px;" frameborder="0"></td>
+                <td><embed src="/Registration/GetFile?fileName=cv" style="width:150px; height:200px;" frameborder="0">
+                <a href="#" onclick="displayFile('/Registration/GetFile?fileName=cv', true)"><i class="fas fa-external-link-alt"></i></a></td>
             </tr>
             <tr>
                 <th>Lettre de motivation</th>
-                <td><embed src="/Registration/GetFile?fileName=cover_letter" style="width:150px; height:200px;" frameborder="0"></td>
+                <td><embed src="/Registration/GetFile?fileName=cover_letter" style="width:150px; height:200px;" frameborder="0">
+                <a href="#" onclick="displayFile('/Registration/GetFile?fileName=cover_letter', true)"><i class="fas fa-external-link-alt"></i></a></td>
             </tr>
             <tr>
                 <th>Relevés de notes de l’année précédente</th>
                 <td>
                     @for ($i = 0; $i < count(session('student')->registration->folder->report_cards); $i++)
                         <embed src="/Registration/GetFile?fileName=report_card&number={{$i}}" style="width:150px; height:200px;" frameborder="0">
-                    @endfor
+                        <a href="#" onclick="displayFile('/Registration/GetFile?fileName=report_card&number={{$i}}', true)"><i class="fas fa-external-link-alt"></i></a>
+                     @endfor
                 </td>
             </tr>
             <tr>
                 <th>Imprime écran de l’ENT de l’année en cours</th>
-                <td><img class="img-fluid" src="/Registration/GetFile?fileName=vle_screenshot" alt=""></td>
+                <td><img class="img-fluid" src="/Registration/GetFile?fileName=vle_screenshot" alt="">
+                <a href="#" onclick="displayFile('/Registration/GetFile?fileName=vle_screenshot', false)"><i class="fas fa-external-link-alt"></i></a></td>
+            </tr>
+            <tr>
+                <th>Formulaire d'inscription</th>
+                <td><embed src="/Registration/GetFile?fileName=registration_form" style="width:150px; height:200px;" frameborder="0">
+                <a href="#" onclick="displayFile('/Registration/GetFile?fileName=registration_form', true)"><i class="fas fa-external-link-alt"></i></a></td>
             </tr>
         </table>
         <div class="help-block with-errors"></div>

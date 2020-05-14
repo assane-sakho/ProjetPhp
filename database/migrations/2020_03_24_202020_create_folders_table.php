@@ -18,6 +18,7 @@ class CreateFoldersTable extends Migration
             $table->string('cv')->nullable();
             $table->string('cover_letter')->nullable();
             $table->string('vle_screenshot')->nullable();
+            $table->string('registration_form')->nullable();
         });
     }
 

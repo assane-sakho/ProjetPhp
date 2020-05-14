@@ -544,6 +544,7 @@
                 ["report_card_0", "report_card_1", "report_card_2"],
             ],
             ["Imprime écran de l’ENT de l’année en cours", "vle_screenshot"],
+            ["Formulaire d'inscription", "registration_form"],
         ];
 
         $(document).on('click', '.removeTeacher', function() {
@@ -641,6 +642,7 @@
                     setSeeMoreTableValue('cv', folder.cv, 'pdf', studentId);
                     setSeeMoreTableValue('cover_letter', folder.cover_letter, 'pdf', studentId);
                     setSeeMoreTableValue('vle_screenshot', folder.vle_screenshot, 'img', studentId);
+                    setSeeMoreTableValue('registration_form', folder.registration_form, 'pdf', studentId);
 
                     setConversation(messages);
 
@@ -908,21 +910,11 @@
                 '    </div>' +
                 '</div>');
 
+        if ($('.addTeacherDiv').length < 1) {
+            $(inputDiv).find(".removeEmailInput").remove();
+        }
         $(inputDiv).find('.teacherPassword').val(getRandString());
         $("#addTeachersInputDiv").append(inputDiv);
-    }
-
-    function displayFile(href, isPdf) {
-        var x = window.open();
-        x.document.open();
-        x.document.write('<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">');
-
-        if (!isPdf)
-            x.document.write('<img src="' + href + '" class="img-fluid">');
-        else
-            x.document.write('<div class="embed-responsive embed-responsive-16by9"><iframe class="embed-responsive-item" src="' + href + '"></iframe</div>');
-
-        x.document.close();
     }
 
     function appendTrToSeeMoreTable(trRow, isReportCard) {

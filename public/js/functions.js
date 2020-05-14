@@ -152,3 +152,16 @@ function displayToastr(type, message) {
             break;
     }
 }
+
+function displayFile(href, isPdf) {
+    var x = window.open();
+    x.document.open();
+    x.document.write('<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">');
+
+    if (!isPdf)
+        x.document.write('<img src="' + href + '" class="img-fluid">');
+    else
+        x.document.write('<div class="embed-responsive embed-responsive-16by9"><iframe class="embed-responsive-item" src="' + href + '"></iframe</div>');
+
+    x.document.close();
+}
