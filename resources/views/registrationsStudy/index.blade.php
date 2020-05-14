@@ -246,7 +246,7 @@
                     <tr>
                         <th>Filière choisis</th>
                         <td colspan="3" id="student-training" class="studentInfo"></td>
-                        <td colspan="3" id="training-none">Non renseigné</td>
+                        <td colspan="3" id="student-training-none">Non renseigné</td>
                     </tr>
                     <tr>
                         <th>Pour la formation classique</th>
@@ -259,35 +259,6 @@
                     <tr rowspan="2">
                         <td>&nbsp;</td>
                         <td colspan="3">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <th>CV</th>
-                        <td colspan="3" class="hidden" id="student-cv">
-                            <embed src="" style="width:150px; height:200px;" frameborder="0">
-                        </td>
-                        <td colspan="3" id="cv-none">Non renseigné</td>
-                    </tr>
-                    <tr>
-                        <th>Lettre de motivation</th>
-                        <td colspan="3" class="hidden" id="student-cover_letter">
-                            <embed src="" style="width:150px; height:200px;" frameborder="0">
-                        </td>
-                        <td colspan="3" id="cover_letter-none">Non renseigné</td>
-                    </tr>
-                    <tr>
-                        <th>Relevés de notes de l’année précédente</th>
-                        @for($i = 0; $i < 3; $i++) <td id="student-report_card_{{ $i }}" class="hidden">
-                            <embed src="" style="width:150px; height:200px;" frameborder="0">
-                            </td>
-                            <td id="report_card_{{ $i }}-none">Non renseigné</td>
-                            @endfor
-                    </tr>
-                    <tr>
-                        <th>Imprime écran de l’ENT de l’année en cours</th>
-                        <td colspan="3" class="hidden" id="student-vle_screenshot">
-                            <img class="img-fluid" src="" alt="">
-                        </td>
-                        <td colspan="3" id="vle_screenshot-none">Non renseigné</td>
                     </tr>
                 </table>
             </div>
@@ -537,6 +508,15 @@
             "processing": true
         });
 
+        var trsRow = [
+            ["CV", "cv"],
+            ["Lettre de motitivation", "cover_letter"],
+            [
+                "Relevés de notes de l’année précédente",
+                ["report_card_0", "report_card_1", "report_card_2"],
+            ],
+            ["Imprime écran de l’ENT de l’année en cours", "vle_screenshot"],
+        ];
 
         $(document).on('click', '.removeTeacher', function() {
             var tr = $(this).closest('tr');
@@ -582,12 +562,24 @@
         $('#seeMoreModal').on('show.bs.modal', function(e) {
             $('#seeMore-loader').show();
             $("#seeMore-table").hide();
-            $("embed, #student-vle_screenshot").attr('src', '')
+            $("embed, #student-vle_screenshot").attr('src', '');
 
             var studentId = $(e.relatedTarget).data('id');
             var rowIdx = $("#registrationsTable").find("#registration_" + studentId).index();
             var studentName = registrationsTable.row(rowIdx).data()['student_lastname'] + ' ' + registrationsTable.row(rowIdx).data()['student_firstname'];
             $("#seeMore-studentName").text(studentName);
+
+            $('.trFile, #trReportCards').remove();
+            $(trsRow).each(function(idx, trRow) {
+                if (trRow[1].length == 3) {
+                    $("#seeMore-table").append('<tr id="trReportCards"><th>' + trRow[0] + '</th></tr>');
+                    $(trRow[1]).each(function(i, trRowChild) {
+                        appendTrToSeeMoreTable(["", trRowChild], true);
+                    });
+                } else {
+                    appendTrToSeeMoreTable(trRow, false);
+                }
+            });
 
             $.ajax({
                 url: '/Student/GetStudentInfo',
@@ -602,6 +594,7 @@
                     var registration = data.registration;
                     var registration_status = data.registration_status;
                     var training = data.training;
+                    var trainingName = training ? training.name : null;
                     var folder = data.folder;
                     var report_cards = data.report_cards;
 
@@ -611,10 +604,7 @@
                     setTableValue('email', student.email);
                     setTableValue('phone_number', student.phone_number);
                     setTableValue('address', address.street + ', ' + address.zip_code + ' ' + address.city);
-
-                    if (training) {
-                        setTableValue('training', training.name);
-                    }
+                    setTableValue('training', trainingName);
 
                     $("#student-classicTraining").text(registration.classicTraining == 1 ? 'Oui' : 'Non');
                     $("#student-apprenticeshipTraining").text(registration.apprenticeshipTraining == 1 ? 'Oui' : 'Non');
@@ -635,6 +625,7 @@
                     });
                     $('#seeMore-loader').hide();
                     $("#seeMore-table").show();
+                    $(document).find(":submit").prop('disabled', false);
                 },
                 error: function() {
                     displayToastr('error');
@@ -797,6 +788,8 @@
         if (value != null) {
             if (typeDoc) {
                 var doc = td.children().first();
+                var buttonDisplayFile = td.children().last();
+
                 if (typeDoc == 'pdf') {
                     var src = '';
                     if (value.indexOf('report_card') != -1) {
@@ -805,19 +798,22 @@
                     } else {
                         src = '/Registration/GetFile?fileName=' + tdId + '&studentId=' + studentId;
                     }
-                    doc.attr('src', src);
                 } else {
-                    doc.attr('src', '/Registration/GetFile?fileName=' + tdId + '&studentId=' + studentId);
+                    src = '/Registration/GetFile?fileName=' + tdId + '&studentId=' + studentId;
                 }
-
+                doc.attr('src', src);
+                buttonDisplayFile.off("click", "");
+                buttonDisplayFile.on('click', function() {
+                    displayFile(src, typeDoc == 'pdf');
+                });
             } else {
                 td.text(value);
             }
             td.removeClass('hidden');
-            $("#" + tdId + "-none").addClass('hidden');
+            $("#student-" + tdId + "-none").addClass('hidden');
         } else {
             td.addClass('hidden');
-            $("#" + tdId + "-none").removeClass('hidden');
+            $("#student-" + tdId + "-none").removeClass('hidden');
         }
     }
 
@@ -883,6 +879,41 @@
 
         $(inputDiv).find('.teacherPassword').val(randString());
         $("#addTeachersInputDiv").append(inputDiv);
+    }
+
+    function displayFile(href, isPdf) {
+        var x = window.open();
+        x.document.open();
+        x.document.write('<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">');
+
+        if (!isPdf)
+            x.document.write('<img src="' + href + '" class="img-fluid">');
+        else
+            x.document.write('<div class="embed-responsive embed-responsive-16by9"><iframe class="embed-responsive-item" src="' + href + '"></iframe</div>');
+
+        x.document.close();
+    }
+
+    function appendTrToSeeMoreTable(trRow, isReportCard) {
+        var trStart = '<tr class="trFile">';
+        var trEnd = '</tr>';
+        var th = '<th>' + trRow[0] + '</th>';
+        var tdColspan = !isReportCard ? 'colspan="3" ' : '';
+
+        var content = '<td ' + tdColspan + ' class="hidden" id="student-' + trRow[1] + '">';
+        if (trRow[1] == "vle_screenshot") {
+            content += '<img src="" class="img-fluid">';
+        } else {
+            content += '<embed src="" style="width:150px; height:200px;" frameborder="0">';
+        }
+        content += '<a href="#"><i class="fas fa-external-link-alt"></i></a></td>';
+        content += '<td' + tdColspan + ' id="student-' + trRow[1] + '-none">Non renseigné</td>';
+
+        if (!isReportCard) {
+            $("#seeMore-table").append(trStart + th + content + trEnd);
+        } else {
+            $("#trReportCards").append(content);
+        }
     }
 </script>
 

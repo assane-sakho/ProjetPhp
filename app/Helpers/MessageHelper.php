@@ -27,6 +27,7 @@ class MessageHelper
         if ($lastMessage->responseContent == null) {
             $canSend = 'false';
         }
+
         return [
             "studentMessages" => $studentMessages,
             "formAction" => $formAction,
