@@ -344,6 +344,7 @@ class StudentHelper
         $training = $registration->training;
         $folder = $registration->folder;
         $report_cards = $folder->report_cards;
+        $messages = $student->messages;
 
         return ResponseHelper::returnResponseSuccess([
             'student' => $student,
@@ -352,7 +353,8 @@ class StudentHelper
             'registration_status' => $registration_status,
             'training' => $training,
             'folder' => $folder,
-            'report_cards' => $report_cards
+            'report_cards' => $report_cards,
+            'messages' => $messages
         ]);
     }
 }

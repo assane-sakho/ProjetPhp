@@ -199,7 +199,7 @@
 </div>
 
 <div class="modal fade" id="seeMoreModal" tabindex="-1" role="dialog" aria-labelledby="seeMoreModal" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="seeMoreModalLabel">Informations de <span id="seeMore-studentName"></span></h5>
@@ -208,7 +208,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div class="spinner-border" role="status" id="seeMore-loader">
+                <div class="spinner-border text-center" role="status" id="seeMore-loader">
                     <span class="sr-only">Loading...</span>
                 </div>
                 <table class="table table-bordered hidden" id="seeMore-table">
@@ -259,6 +259,12 @@
                     <tr rowspan="2">
                         <td>&nbsp;</td>
                         <td colspan="3">&nbsp;</td>
+                    </tr>
+                    <tr id="student-conversation">
+                        <th>Conversation avec l'étudiant</th>
+                        <td colspan="3">
+                            <div style="max-height: 300px"></div>
+                        </td>
                     </tr>
                 </table>
             </div>
@@ -597,6 +603,7 @@
                     var trainingName = training ? training.name : null;
                     var folder = data.folder;
                     var report_cards = data.report_cards;
+                    var messages = data.messages;
 
                     setTableValue('registration_status', registration_status.title);
                     setTableValue('card_id', student.card_id);
@@ -612,6 +619,8 @@
                     setTableValue('cv', folder.cv, 'pdf', studentId);
                     setTableValue('cover_letter', folder.cover_letter, 'pdf', studentId);
                     setTableValue('vle_screenshot', folder.vle_screenshot, 'img', studentId);
+
+                    setConversation(messages);
 
                     for (let i = 0; i < 3; i++) {
                         setTableValue('report_card_' + i, null, 'pdf', studentId);
@@ -907,12 +916,48 @@
             content += '<embed src="" style="width:150px; height:200px;" frameborder="0">';
         }
         content += '<a href="#"><i class="fas fa-external-link-alt"></i></a></td>';
-        content += '<td' + tdColspan + ' id="student-' + trRow[1] + '-none">Non renseigné</td>';
+        content += '<td ' + tdColspan + ' id="student-' + trRow[1] + '-none">Non renseigné</td>';
 
         if (!isReportCard) {
             $("#seeMore-table").append(trStart + th + content + trEnd);
         } else {
             $("#trReportCards").append(content);
+        }
+    }
+
+    function setConversation(messages) {
+        var td = $('#student-conversation').children().last();
+        var div = td.children().first();
+        div.empty();
+        if (messages.length != 0) {
+            $(messages).each(function(i, message) {
+                var msg =
+                    '<div class="media w-50 mb-3">' +
+                    '  <div class="media-body ml-3">' +
+                    '    <div class="bg-light rounded py-2 px-3 mb-2">' +
+                    '      <p class="text-small mb-0 text-muted">' + message.messageContent + '</p>' +
+                    '    </div>' +
+                    '    <p class="small text-muted">' + moment(message.messageDate ).format('DD MMMM | HH:mm') + '</p>' +
+                    '  </div>' +
+                    '</div>';
+                var response =
+                    '<div class="media w-50 ml-auto mb-3">' +
+                    '  <div class="media-body">' +
+                    '    <div class="bg-primary rounded py-2 px-3 mb-2">' +
+                    '      <p class="text-small mb-0 text-white">' + message.responseContent + '</p>' +
+                    '    </div>' +
+                    '    <p class="small text-muted">' + moment(message.responseDate ).format('DD MMMM | HH:mm') + '</p>' +
+                    '  </div>' +
+                    '</div>';
+                div.append(msg);
+                if(message.responseContent != null)
+                    div.append(response);
+            });
+            div.css("overflow","scroll")
+        }
+        else{
+            div.append("Aucun message n'a été échangé");
+            div.css("overflow","hidden")
         }
     }
 </script>
