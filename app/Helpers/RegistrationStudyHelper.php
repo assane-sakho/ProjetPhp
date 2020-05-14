@@ -18,7 +18,6 @@ use  Carbon;
 class RegistrationStudyHelper
 {
 
-
     /**
      * Compress and download a student registration
      */
@@ -156,10 +155,18 @@ class RegistrationStudyHelper
             'registrations.*',
             'students.lastname as student_lastname',
             'students.firstname as student_firstname',
+            'students.birthdate as student_birthdate',
+            'students.card_id as student_card_id',
+            'students.phone_number as student_phone_number',
+            'students.email as student_email',
+            'addresses.street as student_address_street',
+            'addresses.city as student_address_city',
+            'addresses.zip_code as student_address_zip_code',
             'trainings.name as training_name',
             'registration_statuses.title as registration_status',
             'registration_statuses.id as registration_status_id',
-        ])->join('students', 'students.registration_id', '=', 'registrations.id')
+            ])->join('students', 'students.registration_id', '=', 'registrations.id')
+            ->join('addresses', 'students.address_id', '=', 'addresses.id')
             ->leftjoin('trainings', 'trainings.id', '=', 'registrations.training_id')
             ->join('registration_statuses', 'registration_statuses.id', '=', 'registrations.status_id');
 

@@ -38,11 +38,16 @@
                                 <td>#</td>
                                 <td>Nom</td>
                                 <td>Prénom</td>
+                                <td>Email</td>
+                                <td>Date de naissance</td>
+                                <td>Téléphone</td>
+                                <td>Adresse postal</td>
+                                <td>N° de carte d'identité</td>
                                 <td>Niveau</td>
                                 <td>Statut</td>
                                 <td>Classique</td>
                                 <td>Apprentissage</td>
-                                <td class=" col-md-8">
+                                <td class="col-md-8">
                                     <select class="form-control" id="trainingFilter">
                                         <option value="">Niveau</option>
                                         @foreach($data['trainings'] as $training)
@@ -50,7 +55,7 @@
                                         @endforeach
                                     </select>
                                 </td>
-                                <td class=" col-md-8">
+                                <td class="col-md-8">
                                     <select class="form-control" id="statusFilter">
                                         <option value="">Statut</option>
                                         @foreach($data['statuses'] as $status)
@@ -367,12 +372,12 @@
                 },
             ],
             columnDefs: [{
-                    "targets": [7, 8, 9, 10, 11, 12, 13],
+                    "targets": [12, 13, 14, 15, 16, 17, 18],
                     "orderable": false,
                     "className": 'not-export-col'
                 },
                 {
-                    "targets": [3, 4, 5, 6],
+                    "targets": [3, 4, 5, 6, 7, 8, 9, 10, 11],
                     "visible": false
                 }
             ],
@@ -388,6 +393,24 @@
                 },
                 {
                     data: 'student_firstname'
+                },
+                {
+                    data: 'student_email'
+                },
+                {
+                    data: 'student_birthdate'
+                },
+                {
+                    data: 'student_phone_number'
+                },
+                {
+                    data: null,
+                    "render": function(data, type, row, meta) {
+                        return row["student_address_street"] + ", " + row["student_address_zip_code"] + " " + row["student_address_city"];
+                    }
+                },
+                {
+                    data: 'student_card_id'
                 },
                 {
                     data: 'training_name',
@@ -438,7 +461,6 @@
                 },
                 {
                     data: 'registration_status'
-
                 },
                 {
                     data: 'classicTraining',
@@ -605,32 +627,32 @@
                     var report_cards = data.report_cards;
                     var messages = data.messages;
 
-                    setTableValue('registration_status', registration_status.title);
-                    setTableValue('card_id', student.card_id);
-                    setTableValue('birthdate', moment(student.birthdate).format('DD-MM-YYYY'));
-                    setTableValue('email', student.email);
-                    setTableValue('phone_number', student.phone_number);
-                    setTableValue('address', address.street + ', ' + address.zip_code + ' ' + address.city);
-                    setTableValue('training', trainingName);
+                    setSeeMoreTableValue('registration_status', registration_status.title);
+                    setSeeMoreTableValue('card_id', student.card_id);
+                    setSeeMoreTableValue('birthdate', moment(student.birthdate).format('DD-MM-YYYY'));
+                    setSeeMoreTableValue('email', student.email);
+                    setSeeMoreTableValue('phone_number', student.phone_number);
+                    setSeeMoreTableValue('address', address.street + ', ' + address.zip_code + ' ' + address.city);
+                    setSeeMoreTableValue('training', trainingName);
 
                     $("#student-classicTraining").text(registration.classicTraining == 1 ? 'Oui' : 'Non');
                     $("#student-apprenticeshipTraining").text(registration.apprenticeshipTraining == 1 ? 'Oui' : 'Non');
 
-                    setTableValue('cv', folder.cv, 'pdf', studentId);
-                    setTableValue('cover_letter', folder.cover_letter, 'pdf', studentId);
-                    setTableValue('vle_screenshot', folder.vle_screenshot, 'img', studentId);
+                    setSeeMoreTableValue('cv', folder.cv, 'pdf', studentId);
+                    setSeeMoreTableValue('cover_letter', folder.cover_letter, 'pdf', studentId);
+                    setSeeMoreTableValue('vle_screenshot', folder.vle_screenshot, 'img', studentId);
 
                     setConversation(messages);
 
                     for (let i = 0; i < 3; i++) {
-                        setTableValue('report_card_' + i, null, 'pdf', studentId);
+                        setSeeMoreTableValue('report_card_' + i, null, 'pdf', studentId);
                     }
 
                     $(report_cards).each(function(idx) {
                         var report_card = report_cards[idx];
                         var fileName = report_card.name;
                         var name = fileName.split('.pdf')[0];
-                        setTableValue(name, fileName, 'pdf', studentId);
+                        setSeeMoreTableValue(name, fileName, 'pdf', studentId);
                     });
                     $('#seeMore-loader').hide();
                     $("#seeMore-table").show();
@@ -791,7 +813,7 @@
         window.URL.revokeObjectURL(url);
     }
 
-    function setTableValue(tdId, value, typeDoc, studentId) {
+    function setSeeMoreTableValue(tdId, value, typeDoc, studentId) {
         var td = $("#student-" + tdId);
 
         if (value != null) {
@@ -856,7 +878,7 @@
         });
     }
 
-    function randString() {
+    function getRandString() {
         var possible = '';
         possible += 'abcdefghijklmnopqrstuvwxyz';
         possible += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -882,11 +904,11 @@
                 '    <div class="input-group">' +
                 '        <label for="teacherPassword" class="col-md-2">Mot de passe: </label><br />&nbsp;&nbsp;' +
                 '        <input class="form-control teacherPassword col-md-8" type="text" required>&nbsp;&nbsp;' +
-                '        <button type="button" class="btn btn-secondary reload" onclick="$(this).parent().find(\'.teacherPassword\').val(randString())"><i class="fas fa-sync-alt" aria-hidden="true"></i></button>' +
+                '        <button type="button" class="btn btn-secondary reload" onclick="$(this).parent().find(\'.teacherPassword\').val(getRandString())"><i class="fas fa-sync-alt" aria-hidden="true"></i></button>' +
                 '    </div>' +
                 '</div>');
 
-        $(inputDiv).find('.teacherPassword').val(randString());
+        $(inputDiv).find('.teacherPassword').val(getRandString());
         $("#addTeachersInputDiv").append(inputDiv);
     }
 
@@ -937,7 +959,7 @@
                     '    <div class="bg-light rounded py-2 px-3 mb-2">' +
                     '      <p class="text-small mb-0 text-muted">' + message.messageContent + '</p>' +
                     '    </div>' +
-                    '    <p class="small text-muted">' + moment(message.messageDate ).format('DD MMMM | HH:mm') + '</p>' +
+                    '    <p class="small text-muted">' + moment(message.messageDate).format('DD MMMM | HH:mm') + '</p>' +
                     '  </div>' +
                     '</div>';
                 var response =
@@ -946,18 +968,17 @@
                     '    <div class="bg-primary rounded py-2 px-3 mb-2">' +
                     '      <p class="text-small mb-0 text-white">' + message.responseContent + '</p>' +
                     '    </div>' +
-                    '    <p class="small text-muted">' + moment(message.responseDate ).format('DD MMMM | HH:mm') + '</p>' +
+                    '    <p class="small text-muted">' + moment(message.responseDate).format('DD MMMM | HH:mm') + '</p>' +
                     '  </div>' +
                     '</div>';
                 div.append(msg);
-                if(message.responseContent != null)
+                if (message.responseContent != null)
                     div.append(response);
             });
-            div.css("overflow","scroll")
-        }
-        else{
+            div.css("overflow", "scroll")
+        } else {
             div.append("Aucun message n'a été échangé");
-            div.css("overflow","hidden")
+            div.css("overflow", "hidden")
         }
     }
 </script>
