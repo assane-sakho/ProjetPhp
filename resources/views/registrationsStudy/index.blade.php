@@ -18,7 +18,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                @if(session('teacher')->id == 1)
+                @if($isAdmin)
                 <p>
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addTeacherModal">
                         Ajouter un professeur
@@ -50,7 +50,7 @@
                                 <td class="col-md-8">
                                     <select class="form-control" id="trainingFilter">
                                         <option value="">Niveau</option>
-                                        @foreach($data['trainings'] as $training)
+                                        @foreach($trainings as $training)
                                         <option value="{{ $training->id }}">{{ $training->name }}</option>
                                         @endforeach
                                     </select>
@@ -58,7 +58,7 @@
                                 <td class="col-md-8">
                                     <select class="form-control" id="statusFilter">
                                         <option value="">Statut</option>
-                                        @foreach($data['statuses'] as $status)
+                                        @foreach($statuses as $status)
                                         <option value="{{ $status->id }}">{{ $status->title }}</option>
                                         @endforeach
                                     </select>
@@ -77,7 +77,7 @@
     </div>
 </section>
 
-@if(session('teacher')->id == 1)
+@if($isAdmin)
 <div class="modal fade" id="addTeacherModal" tabindex="-1" role="dialog" aria-labelledby="addTeacherModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -99,7 +99,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($data['teachers'] as $teacher)
+                            @foreach($teachers as $teacher)
                             <tr>
                                 <td>{{ $teacher->id }}</td>
                                 <td>{{ $teacher->email }}</td>
@@ -143,7 +143,7 @@
                     <label for="registration_status_d">Choix des niveaux :</label><br />
                     <select class="form-control" id="training_d" name="training_d">
                         <option value="all">Tout les niveaux</option>
-                        @foreach($data['trainings'] as $training)
+                        @foreach($trainings as $training)
                         <option value="{{ $training->id }}">{{ $training->name }}</option>
                         @endforeach
                     </select>
@@ -151,7 +151,7 @@
                     <label for="registration_status_d">Choix des candidatures :</label><br />
                     <select name="registration_status_d" id="registration_status_d" class="form-control">
                         <option value="all">Tout les statuts</option>
-                        @foreach($data['statuses'] as $status)
+                        @foreach($statuses as $status)
                         <option value="{{ $status->id }}">{{ $status->title }}</option>
                         @endforeach
                     </select>
@@ -189,7 +189,7 @@
                     <label for="registrationStatus">Statut :</label><br />
                     <select name="registrationStatus" id="registrationStatus" class="form-control">
                         <option>-- Sélectionnez un statut --</option>
-                        @foreach($data['statuses'] as $status)
+                        @foreach($statuses as $status)
                         <option value="{{ $status->id }}">{{ $status->title }}</option>
                         @endforeach
                     </select>
@@ -279,7 +279,6 @@
         </div>
     </div>
 </div>
-<input type="hidden" id="registrations" value="{{ $data['registrations'] }}">
 @endsection
 
 @section('scripts')

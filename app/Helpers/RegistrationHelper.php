@@ -16,8 +16,7 @@ class RegistrationHelper
      */
     public static function uploadFile($folderFile, $fileToUpload)
     {
-        StudentHelper::updateSessionVar();
-        $student  = session('student');
+        $student  = auth()->guard('student')->user();
         $studentFolder = $student->registration->folder;
         $reportCards = $studentFolder->report_cards;
 
@@ -38,7 +37,6 @@ class RegistrationHelper
         FileHelper::storeFile($fileToUpload, $fileName);
 
         $studentFolder->save();
-        StudentHelper::updateSessionVar();
     }
 
     /**
@@ -50,7 +48,7 @@ class RegistrationHelper
      */
     public static function updateTraining($training_id, $classicTraining, $apprenticeship)
     {
-        $student  = session('student');
+        $student  = auth()->guard('student')->user();
         $studentRegistration =  $student->registration;
 
         $studentRegistration->training_id = $training_id;
@@ -66,15 +64,13 @@ class RegistrationHelper
      */
     public static function deleteReportCard($fileName)
     {
-        $student  = session('student');
+        $student  = auth()->guard('student')->user();
         $studentFolder = $student->registration->folder;
 
         ReportCard::where([
             'name' => $fileName,
             'folder_id' => $studentFolder->id
         ])->delete();
-
-        StudentHelper::updateSessionVar();
     }
 
     /**
@@ -84,7 +80,7 @@ class RegistrationHelper
      */
     public static function updateReportCardsName($fileDeleted)
     {
-        $student  = session('student');
+        $student  = auth()->guard('student')->user();
         $reportCards = $student->registration->folder->report_cards;
         $studentFolderPath = $student->folderPath();
 
@@ -106,7 +102,6 @@ class RegistrationHelper
                 FileHelper::moveFile($currentPath, $newPath);
             }
         }
-        StudentHelper::updateSessionVar();
     }
 
     /**
@@ -114,12 +109,12 @@ class RegistrationHelper
      */
     public static function getStepinfos()
     {
-        StudentHelper::updateSessionVar();
+
         $viewNameUpload = "_fileUpload";
         $viewNameReplace = "_fileReplace";
         $acceptedFile = "application/pdf";
 
-        $student = session('student');
+        $student = auth()->guard('student')->user();
         $studentRegistration = $student->registration;
         $studentFolder = $studentRegistration->folder;
 
@@ -205,9 +200,8 @@ class RegistrationHelper
      */
     public static function completeRegistration()
     {
-        self::updateStatus(session('student')->registration->id, 2);
+        self::updateStatus(auth()->guard('student')->user()->registration->id, 2);
 
         session()->put('isRegistrationComplete', true);
-        StudentHelper::updateSessionVar();
     }
 }

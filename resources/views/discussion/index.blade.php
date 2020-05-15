@@ -17,7 +17,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="col-12 px-0">
-                    @if(session()->has('teacher'))
+                    @if(isset($teacher))
                     <h4>Sélectionnez un étudiant :</h4>
                     <select name="studentMessage" id="studentMessage" class="form-control">
                         @foreach($data['students'] as $student)
@@ -52,13 +52,12 @@
         </div>
     </div>
 </section>
-
 @endsection
 @section('scripts')
 
 <script>
     $(document).ready(function() {
-        if ('{{ session()->has("student") }}' == '1') {
+        if ('{{ auth()->guard("student")->check() }}' == '1') {
             if ('{{ $data["canSend"] ?? "false" }}' != 'true') {
                 $("#form, #content").remove();
                 $(".col-md-12").first().append('<b>En attente de la réponse d\'un professeur.</b>');

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Student;
 
 use Illuminate\Http\Request;
 
@@ -14,9 +14,7 @@ class RegistrationController extends Controller
 {
     public function index()
     {
-        if (session()->has('student'))
-            return view('registration.index');
-        return redirect('/');
+        return view('registration.index');
     }
 
     /**
@@ -24,7 +22,7 @@ class RegistrationController extends Controller
      */
     public function getFile(Request $request)
     {
-        if (session()->has('student') || session()->has('teacher')) {
+        if (auth()->guard('student')->check() || auth()->guard('teacher')->check()) {
             $fileWanted = $request->fileName;
             $index = $request->number;
             $studentId = $request->studentId;
@@ -51,8 +49,7 @@ class RegistrationController extends Controller
     public function getStepData(Request $request)
     {
         $stepNumber = $request->step_number;
-
-        $studentRegistration = Registration::find(session('student')->registration->id);
+        $studentRegistration = Registration::find(auth()->guard('student')->user()->registration->id);
         $studentFolder = $studentRegistration->folder;
 
         $data = RegistrationHelper::getStepinfos()[$stepNumber];

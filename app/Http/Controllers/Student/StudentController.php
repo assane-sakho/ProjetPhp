@@ -1,10 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Student;
 
 use App\Helpers\StudentHelper;
 
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\View;
 
 class StudentController extends Controller
 {
@@ -26,6 +28,11 @@ class StudentController extends Controller
         $zip_code = $request->userZipCode;
 
         return StudentHelper::tryAddStudent($lastname, $firstname, $birthdate, $carId, $phoneNumber, $email, $password, $street, $city, $zip_code);
+    }
+
+    public function profile()
+    {
+        return View::make('student.profile');
     }
 
     /**

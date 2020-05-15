@@ -1,24 +1,28 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Teacher;
 
 use App\Student;
 
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+
 use App\Helpers\RegistrationStudyHelper;
 use App\Helpers\RegistrationHelper;
 use App\Helpers\ResponseHelper;
+use Illuminate\Support\Facades\View;
 
 class RegistrationStudyController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:teacher');
+    }
+
     public function index()
     {
-        if (session()->has('teacher')) {
-
-            $data = RegistrationStudyHelper::getAllRegistrationsData();
-            return view('registrationsStudy.index', compact(["data"]));
-        }
-        return redirect('/');
+        $data = RegistrationStudyHelper::getAllRegistrationsData();
+        return View::make('registrationsStudy.index')->with($data);
     }
 
     /**
@@ -26,21 +30,17 @@ class RegistrationStudyController extends Controller
      */
     public function getRegistrations(Request $request)
     {
-        if (session()->has('teacher')) {
+        $draw = $request->draw;
+        $searchValue = $request->search['value'];
+        $start = $request->start;
+        $length = $request->length;
+        $orderColumn = $request->order[0]['column'];
+        $orderDir = $request->order[0]['dir'];
 
-            $draw = $request->draw;
-            $searchValue = $request->search['value'];
-            $start = $request->start;
-            $length = $request->length;
-            $orderColumn = $request->order[0]['column'];
-            $orderDir = $request->order[0]['dir'];
+        $training_id = $request->training_id;
+        $status_id = $request->status_id;
 
-            $training_id = $request->training_id;
-            $status_id = $request->status_id;
-
-            return RegistrationStudyHelper::getRegistrationsDataTables($draw, $searchValue, $start, $length, $orderColumn, $orderDir, $training_id, $status_id);
-        }
-        return redirect('/');
+        return RegistrationStudyHelper::getRegistrationsDataTables($draw, $searchValue, $start, $length, $orderColumn, $orderDir, $training_id, $status_id);
     }
 
     /**

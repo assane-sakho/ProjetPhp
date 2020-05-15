@@ -9,7 +9,7 @@
         <table class="table table-bordered">
             <tr>
                 <th>Statut de la candidature</th>
-                <td class="text-info">{{ session('student')->registration->registration_status->title}}</td>
+                <td class="text-info">{{ $student->registration->registration_status->title}}</td>
             </tr>
             <tr rowspan="2">
                 <td>&nbsp;</td>
@@ -17,30 +17,30 @@
             </tr>
             <tr>
                 <th>Nom</th>
-                <td>{{ session('student')->lastname }} </td>
+                <td>{{ $student->lastname }} </td>
             </tr>
             <tr>
                 <th>Prénom</th>
-                <td>{{ session('student')->firstname }} </td>
+                <td>{{ $student->firstname }} </td>
             </tr>
             <tr>
                 <th>N° de carte d'identité</th>
-                <td>{{ session('student')->card_id }} </td>
+                <td>{{ $student->card_id }} </td>
             </tr>
             <tr>
                 <th>Date de naissance</th>
-                <td>{{ session('student')->birthdate->format('d/m/Y') }} </td>
+                <td>{{ $student->birthdate->format('d/m/Y') }} </td>
             </tr>
             <tr>
                 <th>Adresse mail</th>
-                <td>{{ session('student')->email }} </td>
+                <td>{{ $student->email }} </td>
             <tr>
                 <th>Téléphone</th>
-                <td>{{ session('student')->phone_number }} </td>
+                <td>{{ $student->phone_number }} </td>
             </tr>
             <tr>
                 <th>Adresse</th>
-                <td>{{ session('student')->address->street }}, {{ session('student')->address->zip_code }} {{ session('student')->address->city }} </td>
+                <td>{{ $student->address->street }}, {{ $student->address->zip_code }} {{ $student->address->city }} </td>
             </tr>
             <tr rowspan="2">
                 <td>&nbsp;</td>
@@ -48,15 +48,15 @@
             </tr>
             <tr>
                 <th>Filière choisis</th>
-                <td>{{ session('student')->registration->training->name }}</td>
+                <td>{{ $student->registration->training->name }}</td>
             </tr>
             <tr>
                 <th>Pour la formation classique</th>
-                <td>{{ session('student')->registration->classicTraining == '1' ? 'Oui' : 'Non' }}</td>
+                <td>{{ $student->registration->classicTraining == '1' ? 'Oui' : 'Non' }}</td>
             </tr>
             <tr>
                 <th>Pour la formation par apprentissage</th>
-                <td>{{ session('student')->registration->apprenticeshipTraining == '1' ? 'Oui' : 'Non' }}</td>
+                <td>{{ $student->registration->apprenticeshipTraining == '1' ? 'Oui' : 'Non' }}</td>
             </tr>
             <tr rowspan="2">
                 <td>&nbsp;</td>
@@ -75,7 +75,7 @@
             <tr>
                 <th>Relevés de notes de l’année précédente</th>
                 <td>
-                    @for ($i = 0; $i < count(session('student')->registration->folder->report_cards); $i++)
+                    @for ($i = 0; $i < count($student->registration->folder->report_cards); $i++)
                         <embed src="/Registration/GetFile?fileName=report_card&number={{$i}}" style="width:150px; height:200px;" frameborder="0">
                         <a href="#" onclick="displayFile('/Registration/GetFile?fileName=report_card&number={{$i}}', true)"><i class="fas fa-external-link-alt"></i></a>
                      @endfor

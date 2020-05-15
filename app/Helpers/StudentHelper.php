@@ -8,6 +8,7 @@ use App\Folder;
 use App\Registration;
 
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 class StudentHelper
 {
@@ -33,17 +34,6 @@ class StudentHelper
     }
 
     /**
-     * Update sessions variables of the student
-     */
-    public static function updateSessionVar()
-    {
-        $id = session('student')->id;
-        $student = Student::find($id);
-        session()->put('student', $student);
-    }
-
-
-    /**
      * Return true if an existing teacher corresponding to the email exist.
      *
      * @var email
@@ -55,7 +45,7 @@ class StudentHelper
      */
     public static function alreadyExist($email, $lastname = null, $firstname = null, $cardId = null, $phoneNumber = null)
     {
-        $userId =  session('student')->id ?? '';
+        $userId =  auth()->guard('student')->user()->id ?? '';
 
         $studentsExceptCurrent = Student::where('id', '!=', $userId)->get();
 
@@ -94,7 +84,7 @@ class StudentHelper
 
             $student = self::createStudent($lastname, $firstname, $birthdate, $cardId, $phoneNumber, $email, $password, $street, $city, $zip_code);
 
-            session()->put('student', $student);
+            Auth::loginUsingId($student->id);
 
             return ResponseHelper::returnResponseSuccess(['nextLocation' => '/Registration']);
         } else {
@@ -218,7 +208,6 @@ class StudentHelper
         } else if (!self::alreadyExist($email, $lastname, $firstname, $cardId, $phoneNumber)) {
 
             self::updateStudent($lastname, $firstname, $birthdate, $cardId, $phoneNumber, $email, $password, $street, $city, $zip_code);
-            self::updateSessionVar();
 
             return ResponseHelper::returnResponseSuccess();
         } else {
@@ -266,7 +255,7 @@ class StudentHelper
      */
     private static function updateStudentInfo($lastname, $firstname, $birthdate, $cardId, $phoneNumber, $email, $password)
     {
-        $student = session('student');
+        $student = auth()->guard('student')->user();
 
         $student->lastname = $lastname;
         $student->firstname = $firstname;
@@ -293,7 +282,7 @@ class StudentHelper
      */
     private static function updateStudentAddress($street, $city, $zip_code)
     {
-        $address = session('student')->address;
+        $address = auth()->guard('student')->user()->address;
         $address->street = $street;
         $address->city = $city;
         $address->zip_code = $zip_code;

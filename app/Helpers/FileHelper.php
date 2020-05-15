@@ -14,7 +14,7 @@ class FileHelper
      */
     public static function storeFile($file, $fileName)
     {
-        $student  = session('student');
+        $student  = auth()->guard('student')->user();
         $studentFolderPath = $student->folderPath();
 
         $file->storeAs($studentFolderPath, $fileName, config('const.source_disk'));
@@ -32,7 +32,7 @@ class FileHelper
         if ($studentId != null) {
             $student = StudentHelper::getStudent($studentId);
         } else {
-            $student  = session('student');
+            $student  = auth()->guard('student')->user();
         }
         $studentFolder = $student->registration->folder;
         $studentFolderPath = $student->folderPath();
@@ -62,7 +62,7 @@ class FileHelper
      */
     public static function deleteFile($fileToDelete, $index = null)
     {
-        $student  = session('student');
+        $student  = auth()->guard('student')->user();
         $studentFolder = $student->registration->folder;
 
         if ($fileToDelete != "report_card") {

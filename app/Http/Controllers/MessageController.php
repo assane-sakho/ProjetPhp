@@ -10,14 +10,11 @@ class MessageController extends Controller
 {
     public function index()
     {
-        if (session()->has('student')) {
+        if (auth()->guard('student')->check()) {
             $data = MessageHelper::getStudentMessageInfo();
-        } else if (session()->has('teacher')) {
-            $data = MessageHelper::getTeacherMessageInfo();
         } else {
-            return redirect('/');
+            $data = MessageHelper::getTeacherMessageInfo();
         }
-
         return view('discussion.index', compact(["data"]));
     }
 
@@ -46,11 +43,7 @@ class MessageController extends Controller
      */
     public function getStudentMessage(Request $request)
     {
-        if (session()->has('teacher')) {
-            $studentId = $request->studentId;
-            return MessageHelper::getStudentMessage($studentId);
-        } else {
-            return redirect('/');
-        }
+        $studentId = $request->studentId;
+        return MessageHelper::getStudentMessage($studentId);
     }
 }

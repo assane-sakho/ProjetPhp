@@ -2,15 +2,18 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Teacher extends Model
+class Teacher extends Authenticatable
 {
+    use Notifiable;
+
     /**
      *  Dont change the timestamps on save.
      *
      * @var boolean
-     */ 
+     */
     public $timestamps = false;
 
     /**
@@ -24,7 +27,7 @@ class Teacher extends Model
      *  Hash the password;
      *
      * @var password
-     */ 
+     */
     public function setPasswordAttribute($value)
     {
         $this->attributes['password'] = bcrypt($value);
