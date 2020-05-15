@@ -16,7 +16,7 @@ class RegistrationHelper
      */
     public static function uploadFile($folderFile, $fileToUpload)
     {
-        $student  = auth()->guard('student')->user();
+        $student  = StudentHelper::getConnectedStudent();
         $studentFolder = $student->registration->folder;
         $reportCards = $studentFolder->report_cards;
 
@@ -48,7 +48,7 @@ class RegistrationHelper
      */
     public static function updateTraining($training_id, $classicTraining, $apprenticeship)
     {
-        $student  = auth()->guard('student')->user();
+        $student  = StudentHelper::getConnectedStudent();
         $studentRegistration =  $student->registration;
 
         $studentRegistration->training_id = $training_id;
@@ -64,7 +64,7 @@ class RegistrationHelper
      */
     public static function deleteReportCard($fileName)
     {
-        $student  = auth()->guard('student')->user();
+        $student  = StudentHelper::getConnectedStudent();
         $studentFolder = $student->registration->folder;
 
         ReportCard::where([
@@ -80,7 +80,7 @@ class RegistrationHelper
      */
     public static function updateReportCardsName($fileDeleted)
     {
-        $student  = auth()->guard('student')->user();
+        $student  = StudentHelper::getConnectedStudent();
         $reportCards = $student->registration->folder->report_cards;
         $studentFolderPath = $student->folderPath();
 
@@ -114,7 +114,7 @@ class RegistrationHelper
         $viewNameReplace = "_fileReplace";
         $acceptedFile = "application/pdf";
 
-        $student = auth()->guard('student')->user();
+        $student = StudentHelper::getConnectedStudent();
         $studentRegistration = $student->registration;
         $studentFolder = $studentRegistration->folder;
 
@@ -179,6 +179,14 @@ class RegistrationHelper
         return $uploadsInfos;
     }
 
+    public static function updateLastStep($stepNumber)
+    {
+        $student  = StudentHelper::getConnectedStudent();
+        $studentRegistration = $student->registration;
+
+        $studentRegistration->update(['lastStep' => $stepNumber + 1]); 
+    }
+
     /**
      * Update the status of a registration
      * 
@@ -200,8 +208,26 @@ class RegistrationHelper
      */
     public static function completeRegistration()
     {
-        self::updateStatus(auth()->guard('student')->user()->registration->id, 2);
+        self::updateStatus(StudentHelper::getConnectedStudent()->registration->id, 2);
 
         session()->put('isRegistrationComplete', true);
+    }
+
+    /**
+     * Get the files names
+     */
+    public static function getFileArray()
+    {
+        $files = array(
+            "cv",
+            "cover_letter",
+            "vle_screenshot",
+            "registration_form"
+        );
+
+        for ($i = 0; $i < 3; $i++) {
+            array_push($files, "report_card_" . $i);
+        }
+        return $files;
     }
 }

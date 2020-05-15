@@ -47,16 +47,16 @@
                                 <td>Statut</td>
                                 <td>Classique</td>
                                 <td>Apprentissage</td>
-                                <td class="col-md-8">
-                                    <select class="form-control" id="trainingFilter">
+                                <td class="col-md-12">
+                                    <select class="form-control col-md-12" id="trainingFilter" style="width: 180px;">
                                         <option value="">Niveau</option>
                                         @foreach($trainings as $training)
                                         <option value="{{ $training->id }}">{{ $training->name }}</option>
                                         @endforeach
                                     </select>
                                 </td>
-                                <td class="col-md-8">
-                                    <select class="form-control" id="statusFilter">
+                                <td class="col-md-12">
+                                    <select class="form-control col-md-12" id="statusFilter" style="width: 188px;">
                                         <option value="">Statut</option>
                                         @foreach($statuses as $status)
                                         <option value="{{ $status->id }}">{{ $status->title }}</option>
@@ -214,7 +214,7 @@
             </div>
             <div class="modal-body">
                 <div class="spinner-border text-center" role="status" id="seeMore-loader">
-                    <span class="sr-only">Loading...</span>
+                    <span class="sr-only">Chargement...</span>
                 </div>
                 <table class="table table-bordered hidden" id="seeMore-table">
                     <tr>
@@ -611,7 +611,7 @@
 
             $.ajax({
                 url: '/Student/GetStudentInfo',
-                type: 'POST',
+                type: 'Get',
                 data: {
                     studentId: studentId
                 },

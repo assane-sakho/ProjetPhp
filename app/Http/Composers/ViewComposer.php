@@ -3,6 +3,8 @@
 namespace App\Http\Composers;
 
 use Illuminate\View\View;
+use App\Helpers\StudentHelper;
+use App\Helpers\TeacherHelper;
 
 class ViewComposer
 {
@@ -11,14 +13,14 @@ class ViewComposer
         $data = [];
 
         if (auth()->guard('teacher')->check()) {
-            $teacher =  auth()->guard('teacher')->user();
+            $teacher =  TeacherHelper::getConnectedTeacher();
             $isAdmin = $teacher->id == 1;
             $data['teacher'] = $teacher;
             $data['isAdmin'] = $isAdmin;
         }
         else if(auth()->guard('student')->check())
         {
-            $student =  auth()->guard('student')->user();
+            $student =  StudentHelper::getConnectedStudent();
             $registrationStatusId = $student->registration->status_id;
             $isRegistrationComplete = ($registrationStatusId != 1) && ($registrationStatusId != 3);
             $data['student'] = $student;

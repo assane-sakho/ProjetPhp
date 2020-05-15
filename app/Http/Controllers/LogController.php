@@ -24,7 +24,6 @@ class LogController extends Controller
      */
     public function logOut()
     {
-        LogHelper::disconnectUser();
-        return view('index');
+        return LogHelper::disconnectUser();
     }
 }

@@ -30,7 +30,7 @@ class LogHelper
         }
         else
         {
-            return self::connectStudent(auth()->guard('student')->user());
+            return self::connectStudent(StudentHelper::getConnectedStudent());
         }
     }
 
@@ -45,7 +45,6 @@ class LogHelper
 
     /**
      * Connect the teacher
-     * @var teacher
      */
     public static function connectTeacher()
     {
@@ -71,5 +70,6 @@ class LogHelper
         } else {
             Auth::guard('teacher')->logout();
         }
+        return redirect('/');
     }
 }

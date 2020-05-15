@@ -1,5 +1,5 @@
 <br />
-@if(!session('isRegistrationComplete'))
+@if(!$isRegistrationComplete)
 <h5>Validation du dossier</h5>
 @else
 <h5>Récapitulatif du dossier</h5>

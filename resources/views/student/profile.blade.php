@@ -84,7 +84,7 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="userMail">Nouveau Mot de passe :</label>
-                        <input type="password" name="userPassword" id="userPassword" class="form-control" autocomplete="on"><br />
+                        <input type="password" name="userPassword" id="userPassword" minlength="8" class="form-control" autocomplete="on"><br />
                     </div>
                 </div>
 

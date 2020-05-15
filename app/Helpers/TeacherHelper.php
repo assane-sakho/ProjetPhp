@@ -3,7 +3,6 @@
 namespace App\Helpers;
 
 use App\Teacher;
-use Illuminate\Support\Facades\Hash;
 
 class TeacherHelper
 {
@@ -15,7 +14,7 @@ class TeacherHelper
      */
     public static function alreadyExist($email)
     {
-        $teacherId = auth()->guard('teacher')->user()->id ?? '';
+        $teacherId = TeacherHelper::getConnectedTeacher()->id ?? '';
 
         $teachersExceptCurrent = Teacher::where('id', '!=', $teacherId)->get();
 
@@ -70,6 +69,7 @@ class TeacherHelper
      */
     public static function tryUpdateTeacher($email, $password)
     {
+
         if (!self::alreadyExist($email)) {
             self::updateTeacher($email, $password);
             return ResponseHelper::returnResponseSuccess();
@@ -79,7 +79,7 @@ class TeacherHelper
     }
 
     /**
-     * Update a teacher in database.
+     * Update the connected teacher informations in database.
      *
      * @var email
      * @var password
@@ -87,13 +87,12 @@ class TeacherHelper
      */
     public static function updateTeacher($email, $password)
     {
-        $teacher = auth()->guard('teacher')->user();
+        $teacher = TeacherHelper::getConnectedTeacher();
 
-        $teacher->email = $email;
-        if ($password) {
-            $teacher->password = $password;
-        }
-        $teacher->save();
+        $teacher->update([
+            "email" => $email ?? $teacher->email,
+            "password" => $password ?? $teacher->password
+        ]);
     }
 
     /**
@@ -124,5 +123,15 @@ class TeacherHelper
         }
 
         return $result;
+    }
+
+    public static function isTeacherConnected()
+    {
+        return  auth()->guard('teacher')->check();
+    }
+
+    public static function getConnectedTeacher()
+    {
+        return  auth()->guard('teacher')->user();
     }
 }

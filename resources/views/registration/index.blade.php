@@ -19,7 +19,7 @@
         <div class="row">
             <div class="col-md-12">
                 <form action="/Registration/Save" id="registrationForm" role="form" data-toggle="validator" method="post" accept-charset="utf-8" enctype="multipart/form-data">
-
+                    <input type="hidden" name="step_number" id="step_number" value="{{ $stepNumber }}">
                     <!-- SmartWizard html -->
                     <div id="smartwizard">
                         <ul>
@@ -66,21 +66,17 @@
     }
 </style>
 <input type="hidden" id="registration_statusId" value="{{ $registrationStatusId }}">
-<input type="hidden" id="isRegistrationComplete" value="{{ $isRegistrationComplete ? true : false }}">
+<input type="hidden" id="isRegistrationComplete" value="{{ $isRegistrationComplete ? 'true' : 'false' }}">
 @endsection
 @section('scripts')
 <script>
     $(document).ready(function() {
         var registration_statusId = $("#registration_statusId").val();
-        let isRegistrationComplete =  $("#isRegistrationComplete").val();
+        let isRegistrationComplete = $("#isRegistrationComplete").val() == 'true';
+        var smartWizardStep = $("#step_number");
 
         if (registration_statusId == 3) {
             displayToastr('warning', 'Votre candidature a été signalée comme incomplète.<br/><br/>Veuillez compléter votre candidature avant de l\'envoyer de nouveau.');
-        }
-
-        if (isRegistrationComplete) {
-            $(".form-control").prop('disabled', true);
-            $(".btnRegistration").remove();
         }
 
         var btnFinish;
@@ -116,14 +112,17 @@
                         }
                     }
                 });
+        } else {
+            $(".form-control, input").prop('disabled', true);
+            $(".btnRegistration").remove();
         }
 
         $('#smartwizard').smartWizard({
-            selected: 0,
+            selected: smartWizardStep.val(),
             theme: 'default',
             transitionEffect: 'fade',
             contentCache: false,
-            showStepURLhash: true,
+            showStepURLhash: false,
             toolbarSettings: {
                 toolbarPosition: 'bottom',
                 toolbarExtraButtons: [btnFinish]
@@ -219,6 +218,7 @@
             } else {
                 $('.btn-finish').addClass('disabled');
             }
+            smartWizardStep.val(stepNumber);
         });
     });
 </script>

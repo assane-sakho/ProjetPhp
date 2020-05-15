@@ -32,7 +32,7 @@
         <input type="email" name="userLoginMail" id="userLoginMail" class="form-control" required><br />
 
         <label for="userLoginPassword">Mot de passe :</label>
-        <input type="password" name="userLoginPassword" id="userLoginPassword" class="form-control" required autocomplete="on"><br />
+        <input type="password" name="userLoginPassword" id="userLoginPassword" class="form-control"  minlength="5" required autocomplete="on"><br />
 
         <hr class="mb-4">
         <button class="btn btn-danger btn-lg btn-block" type="submit" value="Se connecter">Se connecter</button>
@@ -102,7 +102,7 @@
           </div>
           <div class="col-md-6 mb-3">
             <label for="userMail">Mot de passe :</label>
-            <input type="password" name="userPassword" id="userPassword" class="form-control" required autocomplete="on"><br />
+            <input type="password" name="userPassword" id="userPassword" minlength="8" class="form-control" required autocomplete="on"><br />
           </div>
         </div>
 

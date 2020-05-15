@@ -39,7 +39,7 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="teacherPassword">Nouveau Mot de passe :</label>
-                        <input type="password" name="teacherPassword" id="teacherPassword" class="form-control">
+                        <input type="password" name="teacherPassword" minlength="8" id="teacherPassword" class="form-control">
                         <br/>
                     </div>
                 </div>

@@ -8,6 +8,12 @@ use App\Helpers\MessageHelper;
 
 class MessageController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:student')->only('addMessage');
+        $this->middleware('auth:teacher')->only(['getStudentMessage', 'addResponseMessage']);
+    }
+
     public function index()
     {
         if (auth()->guard('student')->check()) {

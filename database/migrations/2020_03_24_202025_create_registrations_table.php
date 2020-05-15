@@ -20,6 +20,7 @@ class CreateRegistrationsTable extends Migration
             $table->unsignedBigInteger('training_id')->nullable();
             $table->unsignedBigInteger('folder_id');
             $table->unsignedBigInteger('status_id')->default(1);
+            $table->integer('lastStep')->default(0);
 
             $table->foreign('training_id')->references('id')->on('trainings');
             $table->foreign('folder_id')->references('id')->on('folders');

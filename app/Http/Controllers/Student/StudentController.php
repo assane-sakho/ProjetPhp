@@ -4,8 +4,9 @@ namespace App\Http\Controllers\Student;
 
 use App\Helpers\StudentHelper;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 
 class StudentController extends Controller
