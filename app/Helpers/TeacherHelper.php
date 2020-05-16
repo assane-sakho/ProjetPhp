@@ -3,31 +3,9 @@
 namespace App\Helpers;
 
 use App\Teacher;
-use Illuminate\Support\Facades\Hash;
 
 class TeacherHelper
 {
-    /**
-     * Return the teacher corresponding to the email and password.
-     *
-     * @var email
-     * @var password
-     * @return array(result, teacher)
-     */
-    public static function checkIfTeacherExist($email, $password)
-    {
-        $result = true;
-
-        $teacher = Teacher::where([
-            'email' => $email
-        ])->first();
-
-        if ($teacher == null || !Hash::check($password, $teacher->password)) {
-            $result = false;
-        }
-        return array($result, $teacher);
-    }
-
     /**
      * Return true if an existing teacher corresponding to the email exist.
      *
@@ -36,7 +14,7 @@ class TeacherHelper
      */
     public static function alreadyExist($email)
     {
-        $teacherId = session('teacher')->id ?? '';
+        $teacherId = TeacherHelper::getConnectedTeacher()->id ?? '';
 
         $teachersExceptCurrent = Teacher::where('id', '!=', $teacherId)->get();
 
@@ -91,9 +69,9 @@ class TeacherHelper
      */
     public static function tryUpdateTeacher($email, $password)
     {
+
         if (!self::alreadyExist($email)) {
             self::updateTeacher($email, $password);
-            self::updateTeacherSessionVar();
             return ResponseHelper::returnResponseSuccess();
         } else {
             return ResponseHelper::returnResponseError('emailAlreadyExist');
@@ -101,7 +79,7 @@ class TeacherHelper
     }
 
     /**
-     * Update a teacher in database.
+     * Update the connected teacher informations in database.
      *
      * @var email
      * @var password
@@ -109,23 +87,12 @@ class TeacherHelper
      */
     public static function updateTeacher($email, $password)
     {
-        $teacher = Teacher::find(session('teacher')->id);
+        $teacher = TeacherHelper::getConnectedTeacher();
 
-        $teacher->email = $email;
-        if ($password) {
-            $teacher->password = $password;
-        }
-        $teacher->save();
-    }
-
-    /**
-     * Update teacher session variables.
-     *
-     */
-    public static function updateTeacherSessionVar()
-    {
-        $teacher = Teacher::find(session('teacher')->id);
-        session()->put('teacher', $teacher);
+        $teacher->update([
+            "email" => $email ?? $teacher->email,
+            "password" => $password ?? $teacher->password
+        ]);
     }
 
     /**
@@ -156,5 +123,15 @@ class TeacherHelper
         }
 
         return $result;
+    }
+
+    public static function isTeacherConnected()
+    {
+        return  auth()->guard('teacher')->check();
+    }
+
+    public static function getConnectedTeacher()
+    {
+        return  auth()->guard('teacher')->user();
     }
 }

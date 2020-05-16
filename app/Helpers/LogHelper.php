@@ -2,6 +2,8 @@
 
 namespace App\Helpers;
 
+use Illuminate\Support\Facades\Auth;
+
 class LogHelper
 {
     /**
@@ -12,22 +14,23 @@ class LogHelper
      */
     public static function tryConnectUser($email, $password)
     {
-        $studentExistResult = StudentHelper::checkIfStudentExist($email, $password);
-        $studentExist = $studentExistResult[0];
-        $student = $studentExistResult[1];
+        $user = [
+            'email' => $email,
+            'password' => $password
+        ];
 
-        if ($studentExist == false) {
-            $teacherExistResult = TeacherHelper::checkIfTeacherExist($email, $password);
-            $teacherExist = $teacherExistResult[0];
-            $teacher = $teacherExistResult[1];
-
-            if ($teacherExist == false) {
+        if (!Auth::guard('student')->attempt($user)) {
+            if (!Auth::guard('teacher')->attempt($user)) {
                 return self::userNotConnected();
-            } else {
-                return self::connectTeacher($teacher);
             }
-        } else {
-            return self::connectStudent($student);
+            else
+            {
+                return self::connectTeacher();
+            }
+        }
+        else
+        {
+            return self::connectStudent(StudentHelper::getConnectedStudent());
         }
     }
 
@@ -37,23 +40,14 @@ class LogHelper
      */
     public static function connectStudent($student)
     {
-        $registrationStatusId = $student->registration->status_id;
-        $isRegistrationComplete = $registrationStatusId != 1 && $registrationStatusId != 3;
-
-        session()->put('student', $student);
-        session()->put('isRegistrationComplete', $isRegistrationComplete);
-
         return ResponseHelper::returnResponseSuccess(['name' => $student->fullName(), 'nextLocation' => '/Registration']);
     }
 
     /**
      * Connect the teacher
-     * @var teacher
      */
-    public static function connectTeacher($teacher)
+    public static function connectTeacher()
     {
-        session()->put('teacher', $teacher);
-
         return ResponseHelper::returnResponseSuccess(['name' => 'Professeur', 'nextLocation' => '/RegistrationsStudy']);
     }
 
@@ -71,11 +65,11 @@ class LogHelper
      */
     public static function disconnectUser()
     {
-        if (session()->has('student')) {
-            session()->forget('student');
-            session()->forget('isRegistrationComplete');
+        if (auth()->guard('student')->check()) {
+            Auth::guard('student')->logout();
         } else {
-            session()->forget('teacher');
+            Auth::guard('teacher')->logout();
         }
+        return redirect('/');
     }
 }

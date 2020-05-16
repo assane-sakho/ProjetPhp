@@ -13,8 +13,7 @@ class MessageHelper
      */
     public static function getStudentMessageInfo()
     {
-        StudentHelper::updateSessionVar();
-        $student = session('student');
+        $student = StudentHelper::getConnectedStudent();
 
         $studentMessages = $student->messages;
         $lastMessage = $studentMessages->last();
@@ -65,7 +64,7 @@ class MessageHelper
     public static function addStudentMessage($messageContent)
     {
         return Message::create([
-            "student_id" => session('student')->id,
+            "student_id" => StudentHelper::getConnectedStudent()->id,
             "messageContent" => $messageContent,
             "messageDate" => Carbon::now()->format('Y-m-d H:i')
         ]);

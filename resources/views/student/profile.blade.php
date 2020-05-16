@@ -19,16 +19,16 @@
             <h4 class="mb-3">Vos informations</h4>
             <hr class="mb-4">
             <form action="" id="formEdit" method="POST">
-                <input type="hidden" name="userId" id="userId" value="{{ session('student')->id }}" class="form-control"><br />
+                <input type="hidden" name="userId" id="userId" value="{{ $student->id }}" class="form-control"><br />
 
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="userLastname">Nom :</label> <i class="fa fa-info-circle text-info"></i>
-                        <input type="text" name="userLastname" id="userLastname" value="{{ session('student')->lastname }}" class="form-control" required><br />
+                        <input type="text" name="userLastname" id="userLastname" value="{{ $student->lastname }}" class="form-control" required><br />
                     </div>
                     <div class="col-md-6 mb-3">
                         <label for="userFirstname">Prénom :</label> <i class="fa fa-info-circle text-info"></i>
-                        <input type="text" name="userFirstname" id="userFirstname" value="{{ session('student')->firstname }}" class="form-control" required><br />
+                        <input type="text" name="userFirstname" id="userFirstname" value="{{ $student->firstname }}" class="form-control" required><br />
                     </div>
                 </div>
 
@@ -37,12 +37,12 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="userCardId">N° de carte d'identité :</label> <i class="fa fa-info-circle text-info"></i>
-                        <input type="text" name="userCardId" id="userCardId" value="{{ session('student')->card_id }}" maxlength="37" class="form-control" required>
+                        <input type="text" name="userCardId" id="userCardId" value="{{ $student->card_id }}" maxlength="37" class="form-control" required>
 
                         <br />
 
                         <label for="userBirthdate">Date de naissance</label>
-                        <input type="date" name="userBirthdate" id="userBirthdate" value="{{ session('student')->birthdate->format('Y-m-d') }}" class="form-control" required><br />
+                        <input type="date" name="userBirthdate" id="userBirthdate" value="{{ $student->birthdate->format('Y-m-d') }}" class="form-control" required><br />
                     </div>
                 </div>
 
@@ -51,15 +51,15 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="userStreet">Rue :</label>
-                        <input type="text" name="userStreet" id="userStreet" value="{{ session('student')->address->street }}" maxlength="50" class="form-control" required><br />
+                        <input type="text" name="userStreet" id="userStreet" value="{{ $student->address->street }}" maxlength="50" class="form-control" required><br />
                     </div>
                     <div class="col-md-3 mb-3">
                         <label for="userCity">Ville :</label>
-                        <input type="text" name="userCity" id="userCity" value="{{ session('student')->address->city }}" maxlength="30" class="form-control" required><br />
+                        <input type="text" name="userCity" id="userCity" value="{{ $student->address->city }}" maxlength="30" class="form-control" required><br />
                     </div>
                     <div class="col-md-3 mb-3">
                         <label for="userZipCode">Code postal :</label>
-                        <input type="number" name="userZipCode" id="userZipCode" value="{{ session('student')->address->zip_code }}" maxlength="5" onKeyPress="if(this.value.length==5) return false;" class="form-control" required><br />
+                        <input type="number" name="userZipCode" id="userZipCode" value="{{ $student->address->zip_code }}" maxlength="5" onKeyPress="if(this.value.length==5) return false;" class="form-control" required><br />
                     </div>
                 </div>
 
@@ -68,14 +68,14 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="userPhoneNumber">Téléphone :</label> <i class="fa fa-info-circle text-info"></i>
-                        <input type="text" name="userPhoneNumber" id="userPhoneNumber" value="{{ session('student')->phone_number }}" maxlength="14" class="form-control" required><br />
+                        <input type="text" name="userPhoneNumber" id="userPhoneNumber" value="{{ $student->phone_number }}" maxlength="14" class="form-control" required><br />
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="userMail">Adresse mail :</label> <i class="fa fa-info-circle text-info"></i>
-                        <input type="mail" name="userMail" id="userMail" value="{{ session('student')->email }}" class="form-control" required><br />
+                        <input type="mail" name="userMail" id="userMail" value="{{ $student->email }}" class="form-control" required><br />
                     </div>
                 </div>
 
@@ -84,7 +84,7 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="userMail">Nouveau Mot de passe :</label>
-                        <input type="password" name="userPassword" id="userPassword" class="form-control" autocomplete="on"><br />
+                        <input type="password" name="userPassword" id="userPassword" minlength="8" class="form-control" autocomplete="on"><br />
                     </div>
                 </div>
 
@@ -105,8 +105,8 @@
 @section('scripts')
 <script>
     $(document).ready(function() {
-        let registrationEditable = ('{{ session("student")->registration->status_id }}' == '1');
-        if (!registrationEditable) {
+        let isRegistrationComplete = ('{{ $isRegistrationComplete }}');
+        if (isRegistrationComplete) {
             $(".form-control").prop('disabled', true);
             $(".btnRegistration").remove();
         }

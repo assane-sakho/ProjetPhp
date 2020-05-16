@@ -1,22 +1,32 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Student;
 
-use Illuminate\Http\Request;
+
+use App\Http\Controllers\Controller;
 
 use App\Helpers\FileHelper;
 use App\Helpers\RegistrationHelper;
-use App\Http\Controllers\Controller;
+use App\Helpers\StudentHelper;
 
 use App\Registration;
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\View;
+
 class RegistrationController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:student')->except(['getFile']);
+    }
+
     public function index()
     {
-        if (session()->has('student'))
-            return view('registration.index');
-        return redirect('/');
+        $student = StudentHelper::getConnectedStudent();
+        $studentRegistration = $student->registration;
+        $stepNumber = $studentRegistration->lastStep;
+        return View::make('registration.index')->with(compact('stepNumber', $stepNumber));
     }
 
     /**
@@ -24,14 +34,11 @@ class RegistrationController extends Controller
      */
     public function getFile(Request $request)
     {
-        if (session()->has('student') || session()->has('teacher')) {
-            $fileWanted = $request->fileName;
-            $index = $request->number;
-            $studentId = $request->studentId;
+        $fileWanted = $request->fileName;
+        $index = $request->number;
+        $studentId = $request->studentId;
 
-            return FileHelper::getFile($fileWanted, $index, $studentId);
-        }
-        return redirect('/');
+        return FileHelper::getFile($fileWanted, $index, $studentId);
     }
 
     /**
@@ -51,13 +58,12 @@ class RegistrationController extends Controller
     public function getStepData(Request $request)
     {
         $stepNumber = $request->step_number;
-
-        $studentRegistration = Registration::find(session('student')->registration->id);
+        $studentRegistration = Registration::find(StudentHelper::getConnectedStudent()->registration->id);
         $studentFolder = $studentRegistration->folder;
 
         $data = RegistrationHelper::getStepinfos()[$stepNumber];
 
-        return view('registration.partials.' . $data['viewName'], compact(["data", "stepNumber"]));
+        return View::make('registration.partials.' . $data['viewName'])->with(compact(["data", "stepNumber"]));
     }
 
     /**
@@ -65,7 +71,7 @@ class RegistrationController extends Controller
      */
     public function saveStepData(Request $request)
     {
-        $folderFiles = FileHelper::getFileArray();
+        $folderFiles = RegistrationHelper::getFileArray();
         foreach ($folderFiles as $folderFile) {
             if ($request->has($folderFile)) {
                 $fileToUpload = $request->file($folderFile);
@@ -80,6 +86,8 @@ class RegistrationController extends Controller
 
             RegistrationHelper::updateTraining($training, $classicTraining, $apprenticeshipTraining);
         }
+        $stepNumber = $request->step_number;
+        RegistrationHelper::updateLastStep($stepNumber);
     }
 
     /**

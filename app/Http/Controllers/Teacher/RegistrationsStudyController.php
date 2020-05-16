@@ -1,24 +1,30 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Teacher;
 
 use App\Student;
 
 use Illuminate\Http\Request;
-use App\Helpers\RegistrationStudyHelper;
+use Illuminate\Support\Facades\View;
+
+use App\Http\Controllers\Controller;
+
+use App\Helpers\RegistrationsStudyHelper;
 use App\Helpers\RegistrationHelper;
 use App\Helpers\ResponseHelper;
 
-class RegistrationStudyController extends Controller
+
+class RegistrationsStudyController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:teacher');
+    }
+
     public function index()
     {
-        if (session()->has('teacher')) {
-
-            $data = RegistrationStudyHelper::getAllRegistrationsData();
-            return view('registrationsStudy.index', compact(["data"]));
-        }
-        return redirect('/');
+        $data = RegistrationsStudyHelper::getAllRegistrationsData();
+        return View::make('registrationsStudy.index')->with($data);
     }
 
     /**
@@ -26,21 +32,17 @@ class RegistrationStudyController extends Controller
      */
     public function getRegistrations(Request $request)
     {
-        if (session()->has('teacher')) {
+        $draw = $request->draw;
+        $searchValue = $request->search['value'];
+        $start = $request->start;
+        $length = $request->length;
+        $orderColumn = $request->order[0]['column'];
+        $orderDir = $request->order[0]['dir'];
 
-            $draw = $request->draw;
-            $searchValue = $request->search['value'];
-            $start = $request->start;
-            $length = $request->length;
-            $orderColumn = $request->order[0]['column'];
-            $orderDir = $request->order[0]['dir'];
+        $training_id = $request->training_id;
+        $status_id = $request->status_id;
 
-            $training_id = $request->training_id;
-            $status_id = $request->status_id;
-
-            return RegistrationStudyHelper::getRegistrationsDataTables($draw, $searchValue, $start, $length, $orderColumn, $orderDir, $training_id, $status_id);
-        }
-        return redirect('/');
+        return RegistrationsStudyHelper::getRegistrationsDataTables($draw, $searchValue, $start, $length, $orderColumn, $orderDir, $training_id, $status_id);
     }
 
     /**
@@ -64,8 +66,8 @@ class RegistrationStudyController extends Controller
 
         $fileName = 'Candidature ' . $student->registration->training->name . ' - ' . $student->fullName() . '.zip';
 
-        RegistrationStudyHelper::recreateRegistrationDir();
-        return RegistrationStudyHelper::downloadZip($fileName, $student);
+        RegistrationsStudyHelper::recreateRegistrationDir();
+        return RegistrationsStudyHelper::downloadZip($fileName, $student);
     }
 
     /**
@@ -77,11 +79,11 @@ class RegistrationStudyController extends Controller
         $training_d = $request->training_d;
         $trainingType = $request->trainingType;
 
-        $registrations = RegistrationStudyHelper::getRegistrationsToDownload($registration_status, $training_d, $trainingType);
+        $registrations = RegistrationsStudyHelper::getRegistrationsToDownload($registration_status, $training_d, $trainingType);
 
         if ($registrations->count() == 0) {
             return ResponseHelper::returnResponseError('noRegistration');
         }
-        return RegistrationStudyHelper::downloadMultipleRegistrations($registrations);
+        return RegistrationsStudyHelper::downloadMultipleRegistrations($registrations);
     }
 }

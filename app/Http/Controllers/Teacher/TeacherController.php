@@ -1,12 +1,21 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Teacher;
+
+use App\Http\Controllers\Controller;
+
+use App\Helpers\TeacherHelper;
 
 use Illuminate\Http\Request;
-use App\Helpers\TeacherHelper;
+use Illuminate\Support\Facades\View;
 
 class TeacherController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:teacher');
+    }
+    
     /**
      * Add a teacher
      */
@@ -18,12 +27,17 @@ class TeacherController extends Controller
         return TeacherHelper::tryAddTeacher($email, $password);
     }
 
+    public function profile()
+    {
+        return View::make('profile');
+    }
+
     /**
      * Update a teacher
      */
     public function update(Request $request)
     {
-        $email = $request->teacherEmail ?? session('teacher')->email;
+        $email = $request->teacherEmail;
         $password = $request->teacherPassword;
 
         return TeacherHelper::tryUpdateTeacher($email, $password);

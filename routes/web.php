@@ -1,18 +1,20 @@
 <?php
 
+use App\Helpers\StudentHelper;
+use App\Helpers\TeacherHelper;
 use Illuminate\Support\Facades\Route;
 
 
 /* Index */
 
 Route::get('/', function () {
-    if (session()->has('student')) {
-        return redirect()->action('RegistrationController@index');
-    } else if (session()->has('teacher')) {
-        return redirect()->action('RegistrationStudyController@index');
+    if (StudentHelper::isStudentConnected()) {
+        return redirect()->route('registrationIndex');
+    } else if (TeacherHelper::isTeacherConnected()) {
+        return redirect()->route('registrationsStudyIndex');
     }
     return view('index');
-});
+})->name('index');
 
 
 /* Log */
@@ -21,47 +23,52 @@ Route::post('/Logout', 'LogController@logOut');
 
 
 /* Profile */
-Route::get('/Profile', function () {
-    if (session('student')) {
-        return view('student.profile');
-    } else if (session('teacher')) {
+Route::middleware(['auth:teacher,student'])->get('/Profile', function () {
+    if (StudentHelper::isStudentConnected()) {
+        return redirect()->route('studentProfile');
+    } else {
         return view('teacher.profile');
     }
-    return redirect('/');
 });
 
+Route::namespace('Student')->group(function () {
 
-/* Students */
-Route::post('/Student/Add', 'StudentController@add');
-Route::post('/Student/Update', 'StudentController@update');
-Route::post('/Student/GetStudentInfo', 'StudentController@getInfo');
+    /* Students */
+    Route::post('/Student/Add', 'StudentController@add');
+    Route::middleware(['auth:student'])->get('/Student/Profile', 'StudentController@profile')->name('studentProfile');
+    Route::middleware(['auth:student'])->post('/Student/Update', 'StudentController@update');
+    Route::middleware(['auth:student,teacher'])->get('/Student/GetStudentInfo', 'StudentController@getInfo');
 
+    /* Registrations */
+    Route::get('/Registration', 'RegistrationController@index')->name('registrationIndex');
+    Route::post('/Registration/GetStepData', 'RegistrationController@getStepData');
+    Route::post('/Registration/SaveStepData', 'RegistrationController@saveStepData');
+    Route::middleware(['auth:teacher,student'])->get('/Registration/GetFile', 'RegistrationController@getFile')->name('getFile');
+    Route::post('/Registration/DeleteFile', 'RegistrationController@deleteFile');
+    Route::post('/Registration/Complete', 'RegistrationController@complete');
+});
 
-/* Teacher */
-Route::post('/Teacher/Add', 'TeacherController@add');
-Route::post('/Teacher/Update', 'TeacherController@update');
-Route::post('/Teacher/Delete', 'TeacherController@delete');
+Route::namespace('Teacher')->group(function () {
 
+    /* RegistrationStudy */
+    Route::get('/RegistrationsStudy', 'RegistrationsStudyController@index')->name('registrationsStudyIndex');
+    Route::post('/RegistrationsStudy/DownloadRegistration', 'RegistrationsStudyController@downloadRegistration');
+    Route::post('/RegistrationsStudy/downloadMultipleRegistrations', 'RegistrationsStudyController@downloadMultipleRegistrations');
+    Route::post('/RegistrationsStudy/UpdateStatus', 'RegistrationsStudyController@updateStatus');
+    Route::get('/RegistrationStudy/GetRegistrations', 'RegistrationsStudyController@getRegistrations');
 
-/* Registrations */
-Route::get('/Registration', 'RegistrationController@index');
-Route::post('/Registration/GetStepData', 'RegistrationController@getStepData');
-Route::post('/Registration/SaveStepData', 'RegistrationController@saveStepData');
-Route::get('/Registration/GetFile', 'RegistrationController@getFile');
-Route::post('/Registration/DeleteFile', 'RegistrationController@deleteFile');
-Route::post('/Registration/Complete', 'RegistrationController@complete');
-
-
-/* RegistrationStudy */
-Route::get('/RegistrationsStudy', 'RegistrationStudyController@index');
-Route::post('/RegistrationsStudy/DownloadRegistration', 'RegistrationStudyController@downloadRegistration');
-Route::post('/RegistrationsStudy/downloadMultipleRegistrations', 'RegistrationStudyController@downloadMultipleRegistrations');
-Route::post('/RegistrationsStudy/UpdateStatus', 'RegistrationStudyController@updateStatus');
-Route::get('/RegistrationStudy/GetRegistrations', 'RegistrationStudyController@getRegistrations');
-
+    /* Teacher */
+    Route::post('/Teacher/Add', 'TeacherController@add');
+    Route::get('/Teacher/Profile', 'TeacherController@profile')->name('teacherProfile');
+    Route::post('/Teacher/Update', 'TeacherController@update');
+    Route::post('/Teacher/Delete', 'TeacherController@delete');
+});
 
 /* Message */
-Route::get('/Discussion', 'MessageController@index');
-Route::get('/Discussion/GetStudentMessage', 'MessageController@getStudentMessage');
-Route::post('/Discussion/AddNewMessage', 'MessageController@add');
-Route::post('/Discussion/AddTeacherResponse', 'MessageController@addTeacherResponse');
+Route::middleware(['auth:teacher,student'])->group(function () {
+
+    Route::get('/Discussion', 'MessageController@index');
+    Route::get('/Discussion/GetStudentMessage', 'MessageController@getStudentMessage')->name('getStudentMessage');
+    Route::post('/Discussion/AddNewMessage', 'MessageController@add')->name('addMessage');
+    Route::post('/Discussion/AddTeacherResponse', 'MessageController@addTeacherResponse')->name('addResponseMessage');
+});

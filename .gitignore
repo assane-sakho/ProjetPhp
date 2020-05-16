@@ -18,3 +18,5 @@ storage/uploads/
 storage/registrations/
 
 *.zip
+
+.vscode/

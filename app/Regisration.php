@@ -18,7 +18,7 @@ class Registration extends Model
      *
      * @var array
      */
-    protected $fillable = ['training_id', 'folder_id', 'status_id', 'classicTraining', 'apprenticeshipTraining'];
+    protected $fillable = ['training_id', 'folder_id', 'status_id', 'classicTraining', 'apprenticeshipTraining', 'lastStep'];
 
     /**
      * The belongs to Relationship

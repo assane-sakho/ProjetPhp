@@ -13,13 +13,12 @@
         </div>
     </div>
 </section>
-
 <section class="popular_course section_padding section_bg">
     <div class="container">
         <div class="row">
             <div class="col-md-12">
                 <form action="/Registration/Save" id="registrationForm" role="form" data-toggle="validator" method="post" accept-charset="utf-8" enctype="multipart/form-data">
-
+                    <input type="hidden" name="step_number" id="step_number" value="{{ $stepNumber }}">
                     <!-- SmartWizard html -->
                     <div id="smartwizard">
                         <ul>
@@ -29,7 +28,7 @@
                             <li><a href="#step-4" data-content-url="/Registration/GetStepData">Étape 4<br /><small>Dépôt - Relevés de notes</small></a></li>
                             <li><a href="#step-5" data-content-url="/Registration/GetStepData">Étape 5<br /><small>Dépot - Imprime écran ENT</small></a></li>
                             <li><a href="#step-6" data-content-url="/Registration/GetStepData">Étape 6<br /><small>Dépot - Formulaire d'inscription</small></a></li>
-                            <li><a href="#step-7" data-content-url="/Registration/GetStepData">Étape 7<br /><small> {{ !session('isRegistrationComplete')  ? "Validation" : "Récapitulatif" }}</small></a></li>
+                            <li><a href="#step-7" data-content-url="/Registration/GetStepData">Étape 7<br /><small> {{ !$isRegistrationComplete ? "Validation" : "Récapitulatif" }}</small></a></li>
                         </ul>
                         <div>
                             <div id="step-1">
@@ -65,26 +64,23 @@
         min-height: 0px !important;
     }
 </style>
+<input type="hidden" id="registration_statusId" value="{{ $registrationStatusId }}">
+<input type="hidden" id="isRegistrationComplete" value="{{ $isRegistrationComplete ? 'true' : 'false' }}">
 @endsection
-
 @section('scripts')
 <script>
     $(document).ready(function() {
-        var registration_statusId = '{{ session("student")->registration->status_id }}';
-        let registrationEditable = "{{ !session('isRegistrationComplete') }}";
+        var registration_statusId = $("#registration_statusId").val();
+        let isRegistrationComplete = $("#isRegistrationComplete").val() == 'true';
+        var smartWizardStep = $("#step_number");
 
         if (registration_statusId == 3) {
-            displayToastr('warning', 'Votre candidature a été signalée comme incomplète.<br/><br/>Veuillez compléter votre candidature avant de l\'envoyer de nouveau.');
-        }
-
-        if (!registrationEditable) {
-            $(".form-control").prop('disabled', true);
-            $(".btnRegistration").remove();
+            displayToastr('warning', 'Votre candidature a été signalée comme incomplète.<br/><br/>Veuillez la compléter avant de l\'envoyer de nouveau.');
         }
 
         var btnFinish;
 
-        if (registrationEditable) {
+        if (!isRegistrationComplete) {
             btnFinish = $('<button></button>')
                 .text('Valider')
                 .addClass('btn btn-info btn-finish btnRegistration')
@@ -115,14 +111,17 @@
                         }
                     }
                 });
+        } else {
+            $(".form-control, input").prop('disabled', true);
+            $(".btnRegistration").remove();
         }
 
         $('#smartwizard').smartWizard({
-            selected: 0,
+            selected: parseInt(smartWizardStep.val()),
             theme: 'default',
             transitionEffect: 'fade',
             contentCache: false,
-            showStepURLhash: true,
+            showStepURLhash: false,
             toolbarSettings: {
                 toolbarPosition: 'bottom',
                 toolbarExtraButtons: [btnFinish]
@@ -132,7 +131,7 @@
                 markAllPreviousStepsAsDone: true, // When a step selected by url hash, all previous steps are marked done
                 removeDoneStepOnNavigateBack: true, // While navigate back done step after active step will be cleared
                 enableAnchorOnDoneStep: true, // Enable/Disable the done steps navigation
-                enableAllAnchors: !registrationEditable
+                enableAllAnchors: isRegistrationComplete
             },
             lang: {
                 previous: 'Précédent',
@@ -185,7 +184,7 @@
                     });
                 }
 
-                if (registrationEditable) {
+                if (!isRegistrationComplete) {
                     $.ajax({
                         url: '/Registration/SaveStepData',
                         type: 'POST',
@@ -212,12 +211,13 @@
             $(".sw-container").css({
                 "min-height": "0px"
             });
-            if (stepNumber == 6 && registrationEditable) {
+            if (stepNumber == 6 && !isRegistrationComplete) {
                 $('.btn-finish').removeClass('disabled');
 
             } else {
                 $('.btn-finish').addClass('disabled');
             }
+            smartWizardStep.val(stepNumber);
         });
     });
 </script>

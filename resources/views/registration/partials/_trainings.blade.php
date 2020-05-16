@@ -3,7 +3,7 @@
 <div id="form-step-0" role="form" data-toggle="validator">
     <div class="form-group col-md-6">
         @php
-        $disabled = session('isRegistrationComplete') ? "disabled" : "";
+        $disabled = $isRegistrationComplete ? "disabled" : "";
         @endphp
         <select class="input-training form-control" name="training" id="training" required {{ $disabled }}>
             <option value="">-- Sélectionnez une option --</option>
@@ -37,7 +37,7 @@
         <div class="help-block with-errors"></div>
     </div>
     <span class="text-danger" id="errorTraining">Veuillez choisir si vous candidater pour l’apprentissage, le classique ou les deux.</span>
-
+    <a href="{{ asset('files/ficheAmetysAPP.pdf') }}" target="_blank">Consulter la maquette de la formation MIAGE</a>
 </div>
 
 <script>

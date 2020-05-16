@@ -1,10 +1,10 @@
   @php
     $homeHref ="";
-    if(session()->has('student'))
+    if(auth()->guard('student')->check())
     {
         $homeHref = "/Registration";
     }
-    else if(session()->has('teacher'))
+    else if(auth()->guard('teacher')->check())
     {        
         $homeHref = "/RegistrationsStudy";
     }
@@ -54,7 +54,7 @@
                                     </li>
 
                                     @php
-                                        if(session()->has('student') || session()->has('teacher'))
+                                        if(auth()->guard('student')->check() || auth()->guard('teacher')->check())
                                         {
                                             
                                     @endphp

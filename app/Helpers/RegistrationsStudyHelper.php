@@ -7,7 +7,7 @@ use App\Registration;
 use App\RegistrationStatus;
 use App\Teacher;
 
-use File;
+use Illuminate\Support\Facades\File;
 
 use Illuminate\Support\Facades\Storage;
 use League\Flysystem\Filesystem;
@@ -15,7 +15,7 @@ use League\Flysystem\ZipArchive\ZipArchiveAdapter;
 use ZipArchive;
 use  Carbon;
 
-class RegistrationStudyHelper
+class RegistrationsStudyHelper
 {
 
     /**
@@ -27,8 +27,8 @@ class RegistrationStudyHelper
 
         $filePath = $basePath . $fileName;
 
+        //Download student registration as .zip
         if ($student != null) {
-
 
             $zip = new Filesystem(new ZipArchiveAdapter($filePath));
 
@@ -41,6 +41,7 @@ class RegistrationStudyHelper
             }
             $zip->getAdapter()->getArchive()->close();
         } else {
+            //Put all student downloaded registrations in one .zip file
 
             $zip = new ZipArchive;
             if ($zip->open($filePath, ZipArchive::CREATE) === TRUE) {
@@ -165,7 +166,7 @@ class RegistrationStudyHelper
             'trainings.name as training_name',
             'registration_statuses.title as registration_status',
             'registration_statuses.id as registration_status_id',
-            ])->join('students', 'students.registration_id', '=', 'registrations.id')
+        ])->join('students', 'students.registration_id', '=', 'registrations.id')
             ->join('addresses', 'students.address_id', '=', 'addresses.id')
             ->leftjoin('trainings', 'trainings.id', '=', 'registrations.training_id')
             ->join('registration_statuses', 'registration_statuses.id', '=', 'registrations.status_id');

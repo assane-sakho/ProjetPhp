@@ -18,7 +18,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                @if(session('teacher')->id == 1)
+                @if($isAdmin)
                 <p>
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addTeacherModal">
                         Ajouter un professeur
@@ -47,18 +47,18 @@
                                 <td>Statut</td>
                                 <td>Classique</td>
                                 <td>Apprentissage</td>
-                                <td class="col-md-8">
-                                    <select class="form-control" id="trainingFilter">
+                                <td class="col-md-12">
+                                    <select class="form-control col-md-12" id="trainingFilter" style="width: 180px;">
                                         <option value="">Niveau</option>
-                                        @foreach($data['trainings'] as $training)
+                                        @foreach($trainings as $training)
                                         <option value="{{ $training->id }}">{{ $training->name }}</option>
                                         @endforeach
                                     </select>
                                 </td>
-                                <td class="col-md-8">
-                                    <select class="form-control" id="statusFilter">
+                                <td class="col-md-12">
+                                    <select class="form-control col-md-12" id="statusFilter" style="width: 188px;">
                                         <option value="">Statut</option>
-                                        @foreach($data['statuses'] as $status)
+                                        @foreach($statuses as $status)
                                         <option value="{{ $status->id }}">{{ $status->title }}</option>
                                         @endforeach
                                     </select>
@@ -77,7 +77,7 @@
     </div>
 </section>
 
-@if(session('teacher')->id == 1)
+@if($isAdmin)
 <div class="modal fade" id="addTeacherModal" tabindex="-1" role="dialog" aria-labelledby="addTeacherModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -99,7 +99,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($data['teachers'] as $teacher)
+                            @foreach($teachers as $teacher)
                             <tr>
                                 <td>{{ $teacher->id }}</td>
                                 <td>{{ $teacher->email }}</td>
@@ -143,7 +143,7 @@
                     <label for="registration_status_d">Choix des niveaux :</label><br />
                     <select class="form-control" id="training_d" name="training_d">
                         <option value="all">Tout les niveaux</option>
-                        @foreach($data['trainings'] as $training)
+                        @foreach($trainings as $training)
                         <option value="{{ $training->id }}">{{ $training->name }}</option>
                         @endforeach
                     </select>
@@ -151,7 +151,7 @@
                     <label for="registration_status_d">Choix des candidatures :</label><br />
                     <select name="registration_status_d" id="registration_status_d" class="form-control">
                         <option value="all">Tout les statuts</option>
-                        @foreach($data['statuses'] as $status)
+                        @foreach($statuses as $status)
                         <option value="{{ $status->id }}">{{ $status->title }}</option>
                         @endforeach
                     </select>
@@ -189,7 +189,7 @@
                     <label for="registrationStatus">Statut :</label><br />
                     <select name="registrationStatus" id="registrationStatus" class="form-control">
                         <option>-- Sélectionnez un statut --</option>
-                        @foreach($data['statuses'] as $status)
+                        @foreach($statuses as $status)
                         <option value="{{ $status->id }}">{{ $status->title }}</option>
                         @endforeach
                     </select>
@@ -214,7 +214,7 @@
             </div>
             <div class="modal-body">
                 <div class="spinner-border text-center" role="status" id="seeMore-loader">
-                    <span class="sr-only">Loading...</span>
+                    <span class="sr-only">Chargement...</span>
                 </div>
                 <table class="table table-bordered hidden" id="seeMore-table">
                     <tr>
@@ -279,7 +279,6 @@
         </div>
     </div>
 </div>
-<input type="hidden" id="registrations" value="{{ $data['registrations'] }}">
 @endsection
 
 @section('scripts')
@@ -612,7 +611,7 @@
 
             $.ajax({
                 url: '/Student/GetStudentInfo',
-                type: 'POST',
+                type: 'Get',
                 data: {
                     studentId: studentId
                 },
@@ -905,7 +904,7 @@
                 '    </div>' +
                 '    <div class="input-group">' +
                 '        <label for="teacherPassword" class="col-md-2">Mot de passe: </label><br />&nbsp;&nbsp;' +
-                '        <input class="form-control teacherPassword col-md-8" type="text" required>&nbsp;&nbsp;' +
+                '        <input class="form-control teacherPassword col-md-8" minlength="8" type="text" required>&nbsp;&nbsp;' +
                 '        <button type="button" class="btn btn-secondary reload" onclick="$(this).parent().find(\'.teacherPassword\').val(getRandString())"><i class="fas fa-sync-alt" aria-hidden="true"></i></button>' +
                 '    </div>' +
                 '</div>');

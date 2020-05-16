@@ -14,7 +14,7 @@ class FileHelper
      */
     public static function storeFile($file, $fileName)
     {
-        $student  = session('student');
+        $student  = StudentHelper::getConnectedStudent();
         $studentFolderPath = $student->folderPath();
 
         $file->storeAs($studentFolderPath, $fileName, config('const.source_disk'));
@@ -32,7 +32,7 @@ class FileHelper
         if ($studentId != null) {
             $student = StudentHelper::getStudent($studentId);
         } else {
-            $student  = session('student');
+            $student  = StudentHelper::getConnectedStudent();
         }
         $studentFolder = $student->registration->folder;
         $studentFolderPath = $student->folderPath();
@@ -62,7 +62,7 @@ class FileHelper
      */
     public static function deleteFile($fileToDelete, $index = null)
     {
-        $student  = session('student');
+        $student  = StudentHelper::getConnectedStudent();
         $studentFolder = $student->registration->folder;
 
         if ($fileToDelete != "report_card") {
@@ -111,23 +111,7 @@ class FileHelper
         return $currentFileName;
     }
 
-    /**
-     * Get the files names
-     */
-    public static function getFileArray()
-    {
-        $files = array(
-            "cv",
-            "cover_letter",
-            "vle_screenshot",
-            "registration_form"
-        );
 
-        for ($i = 0; $i < 3; $i++) {
-            array_push($files, "report_card_" . $i);
-        }
-        return $files;
-    }
 
     /**
      * Move a file from his path to his new path

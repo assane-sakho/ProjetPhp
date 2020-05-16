@@ -12,13 +12,13 @@ $i = 0;
                 <td>
                     <embed id="embed-{{ $data['inputName'] }}_{{ $i }}" src="/Registration/GetFile?fileName={{ $data['inputName'] }}&number={{ $i }}" style="width:600px; height:800px;" frameborder="0">
                 </td>
-                @if(!session('isRegistrationComplete') && count($data['filesUploaded']) > 1)
+                @if(!$isRegistrationComplete && count($data['filesUploaded']) > 1)
                 <td><button class="btn btn-danger btnRegistration deleteFile" type="button">Supprimer</button></td>
                 @endif
                 </tr>
                 @endfor
 
-                @if($i < 3 && !session('isRegistrationComplete')) @for($j=0; $j < 3 - count($data['filesUploaded']); $j++) @php $required="" ; if($j==0 && $i==0) $required="required" ; @endphp <tr>
+                @if($i < 3 && !$isRegistrationComplete) @for($j=0; $j < 3 - count($data['filesUploaded']); $j++) @php $required="" ; if($j==0 && $i==0) $required="required" ; @endphp <tr>
                     <td>{{ $data['fileText'] }} n° {{ $j + $i +1 }}</td>
                     <td colspan="2">
                         <input class="input-{{ $data['inputName'] }} form-control" accept="application/pdf" name="{{ $data['inputName'] }}_{{ ($j + $i) }}" id="{{ $data['inputName'] }}_{{ ($j + $i) }}" type="file" onchange="$(this).removeClass('bg-danger'); $('.help-block').hide();" {{ $required }}>

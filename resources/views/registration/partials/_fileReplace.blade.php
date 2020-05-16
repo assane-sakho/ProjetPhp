@@ -4,7 +4,7 @@
     <div class="form-group col-md-10">
         <p>Vous avez déjà enregistré <b><u data-toggle="modal" data-target="#displayFilesModal-{{ $data['inputName'] }}">{{ count($data['filesUploaded']) }} document</u></b>.
         </p>
-        @if(!session('isRegistrationComplete'))
+        @if(!$isRegistrationComplete)
         <p class=" warningReplace-{{ $data['inputName'] }}"><b class="text-danger">Attention</b> : Remplacer le document actuel effaçera le précédent.
             <br />
             <button type="button" class="btn btn-sm btnRegistration btn-warning warningReplace-{{ $data['inputName'] }}" onclick="replaceFile()">Remplacer</button>
