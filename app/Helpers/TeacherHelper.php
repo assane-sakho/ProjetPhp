@@ -88,11 +88,14 @@ class TeacherHelper
     public static function updateTeacher($email, $password)
     {
         $teacher = TeacherHelper::getConnectedTeacher();
-
-        $teacher->update([
-            "email" => $email ?? $teacher->email,
-            "password" => $password ?? $teacher->password
-        ]);
+        
+        if ($email) {
+            $teacher->email = $email;
+        }
+        if ($password) {
+            $teacher->password = $password;
+        }
+        $teacher->save();
     }
 
     /**
