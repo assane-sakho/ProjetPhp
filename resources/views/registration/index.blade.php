@@ -13,7 +13,6 @@
         </div>
     </div>
 </section>
-
 <section class="popular_course section_padding section_bg">
     <div class="container">
         <div class="row">
@@ -76,7 +75,7 @@
         var smartWizardStep = $("#step_number");
 
         if (registration_statusId == 3) {
-            displayToastr('warning', 'Votre candidature a été signalée comme incomplète.<br/><br/>Veuillez compléter votre candidature avant de l\'envoyer de nouveau.');
+            displayToastr('warning', 'Votre candidature a été signalée comme incomplète.<br/><br/>Veuillez la compléter avant de l\'envoyer de nouveau.');
         }
 
         var btnFinish;
@@ -118,7 +117,7 @@
         }
 
         $('#smartwizard').smartWizard({
-            selected: smartWizardStep.val(),
+            selected: parseInt(smartWizardStep.val()),
             theme: 'default',
             transitionEffect: 'fade',
             contentCache: false,

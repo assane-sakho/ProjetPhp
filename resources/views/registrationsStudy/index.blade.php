@@ -904,7 +904,7 @@
                 '    </div>' +
                 '    <div class="input-group">' +
                 '        <label for="teacherPassword" class="col-md-2">Mot de passe: </label><br />&nbsp;&nbsp;' +
-                '        <input class="form-control teacherPassword col-md-8" type="text" required>&nbsp;&nbsp;' +
+                '        <input class="form-control teacherPassword col-md-8" minlength="8" type="text" required>&nbsp;&nbsp;' +
                 '        <button type="button" class="btn btn-secondary reload" onclick="$(this).parent().find(\'.teacherPassword\').val(getRandString())"><i class="fas fa-sync-alt" aria-hidden="true"></i></button>' +
                 '    </div>' +
                 '</div>');
