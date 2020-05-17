@@ -187,8 +187,8 @@
                 <div class="modal-body">
                     <input type="hidden" id="registrationId" name="registrationId">
                     <label for="registrationStatus">Statut :</label><br />
-                    <select name="registrationStatus" id="registrationStatus" class="form-control">
-                        <option>-- Sélectionnez un statut --</option>
+                    <select name="registrationStatus" id="registrationStatus" class="form-control" required>
+                        <option value="">-- Sélectionnez un statut --</option>
                         @foreach($statuses as $status)
                         <option value="{{ $status->id }}">{{ $status->title }}</option>
                         @endforeach

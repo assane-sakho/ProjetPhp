@@ -1,88 +1,98 @@
-
-$(document).ready(function() {
-    $('input[type="date"]').attr('min', moment('1970-01-01').format('YYYY-MM-DD'));
-    $('input[type="date"]').attr('max', moment().format('YYYY-MM-DD'));
+$(document).ready(function () {
+    $('input[type="date"]').attr(
+        "min",
+        moment("1970-01-01").format("YYYY-MM-DD")
+    );
+    $('input[type="date"]').attr("max", moment().format("YYYY-MM-DD"));
 
     var btnSubmitClicked;
-    var loadingText = 'Chargement ';
+    var loadingText = "Chargement ";
     var loader = '&nbsp;<i class="fa fa-spinner fa-spin"></i>';
-    moment.locale('fr')
+    moment.locale("fr");
 
     $.ajaxSetup({
         headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
     });
 
-    $(document).on('submit', 'form', function() {
-        btnSubmitClicked = $(this).find(':submit');
-
-        $(btnSubmitClicked).text(loadingText);
-        $(btnSubmitClicked).append(loader);
+    $(document).on("click", ":submit", function () {
+        $(":submit").removeAttr("clicked");
+        btnSubmitClicked = $(this);
     });
 
-    $(document).ajaxStart(function() {
-        $(':submit').each(function() {
-            $(this).prop('disabled', true);
+    $(document).on("submit", "form", function () {
+        btnSubmitClicked
+            .attr("clicked", "true")
+            .text(loadingText)
+            .append(loader);
+    });
+
+    $(document).ajaxStart(function () {
+        $(":submit").each(function () {
+            $(this).prop("disabled", true);
         });
     });
 
-    $(document).ajaxStop(function() {
-        $(':submit').not(btnSubmitClicked).each(function() {
-            $(this).prop('disabled', false);
-        });
+    $(document).ajaxStop(function () {
+        $(":submit")
+            .not(btnSubmitClicked)
+            .each(function () {
+                $(this).prop("disabled", false);
+            });
         $(btnSubmitClicked).text($(btnSubmitClicked).val());
     });
 
-    $('#logout').click(function() {
+    $("#logout").click(function () {
         $.ajax({
-            url: '/Logout',
-            type: 'POST',
-            success: function(data) {
+            url: "/Logout",
+            type: "POST",
+            success: function (data) {
                 window.location.href = "/";
-                displayToastr('disconnected');
+                displayToastr("disconnected");
             },
-            error: function(xhr, status, error) {
-                displayToastr('error');
-            }
+            error: function (xhr, status, error) {
+                displayToastr("error");
+            },
         });
-
     });
 
     $.extend(true, $.fn.dataTable.defaults, {
-        "language": {
-            "sEmptyTable": "Aucune donnée disponible dans le tableau",
-            "sInfo": "Affichage de l'élément _START_ à _END_ sur _TOTAL_ éléments",
-            "sInfoEmpty": "Affichage de l'élément 0 à 0 sur 0 élément",
-            "sInfoFiltered": "(filtré à partir de _MAX_ éléments au total)",
-            "sInfoPostFix": "",
-            "sInfoThousands": ",",
-            "sLengthMenu": "Afficher _MENU_ éléments",
-            "sLoadingRecords": "Chargement...",
-            "sProcessing": "Traitement en cours . . .",
-            "sSearch": "Rechercher :",
-            "sZeroRecords": "Aucun élément correspondant trouvé",
-            "oPaginate": {
-                "sFirst": "Premier",
-                "sLast": "Dernier",
-                "sNext": "Suivant",
-                "sPrevious": "Précédent"
+        language: {
+            sEmptyTable: "Aucune donnée disponible dans le tableau",
+            sInfo:
+                "Affichage de l'élément _START_ à _END_ sur _TOTAL_ éléments",
+            sInfoEmpty: "Affichage de l'élément 0 à 0 sur 0 élément",
+            sInfoFiltered: "(filtré à partir de _MAX_ éléments au total)",
+            sInfoPostFix: "",
+            sInfoThousands: ",",
+            sLengthMenu: "Afficher _MENU_ éléments",
+            sLoadingRecords: "Chargement...",
+            sProcessing: "Traitement en cours . . .",
+            sSearch: "Rechercher :",
+            sZeroRecords: "Aucun élément correspondant trouvé",
+            oPaginate: {
+                sFirst: "Premier",
+                sLast: "Dernier",
+                sNext: "Suivant",
+                sPrevious: "Précédent",
             },
-            "oAria": {
-                "sSortAscending": ": activer pour trier la colonne par ordre croissant",
-                "sSortDescending": ": activer pour trier la colonne par ordre décroissant"
+            oAria: {
+                sSortAscending:
+                    ": activer pour trier la colonne par ordre croissant",
+                sSortDescending:
+                    ": activer pour trier la colonne par ordre décroissant",
             },
-            "select": {
-                "rows": {
-                    "_": "%d lignes sélectionnées",
+            select: {
+                rows: {
+                    _: "%d lignes sélectionnées",
                     "0": "Aucune ligne sélectionnée",
-                    "1": "1 ligne sélectionnée"
-                }
-            }
+                    "1": "1 ligne sélectionnée",
+                },
+            },
         },
-        dom: 'Bfrtip',
+        dom: "Bfrtip",
     });
-
 });
 
 function displayToastr(type, message) {
@@ -156,12 +166,17 @@ function displayToastr(type, message) {
 function displayFile(href, isPdf) {
     var x = window.open();
     x.document.open();
-    x.document.write('<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">');
+    x.document.write(
+        '<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">'
+    );
 
-    if (!isPdf)
-        x.document.write('<img src="' + href + '" class="img-fluid">');
+    if (!isPdf) x.document.write('<img src="' + href + '" class="img-fluid">');
     else
-        x.document.write('<div class="embed-responsive embed-responsive-16by9"><iframe class="embed-responsive-item" src="' + href + '"></iframe</div>');
+        x.document.write(
+            '<div class="embed-responsive embed-responsive-16by9"><iframe class="embed-responsive-item" src="' +
+                href +
+                '"></iframe</div>'
+        );
 
     x.document.close();
 }
