@@ -148,8 +148,8 @@ class RegistrationsStudyHelper
             "0" => "id",
             "1" => "students.lastname",
             "2" => "students.firstname",
-            "5" => "classicTraining",
-            "6" => "apprenticeshipTraining",
+            "14" => "classicTraining",
+            "15" => "apprenticeshipTraining",
         );
 
         $registrations = Registration::select([

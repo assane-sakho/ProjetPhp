@@ -102,7 +102,7 @@
                             @foreach($teachers as $teacher)
                             <tr>
                                 <td>{{ $teacher->id }}</td>
-                                <td>{{ $teacher->email }}</td>
+                                <td><a href="mailto:{{ $teacher->email }}">{{ $teacher->email }}</a></td>
                                 <td><button class="btn btn-danger removeTeacher" type="button">Supprimer</button></td>
                             </tr>
                             @endforeach
@@ -235,10 +235,10 @@
                     </tr>
                     <tr>
                         <th>Adresse mail</th>
-                        <td colspan="3" id="student-email" class="studentInfo"></td>
+                        <td colspan="3" class="studentInfo"><a id="student-email"></a></td>
                     <tr>
                         <th>Téléphone</th>
-                        <td colspan="3" id="student-phone_number" class="studentInfo"></td>
+                        <td colspan="3" class="studentInfo"><a id="student-phone_number"></a></td>
                     </tr>
                     <tr>
                         <th>Adresse</th>
@@ -371,7 +371,7 @@
                 },
             ],
             columnDefs: [{
-                    "targets": [12, 13, 14, 15, 16, 17, 18],
+                    "targets": [12, 13, 16, 17, 18],
                     "orderable": false,
                     "className": 'not-export-col'
                 },
@@ -840,6 +840,11 @@
                 });
             } else {
                 td.text(value);
+                if (tdId == "email") {
+                    td.attr('href', 'mail:to' + value);
+                } else if (tdId == "phone_number") {
+                    td.attr('href', 'tel:to' + value);
+                }
             }
             td.removeClass('hidden');
             $("#student-" + tdId + "-none").addClass('hidden');
@@ -859,7 +864,7 @@
                     teacherPassword: password,
                 },
                 success: function(data) {
-                    teachersTable.row.add([data.teacherId, email, '<td><button class="btn btn-danger removeTeacher" type="button">Supprimer</button></td>']).draw(false);
+                    teachersTable.row.add([data.teacherId, '<a href="mailto:' + email + '">' + email + '</a>', '<td><button class="btn btn-danger removeTeacher" type="button">Supprimer</button></td>']).draw(false);
                     $('#formAddTeacher').find(":submit").prop('disabled', false);
                     displayToastr('teacherAdded');
                     resolve();
