@@ -180,3 +180,7 @@ function displayFile(href, isPdf) {
 
     x.document.close();
 }
+
+function checkIfArrayIsUnique(myArray) {
+  return myArray.length === new Set(myArray).size;
+}

@@ -630,25 +630,15 @@
         $("#formAddTeacher").submit(function(e) {
             e.preventDefault();
 
-            let form = $(this);
-            let hasFail = false;
-            let email, password;
+            let emails = [];
+            $(".teacherEmail").each((i, email) => emails.push(email.value));
 
-            $('.addTeacherDiv').each(function(index, value) {
-                email = $(this).find('.teacherEmail').val();
-                password = $(this).find('.teacherPassword').val();
-
-                tryAddTeacher(email, password).then(() => {
-                    if (index === $('.addTeacherDiv').length - 1 && !hasFail) {
-                        $('#addTeacherModal').modal('toggle');
-                    } else {
-                        $(this).remove();
-                    }
-                }, () => {
-                    hasFail = true;
-                    $(this).addClass('border border-warning');
-                });;
-            });
+            if (!checkIfArrayIsUnique(emails)) {
+                displayToastr('errorMsg', 'Veuillez saisir des emails différents !');
+                return false;
+            } else {
+                tryAddTeachers();
+            }
         });
 
         $("#formEditStatus").submit(function(e) {
@@ -813,6 +803,27 @@
             td.addClass('hidden');
             tdNone.removeClass('hidden');
         }
+    }
+
+    function tryAddTeachers() {
+        let hasFail = false;
+        let email, password;
+
+        $('.addTeacherDiv').each(function(index, value) {
+            email = $(this).find('.teacherEmail').val();
+            password = $(this).find('.teacherPassword').val();
+
+            tryAddTeacher(email, password).then(() => {
+                if (index === $('.addTeacherDiv').length - 1 && !hasFail) {
+                    $('#addTeacherModal').modal('toggle');
+                } else {
+                    $(this).remove();
+                }
+            }, () => {
+                hasFail = true;
+                $(this).addClass('border border-warning');
+            });;
+        });
     }
 
     function tryAddTeacher(email, password) {
