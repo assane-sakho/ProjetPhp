@@ -4,7 +4,7 @@
 
 Assane Sakho
 
-cf. Documentation du projet <https://assanesakho.fr/documentation/ProjetPhp.pdf>
+cf. Documentation du projet <http://assanesakho.fr/documentation/ProjetPhp.pdf>
 
 
 Lien du projet <http://projetphp.assanesakho.fr>
