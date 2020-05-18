@@ -103,7 +103,7 @@
                             <tr>
                                 <td>{{ $teacher->id }}</td>
                                 <td><a href="mailto:{{ $teacher->email }}">{{ $teacher->email }}</a></td>
-                                <td><button class="btn btn-danger removeTeacher" type="button">Supprimer</button></td>
+                                <td class="not-export-col"><button class="btn btn-danger removeTeacher" type="button">Supprimer</button></td>
                             </tr>
                             @endforeach
                         </tbody>
@@ -283,12 +283,26 @@
 
 @section('scripts')
 <script>
+    const seeMoreTr = [
+        ["CV", "cv"],
+        ["Lettre de motitivation", "cover_letter"],
+        [
+            "Relevés de notes de l’année précédente",
+            ["report_card_0", "report_card_1", "report_card_2"],
+        ],
+        ["Imprime écran de l’ENT de l’année en cours", "vle_screenshot"],
+        ["Formulaire d'inscription", "registration_form"],
+    ];
+
+    var teachersTable;
+    var registrationsTable;
+
     $(document).ready(function() {
-        var registrations = $("#registrations").val();
 
-        var fileNameExportTeachers = 'Listes des professeurs - ' + moment().format('DD-MMMM-YYYY');
+        const fileNameExportTeachers = 'Listes des professeurs - ' + moment().format('DD-MMMM-YYYY');
+        const fileNameExportRegistrations = 'Candidatures - ' + moment().format('DD-MMMM-YYYY');
 
-        var teachersTable = $('#teachersTable').DataTable({
+        teachersTable = $('#teachersTable').DataTable({
             info: false,
             paging: false,
             buttons: [{
@@ -297,7 +311,7 @@
                     className: 'btn btn-info',
                     title: fileNameExportTeachers,
                     exportOptions: {
-                        columns: ':visible:not(.not-export-col)'
+                        columns: ':not(.not-export-col)'
                     }
                 },
                 {
@@ -306,7 +320,7 @@
                     className: 'btn btn-info',
                     title: fileNameExportTeachers,
                     exportOptions: {
-                        columns: ':visible:not(.not-export-col)'
+                        columns: ':not(.not-export-col)'
                     }
                 },
                 {
@@ -315,7 +329,7 @@
                     className: 'btn btn-info',
                     title: fileNameExportTeachers,
                     exportOptions: {
-                        columns: ':visible:not(.not-export-col)'
+                        columns: ':not(.not-export-col)'
                     }
                 },
                 {
@@ -324,15 +338,17 @@
                     className: 'btn btn-info',
                     title: fileNameExportTeachers,
                     exportOptions: {
-                        columns: ':visible:not(.not-export-col)'
+                        columns: ':not(.not-export-col)'
                     }
                 },
-            ]
+            ],
+            columnDefs: [{
+                "targets": [2],
+                "className": 'not-export-col'
+            }],
         });
 
-        var fileNameExportRegistrations = 'Candidatures - ' + moment().format('DD-MMMM-YYYY');
-
-        var registrationsTable = $('#registrationsTable').DataTable({
+        registrationsTable = $('#registrationsTable').DataTable({
             buttons: [{
                     extend: 'csv',
                     text: 'CSV',
@@ -371,20 +387,25 @@
                 },
             ],
             columnDefs: [{
-                    "targets": [12, 13, 16, 17, 18],
+                    "targets": [14, 15],
+                    "orderable": true,
+                },
+                {
+                    "targets": [12, 13, 14, 15, 16, 17, 18],
                     "orderable": false,
                     "className": 'not-export-col'
                 },
                 {
                     "targets": [3, 4, 5, 6, 7, 8, 9, 10, 11],
                     "visible": false
-                }
+                },
+
             ],
             orders: [0, 1, 2, 3, 4, 5, 6],
-            'createdRow': function(row, data, dataIndex) {
+            createdRow: function(row, data) {
                 $(row).attr('id', 'registration_' + data['id']);
             },
-            'columns': [{
+            columns: [{
                     data: 'id',
                 },
                 {
@@ -404,7 +425,7 @@
                 },
                 {
                     data: null,
-                    "render": function(data, type, row, meta) {
+                    render: function(data, type, row, meta) {
                         return row["student_address_street"] + ", " + row["student_address_zip_code"] + " " + row["student_address_city"];
                     }
                 },
@@ -413,12 +434,11 @@
                 },
                 {
                     data: 'training_name',
-                    "render": function(data, type, row, meta) {
+                    render: function(data, type, row, meta) {
                         if (data == null) {
                             return "Non renseigné"
-                        } else {
-                            return data
                         }
+                        return data;
                     },
                 },
                 {
@@ -426,7 +446,7 @@
                 },
                 {
                     data: 'classicTraining',
-                    "render": function(data, type, row, meta) {
+                    render: function(data, type, row, meta) {
                         var result = '';
                         if (row['classicTraining'] == 1) {
                             result += 'Oui';
@@ -438,7 +458,7 @@
                 },
                 {
                     data: 'apprenticeshipTraining',
-                    "render": function(data, type, row, meta) {
+                    render: function(data, type, row, meta) {
                         var result = '';
                         if (row['apprenticeshipTraining'] == 1) {
                             result += 'Oui';
@@ -450,12 +470,11 @@
                 },
                 {
                     data: 'training_name',
-                    "render": function(data, type, row, meta) {
+                    render: function(data, type, row, meta) {
                         if (data == null) {
                             return "Non renseigné"
-                        } else {
-                            return data
                         }
+                        return data;
                     },
                 },
                 {
@@ -463,7 +482,7 @@
                 },
                 {
                     data: 'classicTraining',
-                    "render": function(data, type, row, meta) {
+                    render: function(data, type, row, meta) {
                         var result = '<i class="fas fa-';
                         if (row['classicTraining'] == 1) {
                             result += 'check text-success';
@@ -476,7 +495,7 @@
                 },
                 {
                     data: 'apprenticeshipTraining',
-                    "render": function(data, type, row, meta) {
+                    render: function(data, type, row, meta) {
                         var result = '<i class="fas fa-';
                         if (row['apprenticeshipTraining'] == 1) {
                             result += 'check text-success';
@@ -489,13 +508,13 @@
                 },
                 {
                     data: null,
-                    "render": function(data, type, row, meta) {
+                    render: function(data, type, row, meta) {
                         return '<div class="text-center"><button type="button" class="btn btn-info" data-toggle="modal" data-target="#seeMoreModal" data-id="' + row['id'] + '">Voir +</button></div>'
                     }
                 },
                 {
                     data: null,
-                    "render": function(data, type, row, meta) {
+                    render: function(data, type, row, meta) {
                         var result = '<div class="text-center">';
                         if (row['registration_status_id'] != 1) {
                             result += '<button type="button" class="btn btn-warning" data-toggle="modal" data-target="#editStatusModal" data-id="' + row['id'] + '">Modifier</button>';
@@ -508,7 +527,7 @@
                 },
                 {
                     data: null,
-                    "render": function(data, type, row, meta) {
+                    render: function(data, type, row, meta) {
                         var result = '<div class="text-center">';
                         if (row['registration_status_id'] != 1) {
                             result += '<button type="submit" value="Téléchager" class="btn btn-success downloadRegistration" data-id="' + row['id'] + '">Télécharger</button>';
@@ -520,35 +539,20 @@
                     }
                 }
             ],
-            "serverSide": true,
-            'ajax': {
+            serverSide: true,
+            ajax: {
                 'url': 'RegistrationStudy/GetRegistrations',
                 'data': function(data) {
-                    // Read values
-                    var training = $('#trainingFilter').val();
-                    var status = $('#statusFilter').val();
-
-                    data.training_id = training;
-                    data.status_id = status;
+                    data.training_id = $('#trainingFilter').val();
+                    data.status_id = $('#statusFilter').val();
                 }
             },
-            "processing": true
+            processing: true
         });
 
-        var trsRow = [
-            ["CV", "cv"],
-            ["Lettre de motitivation", "cover_letter"],
-            [
-                "Relevés de notes de l’année précédente",
-                ["report_card_0", "report_card_1", "report_card_2"],
-            ],
-            ["Imprime écran de l’ENT de l’année en cours", "vle_screenshot"],
-            ["Formulaire d'inscription", "registration_form"],
-        ];
-
         $(document).on('click', '.removeTeacher', function() {
-            var tr = $(this).closest('tr');
-            var teacherId = tr.find("td:first").text();
+            let tr = $(this).closest('tr');
+            let teacherId = tr.find("td:first").text();
 
             $.ajax({
                 url: '/Teacher/Delete',
@@ -568,13 +572,9 @@
 
         });
 
-        $("#trainingFilter").on('change', function() {
-            registrationsTable.draw();
-        });
+        $("#trainingFilter").on('change', () => registrationsTable.draw());
 
-        $("#statusFilter").on('change', function() {
-            registrationsTable.draw();
-        });
+        $("#statusFilter").on('change', () => registrationsTable.draw());
 
         $('#addTeacherModal').on('show.bs.modal', function(e) {
             $(document).find(":submit").prop('disabled', false);
@@ -592,22 +592,12 @@
             $("#seeMore-table").hide();
             $("embed, #student-vle_screenshot").attr('src', '');
 
-            var studentId = $(e.relatedTarget).data('id');
-            var rowIdx = $("#registrationsTable").find("#registration_" + studentId).index();
-            var studentName = registrationsTable.row(rowIdx).data()['student_lastname'] + ' ' + registrationsTable.row(rowIdx).data()['student_firstname'];
+            let studentId = $(e.relatedTarget).data('id');
+            let rowIdx = $("#registrationsTable").find("#registration_" + studentId).index();
+            let studentName = registrationsTable.row(rowIdx).data()['student_lastname'] + ' ' + registrationsTable.row(rowIdx).data()['student_firstname'];
             $("#seeMore-studentName").text(studentName);
 
-            $('.trFile, #trReportCards').remove();
-            $(trsRow).each(function(idx, trRow) {
-                if (trRow[1].length == 3) {
-                    $("#seeMore-table").append('<tr id="trReportCards"><th>' + trRow[0] + '</th></tr>');
-                    $(trRow[1]).each(function(i, trRowChild) {
-                        appendTrToSeeMoreTable(["", trRowChild], true);
-                    });
-                } else {
-                    appendTrToSeeMoreTable(trRow, false);
-                }
-            });
+            initSeeMoreTable();
 
             $.ajax({
                 url: '/Student/GetStudentInfo',
@@ -616,45 +606,7 @@
                     studentId: studentId
                 },
                 success: function(data) {
-
-                    var student = data.student;
-                    var address = data.address;
-                    var registration = data.registration;
-                    var registration_status = data.registration_status;
-                    var training = data.training;
-                    var trainingName = training ? training.name : null;
-                    var folder = data.folder;
-                    var report_cards = data.report_cards;
-                    var messages = data.messages;
-
-                    setSeeMoreTableValue('registration_status', registration_status.title);
-                    setSeeMoreTableValue('card_id', student.card_id);
-                    setSeeMoreTableValue('birthdate', moment(student.birthdate).format('DD-MM-YYYY'));
-                    setSeeMoreTableValue('email', student.email);
-                    setSeeMoreTableValue('phone_number', student.phone_number);
-                    setSeeMoreTableValue('address', address.street + ', ' + address.zip_code + ' ' + address.city);
-                    setSeeMoreTableValue('training', trainingName);
-
-                    $("#student-classicTraining").text(registration.classicTraining == 1 ? 'Oui' : 'Non');
-                    $("#student-apprenticeshipTraining").text(registration.apprenticeshipTraining == 1 ? 'Oui' : 'Non');
-
-                    setSeeMoreTableValue('cv', folder.cv, 'pdf', studentId);
-                    setSeeMoreTableValue('cover_letter', folder.cover_letter, 'pdf', studentId);
-                    setSeeMoreTableValue('vle_screenshot', folder.vle_screenshot, 'img', studentId);
-                    setSeeMoreTableValue('registration_form', folder.registration_form, 'pdf', studentId);
-
-                    setConversation(messages);
-
-                    for (let i = 0; i < 3; i++) {
-                        setSeeMoreTableValue('report_card_' + i, null, 'pdf', studentId);
-                    }
-
-                    $(report_cards).each(function(idx) {
-                        var report_card = report_cards[idx];
-                        var fileName = report_card.name;
-                        var name = fileName.split('.pdf')[0];
-                        setSeeMoreTableValue(name, fileName, 'pdf', studentId);
-                    });
+                    setSeeMoreTableData(data);
                     $('#seeMore-loader').hide();
                     $("#seeMore-table").show();
                     $(document).find(":submit").prop('disabled', false);
@@ -667,26 +619,26 @@
         });
 
         $('#editStatusModal').on('show.bs.modal', function(e) {
-            var registrationId = $(e.relatedTarget).data('id');
+            let registrationId = $(e.relatedTarget).data('id');
+            let rowIdx = $("#registrationsTable").find("#registration_" + registrationId).index();
+            let statusId = registrationsTable.row(rowIdx).data()['registration_status_id'];
+
             $("#registrationId").val(registrationId);
-            var rowIdx = $("#registrationsTable").find("#registration_" + registrationId).index();
-            var statusId = registrationsTable.row(rowIdx).data()['registration_status_id'];
             $("#registrationStatus").val(statusId);
         });
 
         $("#formAddTeacher").submit(function(e) {
-            var form = $(this);
             e.preventDefault();
 
-            var hasFail = false;
+            let form = $(this);
+            let hasFail = false;
+            let email, password;
 
             $('.addTeacherDiv').each(function(index, value) {
-                var email = $(this).find('.teacherEmail').val();
-                var password = $(this).find('.teacherPassword').val();
+                email = $(this).find('.teacherEmail').val();
+                password = $(this).find('.teacherPassword').val();
 
-                var inputDivCount = $('.addTeacherDiv').length;
-
-                tryAddTeacher(email, password, teachersTable).then(() => {
+                tryAddTeacher(email, password).then(() => {
                     if (index === $('.addTeacherDiv').length - 1 && !hasFail) {
                         $('#addTeacherModal').modal('toggle');
                     } else {
@@ -700,11 +652,12 @@
         });
 
         $("#formEditStatus").submit(function(e) {
-            var registrationId = $("#registrationId").val();
-            var statusTitle = $("#registrationStatus option:selected").text();
-            var rowIdx = $("#registrationsTable").find("#registration_" + registrationId).index();
-            var form = $(this);
             e.preventDefault();
+
+            let registrationId = $("#registrationId").val();
+            let statusTitle = $("#registrationStatus option:selected").text();
+            let rowIdx = $("#registrationsTable").find("#registration_" + registrationId).index();
+            let form = $(this);
 
             $.ajax({
                 url: '/RegistrationsStudy/UpdateStatus',
@@ -728,11 +681,13 @@
 
         $("#formDownloadRegistration").submit(function(e) {
             e.preventDefault();
-            var form = $(this);
-            var btn = $(this).find("button[type=submit]:focus");
+
+            let form = $(this);
+            let btn = $(this).find("button[type=submit]:focus");
+            let xhr = new XMLHttpRequest();
+
             $("#student_id").val($(btn).data('id'));
 
-            var xhr = new XMLHttpRequest();
             $.ajax({
                 url: '/RegistrationsStudy/DownloadRegistration',
                 type: 'POST',
@@ -744,10 +699,12 @@
                     return xhr;
                 },
                 success: function(data, textStatus, request) {
-                    var contentDisposition = request.getResponseHeader("Content-Disposition");
-                    var fileNameExportRegistrations = contentDisposition.split('filename')[1].split('"').join("").split('=').join("");
-                    getFileFromData(data, fileNameExportRegistrations);
                     form.find(":submit").prop('disabled', false);
+
+                    let contentDisposition = request.getResponseHeader("Content-Disposition");
+                    let fileNameExportRegistrations = contentDisposition.split('filename')[1].split('"').join("").split('=').join("");
+
+                    getFileFromData(data, fileNameExportRegistrations);
                     displayToastr('fileLoaded');
                 },
                 error: function(xhr, status, error) {
@@ -759,10 +716,11 @@
         });
 
         $("#formDownloadMultipleRegistrations").submit(function(e) {
-            var form = $(this);
             e.preventDefault();
 
+            var form = $(this);
             var xhr = new XMLHttpRequest();
+
             $.ajax({
                 url: '/RegistrationsStudy/downloadMultipleRegistrations',
                 type: 'POST',
@@ -780,10 +738,12 @@
                     return xhr;
                 },
                 success: function(data, textStatus, request) {
-                    var contentDisposition = request.getResponseHeader("Content-Disposition");
-                    var fileNameExportRegistrations = contentDisposition.split('filename')[1].split('"').join("").split('=').join("");
-                    getFileFromData(data, fileNameExportRegistrations);
                     form.find(":submit").prop('disabled', false);
+
+                    let contentDisposition = request.getResponseHeader("Content-Disposition");
+                    let fileNameExportRegistrations = contentDisposition.split('filename')[1].split('"').join("").split('=').join("");
+
+                    getFileFromData(data, fileNameExportRegistrations);
                     displayToastr('fileLoaded');
                 },
                 error: function() {
@@ -798,14 +758,12 @@
 
         });
 
-        $("#addMoreEmail").click(function() {
-            addInputEmail();
-        });
+        $("#addMoreEmail").click(() => addInputEmail());
     });
 
     function getFileFromData(data, fileNameExportRegistrations) {
-        var a = document.createElement('a');
-        var url = window.URL.createObjectURL(data);
+        let a = document.createElement('a');
+        let url = window.URL.createObjectURL(data);
         a.href = url;
         a.download = fileNameExportRegistrations;
         document.body.append(a);
@@ -814,18 +772,23 @@
         window.URL.revokeObjectURL(url);
     }
 
-    function setSeeMoreTableValue(tdId, value, typeDoc, studentId) {
-        var td = $("#student-" + tdId);
+    function setSeeMoreTableValue(info, studentId) {
+        let tdId = info[0];
+        let value = info[1];
+        let docType = info[2];
+
+        let td = $("#student-" + tdId);
+        let tdNone = $("#student-" + tdId + "-none");
 
         if (value != null) {
-            if (typeDoc) {
-                var doc = td.children().first();
-                var buttonDisplayFile = td.children().last();
+            if (docType) {
+                let doc = td.children().first();
+                let buttonDisplayFile = td.children().last();
+                let src = '';
 
-                if (typeDoc == 'pdf') {
-                    var src = '';
+                if (docType == 'pdf') {
                     if (value.indexOf('report_card') != -1) {
-                        var idx = value.split('_')[2].split('.pdf')[0];
+                        let idx = value.split('_')[2].split('.pdf')[0];
                         src = '/Registration/GetFile?fileName=report_card&number=' + idx + '&studentId=' + studentId;
                     } else {
                         src = '/Registration/GetFile?fileName=' + tdId + '&studentId=' + studentId;
@@ -835,9 +798,7 @@
                 }
                 doc.attr('src', src);
                 buttonDisplayFile.off("click", "");
-                buttonDisplayFile.on('click', function() {
-                    displayFile(src, typeDoc == 'pdf');
-                });
+                buttonDisplayFile.on('click', () => displayFile(src, docType == 'pdf'));
             } else {
                 td.text(value);
                 if (tdId == "email") {
@@ -847,14 +808,14 @@
                 }
             }
             td.removeClass('hidden');
-            $("#student-" + tdId + "-none").addClass('hidden');
+            tdNone.addClass('hidden');
         } else {
             td.addClass('hidden');
-            $("#student-" + tdId + "-none").removeClass('hidden');
+            tdNone.removeClass('hidden');
         }
     }
 
-    function tryAddTeacher(email, password, teachersTable) {
+    function tryAddTeacher(email, password) {
         return new Promise((resolve, reject) => {
             $.ajax({
                 url: '/Teacher/Add',
@@ -864,7 +825,7 @@
                     teacherPassword: password,
                 },
                 success: function(data) {
-                    teachersTable.row.add([data.teacherId, '<a href="mailto:' + email + '">' + email + '</a>', '<td><button class="btn btn-danger removeTeacher" type="button">Supprimer</button></td>']).draw(false);
+                    teachersTable.row.add([data.teacherId, '<a href="mailto:' + email + '">' + email + '</a>', '<td class="not-export-col"><button class="btn btn-danger removeTeacher" type="button">Supprimer</button></td>']).draw(false);
                     $('#formAddTeacher').find(":submit").prop('disabled', false);
                     displayToastr('teacherAdded');
                     resolve();
@@ -885,13 +846,13 @@
     }
 
     function getRandString() {
-        var possible = '';
+        let possible = '';
         possible += 'abcdefghijklmnopqrstuvwxyz';
         possible += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         possible += '0123456789';
         possible += '![]{}()%&*$#^<>~@|';
-        var text = '';
-        for (var i = 0; i < 12; i++) {
+        let text = '';
+        for (let i = 0; i < 12; i++) {
             text += possible.charAt(Math.floor(Math.random() * possible.length));
         }
         return text;
@@ -899,7 +860,7 @@
 
     function addInputEmail() {
 
-        var inputDiv =
+        let inputDiv =
             $('<div class="mt-3 border border-dark addTeacherDiv">' +
                 '    <button type="button" class="btn btn-danger removeEmailInput" onclick="$(this).parent().remove();"><i class="fa fa-times"></i></button>' +
                 '    <br>' +
@@ -922,12 +883,12 @@
     }
 
     function appendTrToSeeMoreTable(trRow, isReportCard) {
-        var trStart = '<tr class="trFile">';
-        var trEnd = '</tr>';
-        var th = '<th>' + trRow[0] + '</th>';
-        var tdColspan = !isReportCard ? 'colspan="3" ' : '';
+        let trStart = '<tr class="trFile">',
+            trEnd = '</tr>',
+            th = '<th>' + trRow[0] + '</th>',
+            tdColspan = !isReportCard ? 'colspan="3" ' : '',
+            content = '<td ' + tdColspan + ' class="hidden" id="student-' + trRow[1] + '">';
 
-        var content = '<td ' + tdColspan + ' class="hidden" id="student-' + trRow[1] + '">';
         if (trRow[1] == "vle_screenshot") {
             content += '<img src="" class="img-fluid">';
         } else {
@@ -944,12 +905,14 @@
     }
 
     function setConversation(messages) {
-        var td = $('#student-conversation').children().last();
-        var div = td.children().first();
+        let td = $('#student-conversation').children().last();
+        let div = td.children().first();
+
         div.empty();
+
         if (messages.length != 0) {
             $(messages).each(function(i, message) {
-                var msg =
+                let msg =
                     '<div class="media w-50 mb-3">' +
                     '  <div class="media-body ml-3">' +
                     '    <div class="bg-light rounded py-2 px-3 mb-2">' +
@@ -958,7 +921,7 @@
                     '    <p class="small text-muted">' + moment(message.messageDate).format('DD MMMM | HH:mm') + '</p>' +
                     '  </div>' +
                     '</div>';
-                var response =
+                let response =
                     '<div class="media w-50 ml-auto mb-3">' +
                     '  <div class="media-body">' +
                     '    <div class="bg-primary rounded py-2 px-3 mb-2">' +
@@ -976,6 +939,62 @@
             div.append("Aucun message n'a été échangé");
             div.css("overflow", "hidden")
         }
+    }
+
+    function initSeeMoreTable() {
+        $('.trFile, #trReportCards').remove();
+        $(seeMoreTr).each(function(idx, trRow) {
+            if (trRow[1].length == 3) {
+                $("#seeMore-table").append('<tr id="trReportCards"><th>' + trRow[0] + '</th></tr>');
+                $(trRow[1]).each(function(i, trRowChild) {
+                    appendTrToSeeMoreTable(["", trRowChild], true);
+                });
+            } else {
+                appendTrToSeeMoreTable(trRow, false);
+            }
+        });
+    }
+
+    function setSeeMoreTableData(data) {
+
+        const student = data.student,
+            studentId = student.id,
+            address = data.address,
+            registration = data.registration,
+            registration_status = data.registration_status,
+            training = data.training,
+            trainingName = training ? training.name : null,
+            folder = data.folder,
+            report_cards = data.report_cards,
+            messages = data.messages;
+
+        const infos = [
+            ["registration_status", registration_status.title],
+            ["card_id", student.card_id],
+            ["birthdate", moment(student.birthdate).format('DD-MM-YYYY')],
+            ["email", student.email],
+            ["phone_number", student.phone_number],
+            ["address", address.street + ', ' + address.zip_code + ' ' + address.city],
+            ["training", trainingName],
+            ["cv", folder.cv, 'pdf'],
+            ["cover_letter", folder.cover_letter, 'pdf'],
+            ["vle_screenshot", folder.vle_screenshot, 'img'],
+            ["registration_form", folder.registration_form, 'pdf'],
+            ["classicTraining", registration.classicTraining == 1 ? 'Oui' : 'Non'],
+            ["apprenticeshipTraining", registration.apprenticeshipTraining == 1 ? 'Oui' : 'Non'],
+        ];
+
+        let fileName;
+        $(report_cards).each(function(idx, report_card) {
+            fileName = report_card.name;
+            infos.push([fileName.split('.pdf')[0], fileName, 'pdf']);
+        });
+
+        $(infos).each(function(idx, info) {
+            setSeeMoreTableValue(info, studentId);
+        });
+
+        setConversation(messages);
     }
 </script>
 
