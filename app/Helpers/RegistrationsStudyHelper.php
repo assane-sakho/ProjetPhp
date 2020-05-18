@@ -103,7 +103,7 @@ class RegistrationsStudyHelper
      */
     public static function downloadMultipleRegistrations($registrations)
     {
-        Storage::makeDirectory('registrations');
+        RegistrationsStudyHelper::recreateRegistrationDir();
 
         $today = Carbon\Carbon::now()->format('Y-m-d');
 
