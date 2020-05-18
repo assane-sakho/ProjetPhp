@@ -692,7 +692,7 @@
                     form.find(":submit").prop('disabled', false);
 
                     let contentDisposition = request.getResponseHeader("Content-Disposition");
-                    let fileNameExportRegistrations = contentDisposition.split('filename')[1].split('"').join("").split('=').join("");
+                    let fileNameExportRegistrations = contentDisposition.split(';')[1].split(' filename="')[1].replace('"', '');
 
                     getFileFromData(data, fileNameExportRegistrations);
                     displayToastr('fileLoaded');
